@@ -718,9 +718,9 @@ body {
     }
     
     .key {
-        padding: 12px 4px; /* Increase padding from 8px */
-        font-size: 0.9rem; /* Increase font size from 0.8rem */
-        min-height: 44px; /* Add minimum touch target size */
+        padding: 15px 7px; /* Increase padding from 8px */
+        font-size: 1rem; /* Increase font size from 0.8rem */
+        min-height: 47px; /* Add minimum touch target size */
     }
     
     .letter-square {
