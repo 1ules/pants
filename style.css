@@ -449,23 +449,28 @@ body {
 }
 
 .keyboard {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 0.5vh;
-    margin: 1vh 0;
-    max-width: 400px;
-    flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr)); /* Flexible columns */
+  gap: 0.8vh; /* Relative gap */
+  margin: 1vh 0;
+  max-width: min(95vw, 500px); /* Responsive max-width */
+  flex-shrink: 0;
+  width: 100%; /* Full width */
 }
 
 .key {
-    background: rgba(255,255,255,0.9);
-    border: none;
-    padding: 1vh 0.5vw;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
-    transition: all 0.2s ease;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  padding: 1.2vh 0; /* Vertical padding only */
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: clamp(1rem, 2.5vw, 1.2rem); /* Responsive font size */
+  transition: all 0.2s ease;
+  min-height: 8vh; /* Minimum key height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .key:hover {
@@ -691,14 +696,26 @@ body {
         width: 170px;
     }
     
-    .keyboard {
-        grid-template-columns: repeat(8, 1fr);
-    }
-    
+@media (max-width: 480px) {
+  .keyboard {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 1vh; /* Larger gap on mobile */
+  }
+
+  .key {
+    min-height: 7vh; /* Taller keys */
+    font-size: clamp(1.1rem, 3.5vw, 1.3rem); /* Larger text */
+    padding: 1.5vh 0; /* More vertical spacing */
+  }
+
+  /* Add this to handle landscape orientation */
+  @media (max-height: 500px) {
     .key {
-        padding: 8px 4px;
-        font-size: 0.8rem;
+      min-height: 10vh;
+      font-size: 1rem;
     }
+  }
+}
     
     .letter-square {
         width: 60px;
