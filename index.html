@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANTS - Daily Word Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <h1 class="loading-title">PANTS</h1>
+        <div class="zipper-container">
+            <div class="zipper-track"></div>
+            <div class="zipper-teeth-top"></div>
+            <div class="zipper-teeth-bottom"></div>
+            <div class="zipper-pull" id="zipperPull"></div>
+            <div class="zipper-opened" id="zipperOpened">
+                <div class="loading-percentage" id="loadingPercentage">0%</div>
+            </div>
+        </div>
+        <div class="loading-text">Loading word dictionary...</div>
+    </div>
+    <div class="container">
+        <h1 class="title">PANTS</h1>
+        
+        <div id="startArea">
+            <button class="start-btn" id="startBtn">Start</button>
+            <div class="countdown" id="countdown" style="display: none;"></div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="round-info" id="roundInfo">Round 1/3</div>
+            
+            <div class="letter-square" id="letterSquare">A</div>
+            
+            <div class="categories-container">
+                <div class="categories">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="category place selected" data-category="place" data-letter="P">P</div>
+                        <div class="category-name" id="categoryName">Place</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="category animal" data-category="animal" data-letter="A">A</div>
+                        <div class="category-name"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="category name" data-category="name" data-letter="N">N</div>
+                        <div class="category-name"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="category thing" data-category="thing" data-letter="T">T</div>
+                        <div class="category-name"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="category score" data-category="score" data-letter="S">S</div>
+                        <div class="category-name"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="criteria" id="criteria">Located in Europe</div>
+
+            <div class="input-container">
+                <div class="text-input">
+                    <input type="text" id="wordInput" placeholder="Type your answer..." readonly>
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="message-container">
+                <div class="pass-prompt" id="passPrompt" style="display: none;">
+                    <div>Are you sure you want to pass?</div>
+                    <div class="pass-buttons">
+                        <button class="pass-btn no" id="passNoBtn">No</button>
+                        <button class="pass-btn yes" id="passYesBtn">Yes</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="keyboard" id="keyboard"></div>
+
+            <div class="button-container">
+                <button class="submit-btn" id="submitBtn">Submit</button>
+                <button class="next-round-btn" id="nextRoundBtn" style="display: none;">Next Round</button>
+            </div>
+        </div>
+        
+
+        <div class="results-area" id="resultsArea">
+            <h3>Today's Results</h3>
+            <div class="result-grid" id="resultGrid"></div>
+            <div class="score" id="finalScore">Score: 0/24</div>
+            <button class="share-btn" id="shareBtn">Share Results</button>
+        </div>
+
+        <div class="stats-area" id="statsArea" style="display: none;">
+            <div class="stats-header">Statistics</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="pantsSolved">0</div>
+                    <div class="stat-label">Pants Solved</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="currentStreak">0</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="bestStreak">0</div>
+                    <div class="stat-label">Best Streak</div>
+                </div>
+            </div>
+            
+            <div class="distribution-section">
+                <div class="distribution-header">Guess Distribution</div>
+                <div class="distribution-row">
+                    <div class="distribution-label">20-24</div>
+                    <div class="distribution-bar green" id="dist20to24">0</div>
+                </div>
+                <div class="distribution-row">
+                    <div class="distribution-label">10-19</div>
+                    <div class="distribution-bar yellow" id="dist10to19">0</div>
+                </div>
+                <div class="distribution-row">
+                    <div class="distribution-label">0-9</div>
+                    <div class="distribution-bar red" id="dist0to9">0</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="dictionary.json"></script>
+    <script src="script.js"></script>
+</body>
+</html>
