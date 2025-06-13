@@ -450,12 +450,13 @@ body {
 
 .keyboard {
   display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr)); /* Flexible columns */
-  gap: 0.8vh; /* Relative gap */
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 0.8vh;
   margin: 1vh 0;
-  max-width: min(95vw, 500px); /* Responsive max-width */
+  max-width: min(95vw, 500px);
   flex-shrink: 0;
-  width: 100%; /* Full width */
+  width: 100%;
+  padding: 0.5vh 0; /* Add some vertical padding */
 }
 
 .key {
@@ -696,17 +697,40 @@ body {
         width: 170px;
     }
     
-@media (max-width: 480px) {
   .keyboard {
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: 1vh; /* Larger gap on mobile */
+    gap: 1.5vh; /* Increased gap for better touch */
+    max-width: 100%;
+    padding: 1vh 2vw; /* More padding on sides */
   }
 
   .key {
-    min-height: 7vh; /* Taller keys */
-    font-size: clamp(1.1rem, 3.5vw, 1.3rem); /* Larger text */
-    padding: 1.5vh 0; /* More vertical spacing */
+    min-height: 8vh; /* Bigger minimum height */
+    font-size: 1.4rem; /* Fixed larger font size */
+    padding: 1.5vh 0; /* More padding */
+    border-radius: 8px; /* Rounder corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Added depth */
   }
+
+  /* Make wide keys (like space) even bigger */
+  .key.wide {
+    grid-column: span 3;
+    min-height: 8vh;
+  }
+
+  /* Landscape mode adjustments */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .keyboard {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 1vh;
+    }
+    
+    .key {
+      min-height: 15vh; /* Very tall keys in landscape */
+      font-size: 1.2rem;
+    }
+  }
+}
 
   /* Add this to handle landscape orientation */
   @media (max-height: 500px) {
