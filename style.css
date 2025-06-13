@@ -1,24 +1,9 @@
 html, body {
     overflow: hidden;
     touch-action: none;
+    position: fixed;
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
-    position: relative; /* Changed from fixed to relative */
-    -webkit-overflow-scrolling: touch;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed; /* Added fixed */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    background-attachment: fixed; /* Ensures gradient covers entire viewport */
-    background-size: cover;
 }
 
 /* Loading Screen Styles */
@@ -243,6 +228,18 @@ body {
     box-sizing: border-box;
 }
 
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #333;
+}
+
 .container {
     max-width: 400px;
     width: 100%;
@@ -252,14 +249,10 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    min-height: -webkit-fill-available; /* For mobile browsers */
-    padding: 20px;
+    min-height: 100dvh; /* Use dynamic viewport height */
+    padding: min(20px, 2vh);
     position: relative;
-}
-
-.container {
-    min-height: 100vh;
-    min-height: calc(var(--vh, 1vh) * 100);
+    gap: min(1vh, 8px); /* Add consistent spacing */
 }
 
 .title {
@@ -424,8 +417,8 @@ body {
 }
 
 .text-input {
-    width: min(30vh, 30vw, 200px);
-    height: min(30vh, 30vw, 200px);
+    width: min(25vh, 35vw, 180px);
+    height: min(25vh, 35vw, 180px);
     border: 4px solid white;
     border-radius: 50%;
     display: flex;
@@ -470,21 +463,23 @@ body {
 .keyboard {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 0.5vh;
-    margin: 1vh 0;
+    gap: min(0.5vh, 4px);
+    margin: min(1vh, 8px) 0;
     max-width: 400px;
+    width: 100%;
     flex-shrink: 0;
 }
 
 .key {
     background: rgba(255,255,255,0.9);
     border: none;
-    padding: 1vh 0.5vw;
+    padding: min(1vh, 12px) min(0.5vw, 6px);
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
     font-size: clamp(0.7rem, 1.8vw, 0.85rem);
     transition: all 0.2s ease;
+    min-height: 40px; /* Ensure minimum touch target */
 }
 
 .key:hover {
@@ -711,16 +706,12 @@ body {
     }
     
     .keyboard {
-        grid-template-columns: repeat(10, 1fr);
-        max-width: 100%; /* Add this line */
-        width: 100%; /* Add this line */
-        gap: 0.8vh; /* Increase gap from 0.5vh */
+        grid-template-columns: repeat(8, 1fr);
     }
     
     .key {
-        padding: 15px 7px; /* Increase padding from 8px */
-        font-size: 1rem; /* Increase font size from 0.8rem */
-        min-height: 47px; /* Add minimum touch target size */
+        padding: 8px 4px;
+        font-size: 0.8rem;
     }
     
     .letter-square {
@@ -748,20 +739,38 @@ body {
     }
 }
 
-@media (max-height: 700px) {
+@media (max-height: 600px) {
     .title {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
+        font-size: 2rem;
+        margin-bottom: 5px;
+        letter-spacing: 2px;
     }
     
     .text-input {
-        width: 180px;
-        height: 180px;
+        width: min(20vh, 30vw, 150px);
+        height: min(20vh, 30vw, 150px);
     }
     
+    .text-input input {
+        font-size: 1rem;
+    }
     
     .category {
-        width: 45px;
-        height: 45px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .key {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+        min-height: 35px;
+    }
+    
+    .criteria {
+        padding: 8px;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
     }
 }
+
