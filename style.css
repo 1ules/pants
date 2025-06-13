@@ -714,11 +714,13 @@ body {
         grid-template-columns: repeat(10, 1fr);
         max-width: 100%; /* Add this line */
         width: 100%; /* Add this line */
+        gap: 0.8vh; /* Increase gap from 0.5vh */
     }
     
     .key {
-        padding: 8px 4px;
-        font-size: 0.8rem;
+        padding: 12px 4px; /* Increase padding from 8px */
+        font-size: 0.9rem; /* Increase font size from 0.8rem */
+        min-height: 44px; /* Add minimum touch target size */
     }
     
     .letter-square {
