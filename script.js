@@ -1,3 +1,13 @@
+// Fix for mobile viewport height
+function adjustViewport() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+window.addEventListener('resize', adjustViewport);
+window.addEventListener('load', adjustViewport);
+adjustViewport();
+
 // Game state
 let gameState = {
     currentRound: 1,
