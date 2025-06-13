@@ -473,6 +473,9 @@ function submitAnswer() {
     if (!word.startsWith(currentLetter)) {
         errorMessage = `Word must start with ${gameState.letters[gameState.currentRound - 1]}`;
         document.getElementById('errorMessage').textContent = errorMessage;
+        setTimeout(() => {
+            document.getElementById('errorMessage').textContent = '';
+        }, 2000);
         return;
     }
     
@@ -491,8 +494,11 @@ function submitAnswer() {
     }
 
     if (!wordFoundInCategory) {
-        errorMessage = `${gameState.currentCategory} isn't in the dictionary yet; please try a different ${gameState.currentCategory.toLowerCase()}.`;
+        errorMessage = `That ${gameState.currentCategory} isn't in the dictionary yet, please try a different ${gameState.currentCategory.toLowerCase()}.`;
         document.getElementById('errorMessage').textContent = errorMessage;
+        setTimeout(() => {
+            document.getElementById('errorMessage').textContent = '';
+        }, 2000);
         return;
     }
     
