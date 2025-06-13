@@ -494,7 +494,7 @@ function submitAnswer() {
     }
 
     if (!wordFoundInCategory) {
-        errorMessage = `That ${gameState.currentCategory} isn't in the dictionary yet, please try a different ${gameState.currentCategory.toLowerCase()}.`;
+        errorMessage = `That ${gameState.currentCategory} isn't in the dictionary yet, try another ${gameState.currentCategory.toLowerCase()}.`;
         document.getElementById('errorMessage').textContent = errorMessage;
         setTimeout(() => {
             document.getElementById('errorMessage').textContent = '';
