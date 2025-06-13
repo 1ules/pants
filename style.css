@@ -1,24 +1,9 @@
 html, body {
     overflow: hidden;
     touch-action: none;
+    position: fixed;
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
-    position: relative; /* Changed from fixed to relative */
-    -webkit-overflow-scrolling: touch;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed; /* Added fixed */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    background-attachment: fixed; /* Ensures gradient covers entire viewport */
-    background-size: cover;
 }
 
 /* Loading Screen Styles */
@@ -37,12 +22,12 @@ body {
 }
 
 .loading-title {
-    font-size: 4rem;
+    font-size: 8vw;
     font-weight: bold;
     color: white;
-    margin-bottom: 50px;
+    margin-bottom: 5vh;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 8px;
+    letter-spacing: 1vw;
 }
 
 .zipper-container {
@@ -153,44 +138,19 @@ body {
 
 .loading-text {
     color: white;
-    font-size: 1.2rem;
+    font-size: 3vmin;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-@media (max-width: 480px) {
-    .loading-title {
-        font-size: 2.5rem;
-        letter-spacing: 4px;
-        margin-bottom: 30px;
-    }
-    
-    .zipper-container {
-        width: 300px;
-        height: 50px;
-    }
-    
-    .zipper-pull {
-        width: 25px;
-        height: 35px;
-    }
-    
-    .loading-percentage {
-        font-size: 1.2rem;
-    }
-    
-    .loading-text {
-        font-size: 1rem;
-    }
-}
-
         
 .game-area {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1vh;
-    flex: 1;
+    justify-content: space-evenly;
     min-height: 0;
+    gap: 1vh;
 }
 
 .categories-container {
@@ -200,8 +160,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1vh;
+    padding: 2vh;
     margin-bottom: 1vh;
+    font-size: 2.5vmin;
 }
 
 .input-container {
@@ -243,46 +204,53 @@ body {
     box-sizing: border-box;
 }
 
-.container {
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    min-height: -webkit-fill-available; /* For mobile browsers */
-    padding: 20px;
-    position: relative;
+    padding: 0;
+    color: #333;
 }
 
 .container {
-    min-height: 100vh;
-    min-height: calc(var(--vh, 1vh) * 100);
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: 100vh;
+    padding: 1vh 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    text-align: center;
 }
 
 .title {
-    font-size: 3rem;
+    font-size: min(8vw, 6vh);
     font-weight: bold;
     color: white;
-    margin-bottom: 15px;
+    margin-bottom: 1vh;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 8px;
+    letter-spacing: min(1vw, 0.5vh);
+    text-align: center;
 }
 
 .start-btn, .submit-btn, .next-round-btn, .share-btn {
     background: white;
     color: #667eea;
     border: none;
-    padding: 12px 25px;
-    font-size: 1.1rem;
+    padding: 2vh 4vw;
+    font-size: 3vmin;
     font-weight: bold;
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin: 5px;
+    margin: 1vh;
 }
 
 .start-btn:hover, .submit-btn:hover, .next-round-btn:hover, .share-btn:hover {
@@ -299,28 +267,26 @@ body {
     backdrop-filter: blur(10px);
 }
 
-.game-area {
-    display: none;
-}
 
 .round-info {
     color: white;
-    font-size: 1.3rem;
-    margin-bottom: 10px;
+    font-size: 3.5vmin;
+    margin-bottom: 2vh;
     font-weight: bold;
+    text-align: center;
 }
 
 .letter-square {
-    width: 70px;
-    height: 70px;
+    width: min(12vmin, 10vh);
+    height: min(12vmin, 10vh);
     background: white;
     border: 3px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: min(6vmin, 5vh);
     font-weight: bold;
-    margin: 0 auto 15px;
+    margin: 1vh auto 2vh;
     border-radius: 10px;
     color: #333;
     transition: all 0.3s ease;
@@ -348,18 +314,18 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 15px;
+    gap: 2vmin;
+    margin-bottom: 2vh;
     flex-wrap: wrap;
 }
 
 .category {
-    width: 55px;
-    height: 55px;
+    width: min(12vmin, 8vh);
+    height: min(12vmin, 8vh);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: min(3vmin, 2.5vh);
     font-weight: bold;
     border-radius: 10px;
     cursor: pointer;
@@ -407,9 +373,9 @@ body {
 
 .category-name {
     color: white;
-    font-size: 0.9rem;
-    margin-top: 5px;
-    min-height: 20px;
+    font-size: 2vmin;
+    margin-top: 1vh;
+    min-height: 3vh;
     text-align: center;
 }
 
@@ -424,16 +390,16 @@ body {
 }
 
 .text-input {
-    width: min(30vh, 30vw, 200px);
-    height: min(30vh, 30vw, 200px);
+    width: min(35vmin, 30vh);
+    height: min(35vmin, 30vh);
     border: 4px solid white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1vh;
+    margin: 2vh auto;
     background: rgba(255,255,255,0.9);
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-size: min(4vmin, 3vh);
     color: #333;
     font-weight: bold;
     position: relative;
@@ -445,16 +411,18 @@ body {
     border: none;
     outline: none;
     text-align: center;
-    font-size: 1.4rem;
+    font-size: min(3vmin, 2.5vh);
     font-weight: bold;
     color: #333;
-    width: 200px;
+    width: 95%;
+    max-width: 95%;
     pointer-events: none; 
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     caret-color: transparent;
+    padding: 0 5%;
 }
 
 @keyframes pulse {
@@ -472,18 +440,19 @@ body {
     grid-template-columns: repeat(10, 1fr);
     gap: 0.5vh;
     margin: 1vh 0;
-    max-width: 400px;
+    width: 100%;
+    max-width: 90vw;
     flex-shrink: 0;
 }
 
 .key {
     background: rgba(255,255,255,0.9);
     border: none;
-    padding: 1vh 0.5vw;
+    padding: min(1.5vh, 1.5vmin) min(1vw, 1vmin);
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    font-size: min(2.5vmin, 2vh);
     transition: all 0.2s ease;
 }
 
@@ -499,9 +468,9 @@ body {
 .error-message {
     color: #ff4444;
     font-weight: bold;
-    margin: 8px 0;
-    min-height: 20px;
-    font-size: 0.9rem;
+    margin: 1vh 0;
+    min-height: 3vh;
+    font-size: 2.5vmin;
 }
 
 .pass-prompt {
@@ -689,79 +658,3 @@ body {
 .result-square.yellow { background: #FFC107; }
 .result-square.red { background: #f44336; }
 
-@media (max-width: 480px) {
-    .title {
-        font-size: 2.2rem;
-        letter-spacing: 4px;
-        margin-bottom: 10px;
-    }
-    
-    .container {
-        padding: 5px;
-    }
-    
-    .text-input {
-        width: min(35vh, 40vw, 180px);
-        height: min(35vh, 40vw, 180px);
-    }
-    
-    .text-input input {
-        font-size: 1.2rem;
-        width: 170px;
-    }
-    
-    .keyboard {
-        grid-template-columns: repeat(10, 1fr);
-        max-width: 100%; /* Add this line */
-        width: 100%; /* Add this line */
-        gap: 0.8vh; /* Increase gap from 0.5vh */
-    }
-    
-    .key {
-        padding: 15px 7px; /* Increase padding from 8px */
-        font-size: 1rem; /* Increase font size from 0.8rem */
-        min-height: 47px; /* Add minimum touch target size */
-    }
-    
-    .letter-square {
-        width: 60px;
-        height: 60px;
-        font-size: 1.8rem;
-    }
-    
-    .category {
-        width: 8vw;
-        height: 8vw;
-        min-width: 40px;
-        min-height: 40px;
-        font-size: clamp(1rem, 2.5vw, 1.2rem);
-    }
-    
-    .criteria {
-        padding: 10px;
-        font-size: 0.85rem;
-    }
-    
-    .start-btn, .submit-btn, .next-round-btn, .share-btn {
-        padding: 10px 20px;
-        font-size: 1rem;
-    }
-}
-
-@media (max-height: 700px) {
-    .title {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-    }
-    
-    .text-input {
-        width: 180px;
-        height: 180px;
-    }
-    
-    
-    .category {
-        width: 45px;
-        height: 45px;
-    }
-}
