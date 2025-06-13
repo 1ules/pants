@@ -13,9 +13,9 @@ let gameState = {
 // Game data
 const categories = {
     place: ['Located in Europe', 'Located in Asia', 'Located in the USA', 'Located in Australia', 'Island or Archipelago', 'Ends with a Vowel','Capital City'],
-    animal: ['4 Legged', 'Mammal', 'Lives in Water', 'Flies', 'Cold Blooded', 'Warm Blooded'],
-    name: ['Unisex', 'Biblical Names'],
-    thing: ['Made of Metal', 'Common Household Item', 'Technology', 'Food']
+    animal: ['4 Legs or More', 'Mammal', 'Lives in Water', 'Flies', 'Cold Blooded', 'Warm Blooded', 'Carnivore', 'Herbivore', 'Fictional and Mythological Creatures'],
+    name: ['Unisex', 'Biblical Names','Three Letter Names', 'Names Ending with Vowels', 'Names from Mythology', 'Indian Names', 'Japanese Names'],
+    thing: ['Things Made of Metal', 'Common household items', 'Food', 'Found in Nature', 'Used in School','Used in Sports','Found in a Toolbox','Used in the Kitchen']
 };
 
 // Initialize game with loading screen
@@ -481,7 +481,7 @@ function submitAnswer() {
     }
 
     if (!wordFoundInCategory) {
-        errorMessage = `That's not a valid ${gameState.currentCategory}`;
+        errorMessage = `${gameState.currentCategory} isn't in the dictionary yet; please try a different ${gameState.currentCategory.toLowerCase()}.`;
         document.getElementById('errorMessage').textContent = errorMessage;
         return;
     }
