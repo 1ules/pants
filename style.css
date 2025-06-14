@@ -143,33 +143,6 @@ html, body {
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
-
-@media (max-width: 480px) {
-    .loading-title {
-        font-size: 2.5rem;
-        letter-spacing: 4px;
-        margin-bottom: 30px;
-    }
-    
-    .zipper-container {
-        width: 300px;
-        height: 50px;
-    }
-    
-    .zipper-pull {
-        width: 25px;
-        height: 35px;
-    }
-    
-    .loading-percentage {
-        font-size: 1.2rem;
-    }
-    
-    .loading-text {
-        font-size: 1rem;
-    }
-}
-
         
 .game-area {
     display: flex;
@@ -244,27 +217,27 @@ body {
 }
 
 .container {
-    max-width: 400px;
+    max-width: min(400px, 95vw);
     width: 100%;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Changed from center */
+    justify-content: flex-start;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: min(20px, 2vh);
+    padding: min(20px, 2vh) min(20px, 2.5vw);
     position: relative;
-    padding-top: max(10vh, 40px); /* Add top padding to center content */
+    padding-top: max(5vh, 20px);
 }
 
 .title {
-    font-size: 3rem;
+    font-size: clamp(2rem, 8vw, 3rem);
     font-weight: bold;
     color: white;
-    margin-bottom: 15px;
+    margin-bottom: clamp(10px, 2vh, 15px);
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 8px;
+    letter-spacing: clamp(2px, 2vw, 8px);
 }
 
 .start-btn, .submit-btn, .next-round-btn, .share-btn {
@@ -307,14 +280,14 @@ body {
 }
 
 .letter-square {
-    width: 70px;
-    height: 70px;
+    width: clamp(50px, 15vw, 70px);
+    height: clamp(50px, 15vw, 70px);
     background: white;
     border: 3px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
     font-weight: bold;
     margin: 0 auto 15px;
     border-radius: 10px;
@@ -342,20 +315,25 @@ body {
 
 .categories {
     display: grid;
-    grid-template-columns: repeat(5, 70px);
+    grid-template-columns: repeat(5, minmax(50px, 1fr));
     justify-content: center;
-    gap: 8px;
+    gap: clamp(4px, 1vw, 8px);
     margin-bottom: 15px;
+    max-width: 100%;
+    width: 100%;
 }
 
 
 .category {
-    width: 70px;
-    height: 70px;
+    aspect-ratio: 1;
+    min-width: 50px;
+    max-width: 70px;
+    width: 100%;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
     font-weight: bold;
     border-radius: 15px;
     cursor: pointer;
