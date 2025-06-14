@@ -741,6 +741,21 @@ function setupEventListeners() {
     document.getElementById('submitBtn').onclick = submitAnswer;
     document.getElementById('nextRoundBtn').onclick = nextRound;
     document.getElementById('shareBtn').onclick = shareResults;
+
+    document.getElementById('howToPlayBtn').onclick = () => {
+    document.getElementById('howToPlayModal').style.display = 'flex';
+};
+
+document.getElementById('closeHowToPlay').onclick = () => {
+    document.getElementById('howToPlayModal').style.display = 'none';
+};
+
+// Close modal when clicking outside
+document.getElementById('howToPlayModal').onclick = (e) => {
+    if (e.target === document.getElementById('howToPlayModal')) {
+        document.getElementById('howToPlayModal').style.display = 'none';
+    }
+};
     
     // Category selection
     document.querySelectorAll('.category').forEach(category => {
