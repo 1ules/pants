@@ -559,21 +559,26 @@ body {
     grid-template-columns: repeat(10, 1fr);
     gap: min(0.5vh, 4px);
     margin: min(1vh, 8px) 0;
-    max-width: 400px;
-    width: 100%;
+    max-width: none;
+    width: clamp(90vw, 95vw, 80vw); /* 90% minimum, 95% preferred, 80% maximum */
+    margin-left: 50%;
+    transform: translateX(-50%);
     flex-shrink: 0;
 }
 
 .key {
     background: rgba(255,255,255,0.9);
     border: none;
-    padding: min(1vh, 12px) min(0.5vw, 6px);
+    padding: min(1.5vh, 15px) min(1vw, 8px);
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     transition: all 0.2s ease;
-    min-height: 40px; /* Ensure minimum touch target */
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .key:hover {
