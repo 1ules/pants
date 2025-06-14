@@ -454,7 +454,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    font-size: clamp(0.8rem, 2vw, 1rem);
     transition: all 0.2s ease;
     min-height: 40px; /* Ensure minimum touch target */
 }
@@ -469,7 +469,7 @@ body {
 }
 
 .error-message {
-    color: #ff4444;
+    color: #ffffff;
     font-weight: bold;
     margin: 8px 0;
     min-height: 20px;
