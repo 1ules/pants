@@ -283,6 +283,28 @@ html, body {
     color: #f44336;
 }
 
+.score-popup {
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1000;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    animation: floatScore 2.5s ease-out forwards;
+}
+
+.score-popup.green {
+    color: #4CAF50;
+}
+
+.score-popup.yellow {
+    color: #FFC107;
+}
+
+.score-popup.red {
+    color: #f44336;
+}
+
 @keyframes floatScore {
     0% {
         transform: translateY(0px) scale(1);
