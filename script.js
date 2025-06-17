@@ -95,6 +95,35 @@ function completeLoading() {
     }, 500);
 }
 
+function showScoreAnimation(categoryElement, points) {
+    const scoreText = points === 2 ? '+2' : points === 1 ? '+1' : '+0';
+    const colorClass = points === 2 ? 'green' : points === 1 ? 'yellow' : 'red';
+    
+    // Create the popup element
+    const popup = document.createElement('div');
+    popup.className = `score-popup ${colorClass}`;
+    popup.textContent = scoreText;
+    
+    // Position it relative to the category element
+    const rect = categoryElement.getBoundingClientRect();
+    const containerRect = document.querySelector('.container').getBoundingClientRect();
+    
+    popup.style.position = 'absolute';
+    popup.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+    popup.style.top = (rect.top - containerRect.top) + 'px';
+    popup.style.transform = 'translateX(-50%)';
+    
+    // Add to container
+    document.querySelector('.container').appendChild(popup);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+        if (popup.parentNode) {
+            popup.parentNode.removeChild(popup);
+        }
+    }, 2500);
+}
+
 function initializeGameLogic() {
     clearOldGameState();
     const savedGame = loadGameState();
@@ -530,9 +559,13 @@ function nextCategory() {
     const categories = ['place', 'animal', 'name', 'thing'];
     
     // Update category square color
-    const categorySquare = document.querySelector(`[data-category="${gameState.currentCategory}"]`);
-    const result = gameState.results[gameState.currentRound][gameState.currentCategory];
-    categorySquare.classList.add('completed', result);
+const categorySquare = document.querySelector(`[data-category="${gameState.currentCategory}"]`);
+const result = gameState.results[gameState.currentRound][gameState.currentCategory];
+categorySquare.classList.add('completed', result);
+
+// Show score animation
+const points = result === 'green' ? 2 : result === 'yellow' ? 1 : 0;
+showScoreAnimation(categorySquare, points);
     
     // Check if all categories are completed in current round
     const currentRoundResults = gameState.results[gameState.currentRound] || {};
