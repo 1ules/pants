@@ -20,12 +20,34 @@ let gameState = {
     showingPass: false
 };
 
+function goHome() {
+    // Hide all game areas
+    document.getElementById('gameArea').style.display = 'none';
+    document.getElementById('resultsArea').style.display = 'none';
+    document.getElementById('statsArea').style.display = 'none';
+    
+    // Show start area
+    document.getElementById('startArea').style.display = 'block';
+    
+    // Hide home button
+    document.getElementById('homeBtn').style.display = 'none';
+    
+    // Check if game is complete to show countdown or start button
+    const savedGame = loadGameState();
+    if (savedGame && savedGame.isComplete) {
+        showCountdown();
+    } else {
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('countdown').style.display = 'none';
+    }
+}
+
 // Game data
 const categories = {
     place: ['Located in Europe', 'Located in Asia', 'Located in the USA', 'Located in Australia', 'Island or Archipelago', 'Ends with a Vowel','Capital City'],
     animal: ['4 Legs or More', 'Mammal', 'Lives in Water', 'Flies', 'Cold Blooded', 'Warm Blooded', 'Carnivore', 'Herbivore', 'Fictional and Mythological Creatures'],
     name: ['Unisex', 'Biblical Names','Three Letter Names', 'Names Ending with Vowels', 'Names from Mythology', 'Indian Names', 'Japanese Names', 'Male Names', 'Female Names'],
-    thing: ['Things Made of Metal', 'Common household items', 'Food', 'Found in Nature', 'Used in School','Used in Sports','Found in a Toolbox','Used in the Kitchen', 'Liquids', 'Technology & Equipment', 'Clothing & Accessories']
+    thing: ['Things Made of Metal', 'Common household items', 'Food', 'Found in Nature', 'Used in School','Used in Sports','Found in a Toolbox','Used in the Kitchen', 'Liquids', 'Technology & Equipment', 'Clothing & Accessories', 'Something Round/Circular']
 };
 
 // Initialize game with loading screen
@@ -146,6 +168,7 @@ function initializeGameLogic() {
             document.getElementById('startArea').style.display = 'none';
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('resultsArea').style.display = 'block';
+             document.getElementById('homeBtn').style.display = 'block'; 
             showResults();
             displayStats();
         } else {
@@ -174,6 +197,7 @@ function initializeGameLogic() {
                 // Game is in progress, resume
                 document.getElementById('startArea').style.display = 'none';
                 document.getElementById('gameArea').style.display = 'block';
+                document.getElementById('homeBtn').style.display = 'block';
                 updateGameDisplay();
             }
         }
@@ -323,6 +347,7 @@ function showCountdown() {
 function startGame() {
     document.getElementById('startArea').style.display = 'none';
     document.getElementById('gameArea').style.display = 'block';
+    document.getElementById('homeBtn').style.display = 'block';
     
     updateGameDisplay();
 }
@@ -533,6 +558,13 @@ function submitAnswer() {
     
     // 3. Check if word matches specific criteria (for green score)
     const criteriaWords = window.dictionary[gameState.currentCategory]?.[criteria] || [];
+
+    // Add the debug logs here:
+console.log('Current criteria:', criteria);
+console.log('Criteria words:', criteriaWords);
+console.log('Submitted word:', word);
+console.log('Word in criteria?', criteriaWords.includes(word));
+
     if (criteriaWords.includes(word)) {
         result = 'green'; // Perfect match
     } else {
@@ -774,6 +806,7 @@ function setupEventListeners() {
     document.getElementById('submitBtn').onclick = submitAnswer;
     document.getElementById('nextRoundBtn').onclick = nextRound;
     document.getElementById('shareBtn').onclick = shareResults;
+    document.getElementById('homeBtn').onclick = goHome;
 
     document.getElementById('howToPlayBtn').onclick = () => {
     document.getElementById('howToPlayModal').style.display = 'flex';
