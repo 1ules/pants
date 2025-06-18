@@ -389,16 +389,6 @@ html, body {
     flex-shrink: 0;
 }
 
-.pass-prompt {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(102, 126, 234, 0.9);
-    z-index: 10;
-    padding: 10px;
-    border-radius: 10px;
-}
 
 .button-container {
     display: flex;
@@ -696,12 +686,12 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(102, 126, 234, 0.95);
+    background: transparent;
     color: white;
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(35px);
     border: 2px solid rgba(255, 255, 255, 0.2);
     z-index: 100;
     text-align: center;
