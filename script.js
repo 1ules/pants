@@ -649,6 +649,7 @@ function endGame() {
     
     document.getElementById('gameArea').style.display = 'none';
     document.getElementById('resultsArea').style.display = 'block';
+    document.getElementById('homeBtn').style.display = 'none';
     showResults();
     displayStats();
 }
