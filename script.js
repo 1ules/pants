@@ -609,6 +609,11 @@ showScoreAnimation(categorySquare, points);
         if (gameState.currentRound < 3) {
             document.getElementById('submitBtn').style.display = 'none';
             document.getElementById('nextRoundBtn').style.display = 'inline-block';
+
+            // Add spotlight effect
+            document.getElementById('spotlightOverlay').classList.add('active');
+            document.getElementById('nextRoundBtn').classList.add('spotlight');
+            
         } else {
             // Game complete
             endGame();
@@ -625,6 +630,9 @@ showScoreAnimation(categorySquare, points);
 }
 
 function nextRound() {
+    // Remove spotlight effect
+    document.getElementById('spotlightOverlay').classList.remove('active');
+    document.getElementById('nextRoundBtn').classList.remove('spotlight');
     gameState.currentRound++;
     gameState.currentCategory = 'place';
     document.getElementById('wordInput').disabled = false;
