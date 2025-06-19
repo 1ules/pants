@@ -52,19 +52,17 @@ const categories = {
 
 // Initialize game with loading screen
 async function initGame() {
-    // Start the loading process
     startLoadingScreen();
     
-    // Load dictionary while showing loading screen
     try {
         const response = await fetch('dictionary.json');
         window.dictionary = await response.json();
         console.log('Dictionary loaded successfully');
     } catch (error) {
         console.error('Failed to load dictionary:', error);
-        // Fallback - you could set a basic dictionary or show error
         window.dictionary = {};
     }
+    
 }
 
 function startLoadingScreen() {
@@ -74,32 +72,35 @@ function startLoadingScreen() {
     const loadingPercentage = document.getElementById('loadingPercentage');
     
     const loadingInterval = setInterval(() => {
-        progress += Math.random() * 15 + 5; // Random increment between 5-20
+        progress += Math.random() * 15 + 5;
         
-        if (progress >= 100) {
-            progress = 100;
-            clearInterval(loadingInterval);
+        // Cap progress at 95% until dictionary is loaded
+        const maxProgress = (window.dictionary && Object.keys(window.dictionary).length > 0) ? 100 : 95;
+        
+        if (progress >= maxProgress) {
+            progress = maxProgress;
+            
+            // Only complete when dictionary is ready AND we're at 100%
+            if (progress >= 100) {
+                clearInterval(loadingInterval);
+                setTimeout(() => {
+                    completeLoading();
+                }, 500);
+                return;
+            }
         }
         
-        // Update zipper position and opening
-        const pullPosition = (progress / 100) * 370; // 370px is roughly the container width minus pull width
+        // Update UI
+        const pullPosition = (progress / 100) * 370;
         zipperPull.style.left = pullPosition + 'px';
         zipperOpened.style.width = progress + '%';
         
-        // Show percentage once zipper starts opening
         if (progress > 10) {
             loadingPercentage.style.opacity = '1';
         }
         
         loadingPercentage.textContent = Math.floor(progress) + '%';
-        
-        // Complete loading
-        if (progress >= 100) {
-            setTimeout(() => {
-                completeLoading();
-            }, 500); // Small delay to show 100%
-        }
-    }, 100); // Update every 100ms
+    }, 100);
 }
 
 function completeLoading() {
