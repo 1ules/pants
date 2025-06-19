@@ -759,35 +759,51 @@ function fallbackCopyToClipboard(text) {
 
 function createKeyboard() {
     const keyboard = document.getElementById('keyboard');
-    const rows = [
-        'QWERTYUIOP',
-        'ASDFGHJKL',
-        'ZXCVBNM'
-    ];
     
-    rows.forEach((row, rowIndex) => {
-        row.split('').forEach(letter => {
-            const key = document.createElement('button');
-            key.className = 'key';
-            key.textContent = letter;
-            key.onclick = () => addLetter(letter);
-            keyboard.appendChild(key);
-        });
-        
-        if (rowIndex === 2) {
-            const backspaceKey = document.createElement('button');
-            backspaceKey.className = 'key wide';
-            backspaceKey.textContent = 'BACK';
-            backspaceKey.onclick = deleteLetter;
-            keyboard.appendChild(backspaceKey);
-            
-            const clearKey = document.createElement('button');
-            clearKey.className = 'key wide';
-            clearKey.textContent = 'CLEAR';
-            clearKey.onclick = clearInput;
-            keyboard.appendChild(clearKey);
-        }
+    // First row - QWERTYUIOP (10 keys)
+    'QWERTYUIOP'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
     });
+    
+    // Second row - ASDFGHJKL← (9 letters + 1 arrow = 10 keys)
+    'ASDFGHJKL'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
+    });
+    
+    const backspaceKey = document.createElement('button');
+    backspaceKey.className = 'key';
+    backspaceKey.textContent = '←';
+    backspaceKey.onclick = deleteLetter;
+    keyboard.appendChild(backspaceKey);
+    
+    // Third row - ZXCVBNM PASS CLEAR (7 letters + 1 pass + 1 clear spanning 2 = 10 total width)
+    'ZXCVBNM'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
+    });
+    
+    const passKey = document.createElement('button');
+    passKey.className = 'key';
+    passKey.textContent = 'PASS';
+    passKey.onclick = passWord;
+    keyboard.appendChild(passKey);
+    
+    const clearKey = document.createElement('button');
+    clearKey.className = 'key wide';
+    clearKey.textContent = 'CLEAR';
+    clearKey.onclick = clearInput;
+    keyboard.appendChild(clearKey);
 }
 
 function clearInput() {
