@@ -643,7 +643,7 @@ body {
     gap: min(0.5vh, 4px);
     margin: min(1vh, 8px) 0;
     max-width: none;
-    width: clamp(90vw, 95vw, 80vw); /* 90% minimum, 95% preferred, 80% maximum */
+    width: clamp(90vw, 95vw, 80vw);
     margin-left: 50%;
     transform: translateX(-50%);
     flex-shrink: 0;
