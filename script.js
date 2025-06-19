@@ -806,6 +806,15 @@ function createKeyboard() {
     keyboard.appendChild(clearKey);
 }
 
+function passWord() {
+    // Prevent passing when on score screen
+    if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
+    
+    // Show pass prompt directly (same as when submitting empty word)
+    gameState.showingPass = true;
+    document.getElementById('passPrompt').style.display = 'block';
+}
+
 function clearInput() {
     // Prevent clearing when on score screen
     if (gameState.currentCategory === 'score') return;
