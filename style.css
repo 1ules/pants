@@ -640,28 +640,30 @@ body {
 .keyboard {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: min(0.5vh, 4px);
-    margin: min(1vh, 8px) 0;
-    max-width: none;
-    width: clamp(90vw, 95vw, 80vw);
+    gap: clamp(4px, 1.2vw, 8px);
+    margin: clamp(15px, 3vh, 25px) 0;
+    width: clamp(320px, 85vw, 600px);
     margin-left: 50%;
     transform: translateX(-50%);
-    flex-shrink: 0;
 }
 
 .key {
     background: rgba(255,255,255,0.9);
+    color: #1a1a1b;
     border: none;
-    padding: min(1.5vh, 15px) min(1vw, 8px);
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    font-size: clamp(13px, 2.8vw, 16px);
     transition: all 0.2s ease;
-    min-height: 45px;
+    height: clamp(48px, 10vw, 65px);
     display: flex;
     align-items: center;
     justify-content: center;
+    text-transform: uppercase;
+    user-select: none;
+    padding: 0;
+    min-width: 0;
 }
 
 .key:hover {
