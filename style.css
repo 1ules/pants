@@ -355,13 +355,14 @@ html, body {
 }
         
 .game-area {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1vh;
     flex: 1;
     min-height: 0;
-    justify-content: space-between; /* Add this */
-    width: 100%; /* Add this */
+    justify-content: space-between; 
+    width: 100%; 
 }
 
 .categories-container {
@@ -677,12 +678,15 @@ body {
 }
 
 .error-message {
+    position: absolute;
     color: #ffffff;
     font-weight: bold;
-    margin: 8px 0;
-    min-height: 20px;
     font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
 }
+
 
 .pass-prompt {
     position: absolute;
