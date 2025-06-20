@@ -4,7 +4,39 @@ html, body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Add this line */
+    background: 
+        /* White thread texture overlay */
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
+        radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
+        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
+        /* Denim texture pattern */
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
+        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
+        /* Main darker denim gradient */
+        linear-gradient(
+        0deg,
+        #0a1a3a 0%,      /* Deep navy (almost black-blue) */
+        #11244d 20%,     /* Dark denim */
+        #1a2f60 40%,     /* Mid-dark blue denim */
+        #243d75 60%,     /* Classic denim blue */
+        #3a4f8c 80%,     /* Soft light denim */
+        #4d69a8 100%     /* Light washed blue */
+        );
+    background-size: 
+        100px 100px,
+        120px 120px,
+        80px 80px,
+        150px 150px,
+        90px 90px,
+        110px 110px,
+        130px 130px,
+        8px 8px,
+        6px 6px,
+        100% 100%;
 }
 
 /* Loading Screen Styles */
@@ -14,7 +46,39 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: 
+        /* White thread texture overlay */
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
+        radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
+        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
+        /* Denim texture pattern */
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
+        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
+        /* Main darker denim gradient */
+        linear-gradient(
+        0deg,
+        #0a1a3a 0%,      /* Deep navy (almost black-blue) */
+        #11244d 20%,     /* Dark denim */
+        #1a2f60 40%,     /* Mid-dark blue denim */
+        #243d75 60%,     /* Classic denim blue */
+        #3a4f8c 80%,     /* Soft light denim */
+        #4d69a8 100%     /* Light washed blue */
+        );
+    background-size: 
+        100px 100px,
+        120px 120px,
+        80px 80px,
+        150px 150px,
+        90px 90px,
+        110px 110px,
+        130px 130px,
+        8px 8px,
+        6px 6px,
+        100% 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -154,7 +218,7 @@ html, body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 1px;
 }
 
 .home-btn {
@@ -214,7 +278,8 @@ html, body {
 }
 
 .how-to-play-content {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
+    backdrop-filter: blur(10px);
     color: white;
     padding: 25px;
     border-radius: 20px;
@@ -443,7 +508,7 @@ body {
 
 .start-btn, .submit-btn, .next-round-btn, .share-btn {
     background: white;
-    color: #667eea;
+    color: #000000;
     border: none;
     padding: 12px 25px;
     font-size: 1.1rem;
@@ -458,15 +523,6 @@ body {
 .start-btn:hover, .submit-btn:hover, .next-round-btn:hover, .share-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.countdown {
-    color: white;
-    font-size: 1.5rem;
-    background: rgba(255,255,255,0.2);
-    padding: 15px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
 }
 
 .game-area {
@@ -694,11 +750,10 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     background: transparent;
-    color: white;
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(35px);
+    backdrop-filter: blur(50px);
     border: 2px solid rgba(255, 255, 255, 0.2);
     z-index: 100;
     text-align: center;
@@ -910,4 +965,3 @@ body {
         transform: scale(1.05);
     }
 }
-
