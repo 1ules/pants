@@ -640,7 +640,7 @@ body {
 .keyboard {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: clamp(4px, 1.2vw, 8px);
+    gap: clamp(1px, 0.5vw, 3px);
     margin: clamp(15px, 3vh, 25px) 0;
     width: min(99vw, 600px);
     margin-left: 50%;
