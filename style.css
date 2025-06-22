@@ -886,12 +886,15 @@ body {
     color: white;
 }
 
-.stats-area {
+.stats-area,
+.distribution-section,
+.round-details-area {
     background: rgba(255,255,255,0.9);
     padding: 15px;
     border-radius: 15px;
     margin-top: 10px;
-    text-align: center;
+    width: 100%; /* or whatever specific width you want */
+    box-sizing: border-box; /* ensures padding doesn't add to width */
 }
 
 .stats-header {
@@ -928,9 +931,6 @@ body {
     line-height: 1.2;
 }
 
-.distribution-section {
-    margin-top: 20px;
-}
 
 .distribution-header {
     font-size: 1.1rem;
@@ -1020,4 +1020,88 @@ body {
         box-shadow: 0 0 40px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6);
         transform: scale(1.05);
     }
+}
+
+
+.round-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.round-btn {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 40px;
+}
+
+.round-btn:hover {
+    transform: translateY(-1px);
+}
+
+.round-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.round-content {
+    line-height: 1.6;
+}
+
+.round-letter {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.category-detail {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 8px;
+}
+
+.category-title {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.user-answer {
+    color: #666;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+.possible-answers {
+    color: #444;
+    font-size: 0.9rem;
+}
+
+/* Allow scrolling on results screen */
+html.results-view,
+body.results-view {
+    overflow: auto !important;
+    touch-action: auto !important;
+    position: static !important;
+    height: auto !important;
+    min-height: 100vh !important;
+}
+
+.container.results-view {
+    position: static !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    max-height: none !important;
 }
