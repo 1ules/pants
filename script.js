@@ -29,8 +29,9 @@ function goHome() {
     // Show start area
     document.getElementById('startArea').style.display = 'block';
     
-    // Hide home button
+    // Hide home and info button
     document.getElementById('homeBtn').style.display = 'none';
+    document.getElementById('infoBtn').style.display = 'none';
     
     // Check if game is complete to show countdown or start button
     const savedGame = loadGameState();
@@ -56,13 +57,19 @@ async function initGame() {
     
     try {
         const response = await fetch('dictionary.json');
-        window.dictionary = await response.json();
-        console.log('Dictionary loaded successfully');
+        const dictionaryData = await response.json();
+        
+        // Ensure dictionary is fully loaded before setting window.dictionary
+        if (dictionaryData && typeof dictionaryData === 'object') {
+            window.dictionary = dictionaryData;
+            console.log('Dictionary loaded successfully', Object.keys(window.dictionary));
+        } else {
+            throw new Error('Invalid dictionary format');
+        }
     } catch (error) {
         console.error('Failed to load dictionary:', error);
         window.dictionary = {};
     }
-    
 }
 
 function startLoadingScreen() {
@@ -75,7 +82,11 @@ function startLoadingScreen() {
         progress += Math.random() * 15 + 5;
         
         // Cap progress at 95% until dictionary is loaded
-        const maxProgress = (window.dictionary && Object.keys(window.dictionary).length > 0) ? 100 : 95;
+        const maxProgress = (window.dictionary && 
+                    typeof window.dictionary === 'object' && 
+                    Object.keys(window.dictionary).length > 0 &&
+                    window.dictionary.animal && 
+                    window.dictionary.place) ? 100 : 95;
         
         if (progress >= maxProgress) {
             progress = maxProgress;
@@ -116,6 +127,10 @@ function completeLoading() {
         // Initialize the actual game
         initializeGameLogic();
     }, 500);
+
+// Hide info button initially
+document.getElementById('infoBtn').style.display = 'none';
+
 }
 
 function showScoreAnimation(categoryElement, points) {
@@ -169,7 +184,8 @@ function initializeGameLogic() {
             document.getElementById('startArea').style.display = 'none';
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('resultsArea').style.display = 'block';
-             document.getElementById('homeBtn').style.display = 'block'; 
+            document.getElementById('homeBtn').style.display = 'block'; 
+            document.getElementById('infoBtn').style.display = 'block';
             showResults();
             displayStats();
         } else {
@@ -199,6 +215,7 @@ function initializeGameLogic() {
                 document.getElementById('startArea').style.display = 'none';
                 document.getElementById('gameArea').style.display = 'block';
                 document.getElementById('homeBtn').style.display = 'block';
+                document.getElementById('infoBtn').style.display = 'block';
                 updateGameDisplay();
             }
         }
@@ -349,6 +366,7 @@ function startGame() {
     document.getElementById('startArea').style.display = 'none';
     document.getElementById('gameArea').style.display = 'block';
     document.getElementById('homeBtn').style.display = 'block';
+    document.getElementById('infoBtn').style.display = 'block';
     
     updateGameDisplay();
 }
@@ -560,11 +578,6 @@ function submitAnswer() {
     // 3. Check if word matches specific criteria (for green score)
     const criteriaWords = window.dictionary[gameState.currentCategory]?.[criteria] || [];
 
-    // Add the debug logs here:
-console.log('Current criteria:', criteria);
-console.log('Criteria words:', criteriaWords);
-console.log('Submitted word:', word);
-console.log('Word in criteria?', criteriaWords.includes(word));
 
     if (criteriaWords.includes(word)) {
         result = 'green'; // Perfect match
@@ -659,6 +672,7 @@ function endGame() {
     document.getElementById('gameArea').style.display = 'none';
     document.getElementById('resultsArea').style.display = 'block';
     document.getElementById('homeBtn').style.display = 'none';
+    document.getElementById('infoBtn').style.display = 'none';
     showResults();
     displayStats();
 }
@@ -842,6 +856,7 @@ function setupEventListeners() {
     document.getElementById('nextRoundBtn').onclick = nextRound;
     document.getElementById('shareBtn').onclick = shareResults;
     document.getElementById('homeBtn').onclick = goHome;
+    document.getElementById('infoBtn').onclick = toggleInfo;
 
     document.getElementById('howToPlayBtn').onclick = () => {
     document.getElementById('howToPlayModal').style.display = 'flex';
@@ -1136,3 +1151,52 @@ document.getElementById('passNoBtn').onclick = function() {
     document.getElementById('passPrompt').style.display = 'none';
     gameState.showingPass = false;
 };
+
+let infoMode = false;
+
+function toggleInfo() {
+    const infoBtn = document.getElementById('infoBtn');
+    infoMode = !infoMode;
+    
+    if (infoMode) {
+        infoBtn.classList.add('active');
+        showInfoOverlays();
+    } else {
+        infoBtn.classList.remove('active');
+        hideInfoOverlays();
+    }
+}
+
+function showInfoOverlays() {
+    const overlays = [
+        { selector: '#roundInfo', text: 'Current Round' },
+        { selector: '#letterSquare', text: 'Answers must begin with this letter' },
+        { selector: '.categories', text: 'Categories' }, 
+        { selector: '#criteria', text: 'Solve to get bonus points' }
+    ];
+    
+    overlays.forEach((overlay, index) => {
+        const element = document.querySelector(overlay.selector);
+        if (element) {
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'info-overlay';
+            infoDiv.textContent = overlay.text;
+            infoDiv.id = `info-${index}`;
+            
+            const rect = element.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            
+            infoDiv.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+            infoDiv.style.top = (rect.top - containerRect.top + rect.height / 2) + 'px';
+            infoDiv.style.display = 'block';
+            
+            document.querySelector('.container').appendChild(infoDiv);
+        }
+    });
+}
+
+function hideInfoOverlays() {
+    document.querySelectorAll('.info-overlay').forEach(overlay => {
+        overlay.remove();
+    });
+}
