@@ -48,7 +48,7 @@ const categories = {
     place: ['Located in Europe', 'Located in Asia', 'Located in the USA', 'Located in Australia', 'Island or Archipelago', 'Ends with a Vowel','Capital City'],
     animal: ['4 Legs or More', 'Mammal', 'Lives in Water', 'Flies', 'Cold Blooded', 'Warm Blooded', 'Carnivore', 'Herbivore', 'Fictional and Mythological Creatures'],
     name: ['Unisex', 'Biblical Names','Three Letter Names', 'Names Ending with Vowels', 'Names from Mythology', 'Indian Names', 'Japanese Names', 'Male Names', 'Female Names'],
-    thing: ['Things Made of Metal', 'Common Household Items', 'Food', 'Found in Nature', 'Used in School','Used in Sports','Found in a Toolbox','Used in the Kitchen', 'Liquids', 'Technology & Equipment', 'Clothing & Accessories']
+    thing: ['Things Made of Metal', 'Common household items', 'Food', 'Found in Nature', 'Used in School','Sports','Found in a Toolbox','Used in the Kitchen', 'Liquids', 'Technology & Equipment', 'Clothing & Accessories']
 };
 
 // Initialize game with loading screen
@@ -184,8 +184,8 @@ function initializeGameLogic() {
             document.getElementById('startArea').style.display = 'none';
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('resultsArea').style.display = 'block';
-            document.getElementById('homeBtn').style.display = 'block'; 
-            document.getElementById('infoBtn').style.display = 'block';
+            document.getElementById('homeBtn').style.display = 'none'; 
+            document.getElementById('infoBtn').style.display = 'none';
             showResults();
             displayStats();
         } else {
@@ -717,6 +717,68 @@ function showResults() {
     }
     
     document.getElementById('finalScore').textContent = `Score: ${totalScore}/24`;
+    
+// Enable scrolling for results screen
+document.documentElement.classList.add('results-view'); // Add to html element
+document.body.classList.add('results-view');
+document.querySelector('.container').classList.add('results-view');
+    
+    // Show round details section
+    document.getElementById('roundDetailsArea').style.display = 'block';
+    
+    // Initialize round breakdown
+    setupRoundBreakdown();
+    showRoundDetails(1);
+}
+
+function setupRoundBreakdown() {
+    document.querySelectorAll('.round-btn').forEach(btn => {
+        btn.onclick = () => {
+            const round = parseInt(btn.dataset.round);
+            document.querySelectorAll('.round-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showRoundDetails(round);
+        };
+    });
+}
+
+function showRoundDetails(round) {
+    const roundContent = document.getElementById('roundContent');
+    const letter = gameState.letters[round - 1];
+    const categories = ['place', 'animal', 'name', 'thing'];
+    
+    let html = `<div class="round-letter">Letter: ${letter}</div>`;
+    
+    categories.forEach(category => {
+        const criteria = gameState.criteria[round][category];
+        const userAnswer = gameState.answers[round] && gameState.answers[round][category] 
+            ? gameState.answers[round][category] 
+            : 'Passed';
+        
+        // Get possible answers
+        let possibleAnswers = [];
+        if (dictionary[category] && dictionary[category][criteria]) {
+            possibleAnswers = dictionary[category][criteria]
+                .filter(word => word.startsWith(letter.toLowerCase()))
+                .slice(0, 5);
+        }
+        
+        const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+        
+        html += `
+            <div class="category-detail">
+                <div class="category-title">${categoryName}: ${criteria}</div>
+                <div class="user-answer">Your answer: ${userAnswer}</div>
+                <div class="possible-answers">
+                    ${possibleAnswers.length > 0 
+                        ? `Possible answers: ${possibleAnswers.join(', ')}` 
+                        : 'No examples available'}
+                </div>
+            </div>
+        `;
+    });
+    
+    roundContent.innerHTML = html;
 }
 
 function shareResults() {
@@ -1171,7 +1233,7 @@ function showInfoOverlays() {
     const overlays = [
         { selector: '#roundInfo', text: 'Current Round' },
         { selector: '#letterSquare', text: 'Answers must begin with this letter' },
-        { selector: '.categories', text: 'Categories' }, 
+        { selector: '.categories', text: 'Categories' }, // Changed from .categories to .category-grid
         { selector: '#criteria', text: 'Solve to get bonus points' }
     ];
     
