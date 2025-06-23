@@ -495,7 +495,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1vh;
+    padding: 12px;
     margin-bottom: 1vh;
 }
 
@@ -1104,4 +1104,51 @@ body.results-view {
     min-height: auto !important;
     overflow: visible !important;
     max-height: none !important;
+}
+
+.criteria-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    position: relative;
+}
+
+.reroll-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    position: absolute;
+    right: 10px;
+}
+
+.reroll-btn:hover {
+    opacity: 1;
+}
+
+.reroll-btn.hidden {
+    display: none;
+}
+
+.criteria-text {
+    flex: 1;
+    text-align: center;
+    overflow: hidden;
+}
+
+.criteria-text.criteria-animation {
+    animation: criteriaSlot 2s ease-out;
+}
+
+@keyframes criteriaSlot {
+    0% { opacity: 1; }
+    20% { opacity: 0.7; }
+    40% { opacity: 0.5; }
+    60% { opacity: 0.8; }
+    80% { opacity: 0.9; }
+    100% { opacity: 1; }
 }
