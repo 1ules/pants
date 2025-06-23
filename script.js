@@ -17,8 +17,76 @@ let gameState = {
     answers: {},
     results: {},
     hasPlayed: false,
-    showingPass: false
+    showingPass: false,
+    rerollsUsed: {} 
 };
+
+// Add reroll function
+function rerollCriteria() {
+    const currentRound = gameState.currentRound;
+    const currentCategory = gameState.currentCategory;
+    
+    // Check if already used reroll for this round
+    if (gameState.rerollsUsed[currentRound]) {
+        return;
+    }
+    
+    // Don't allow reroll on score category or completed categories
+    if (currentCategory === 'score') return;
+    
+    const categoryElement = document.querySelector(`[data-category="${currentCategory}"]`);
+    const isCompleted = gameState.results[currentRound] && 
+                       gameState.results[currentRound][currentCategory];
+    if (isCompleted) return;
+    
+    // Get all available criteria for this category
+    const availableCriteria = categories[currentCategory];
+    const currentCriteria = gameState.criteria[currentRound][currentCategory];
+    
+    // Filter out current criteria
+    const otherCriteria = availableCriteria.filter(c => c !== currentCriteria);
+    
+    if (otherCriteria.length === 0) return;
+    
+    // Mark reroll as used for this round
+    gameState.rerollsUsed[currentRound] = true;
+    
+    // Hide reroll button
+    document.getElementById('rerollBtn').classList.add('hidden');
+    
+    // Start slot machine animation
+    const criteriaElement = document.getElementById('criteria');
+    criteriaElement.classList.add('criteria-animation');
+    
+    let animationStep = 0;
+    const animationSteps = 20;
+    const animationInterval = 100; // 100ms per step = 2 seconds total
+    
+    const slotAnimation = setInterval(() => {
+        // Show random criteria during animation
+        const randomCriteria = availableCriteria[Math.floor(Math.random() * availableCriteria.length)];
+        criteriaElement.textContent = randomCriteria;
+        
+        animationStep++;
+        
+        if (animationStep >= animationSteps) {
+            clearInterval(slotAnimation);
+            
+            // Select final criteria (not the original one)
+            const finalCriteria = otherCriteria[Math.floor(Math.random() * otherCriteria.length)];
+            gameState.criteria[currentRound][currentCategory] = finalCriteria;
+            criteriaElement.textContent = finalCriteria;
+            
+            // Remove animation class
+            setTimeout(() => {
+                criteriaElement.classList.remove('criteria-animation');
+            }, 100);
+            
+            // Save game state
+            saveGameState();
+        }
+    }, animationInterval);
+}
 
 function goHome() {
     // Hide all game areas
@@ -45,10 +113,50 @@ function goHome() {
 
 // Game data
 const categories = {
-    place: ['Located in Europe', 'Located in Asia', 'Located in the USA', 'Located in Australia', 'Island or Archipelago', 'Ends with a Vowel','Capital City'],
-    animal: ['4 Legs or More', 'Mammal', 'Lives in Water', 'Flies', 'Cold Blooded', 'Warm Blooded', 'Carnivore', 'Herbivore', 'Fictional and Mythological Creatures'],
-    name: ['Unisex', 'Biblical Names','Three Letter Names', 'Names Ending with Vowels', 'Names from Mythology', 'Indian Names', 'Japanese Names', 'Male Names', 'Female Names'],
-    thing: ['Things Made of Metal', 'Common household items', 'Food', 'Found in Nature', 'Used in School','Sports','Found in a Toolbox','Used in the Kitchen', 'Liquids', 'Technology & Equipment', 'Clothing & Accessories']
+    place: [
+        'Located in Europe', 
+        'Located in Asia', 
+        'Located in the USA', 
+        'Located in Australia', 
+        'Island or Archipelago', 
+        'Ends with a Vowel',
+        'Capital City',
+        'Tropical Place',
+        'Coastal City'
+        ],
+    animal: [
+        '4 Legs or More', 
+        'Mammal', 
+        'Lives in Water', 
+        'Flies', 'Cold Blooded', 
+        'Warm Blooded', 
+        'Carnivore', 
+        'Herbivore', 
+        'Fictional and Mythological Creatures',
+        'Pokemon'
+        ],
+    name: [
+        'Unisex', 
+        'Biblical Names',
+        'Three Letter Names', 
+        'Names Ending with Vowels', 
+        'Names from Mythology', 
+        'Indian Names', 
+        'Japanese Names', 
+        'Male Names', 
+        'Female Names'],
+    thing: ['Things Made of Metal', 
+        'Common household items', 
+        'Food', 
+        'Found in Nature', 
+        'Used in School',
+        'Sports',
+        'Found in a Toolbox',
+        'Used in the Kitchen', 
+        'Liquids', 
+        'Technology & Equipment', 
+        'Clothing & Accessories'
+        ]
 };
 
 // Initialize game with loading screen
@@ -176,6 +284,7 @@ function initializeGameLogic() {
             answers: savedGame.answers || {},
             results: savedGame.results || {},
             hasPlayed: savedGame.hasPlayed,
+            rerollsUsed: savedGame.rerollsUsed || {},
             showingPass: false
         };
         
@@ -221,6 +330,7 @@ function initializeGameLogic() {
         }
     } else {
         // New game
+        gameState.rerollsUsed = {};
         generateDailyPuzzle();
     }
     
@@ -455,6 +565,20 @@ function updateGameDisplay() {
     // Ensure input is enabled and submit button is visible for game categories
     document.getElementById('wordInput').disabled = false;
     document.getElementById('submitBtn').style.display = 'inline-block';
+
+    // Show/hide reroll button based on round and category
+    const rerollBtn = document.getElementById('rerollBtn');
+    const hasUsedReroll = gameState.rerollsUsed[gameState.currentRound];
+    const isScoreCategory = gameState.currentCategory === 'score';
+    const isCompletedCategory = gameState.results[gameState.currentRound] && 
+                               gameState.results[gameState.currentRound][gameState.currentCategory];
+    
+    if (hasUsedReroll || isScoreCategory || isCompletedCategory) {
+        rerollBtn.classList.add('hidden');
+    } else {
+        rerollBtn.classList.remove('hidden');
+    }
+
 }
 
 function updateCategoryName() {
@@ -659,6 +783,9 @@ function nextRound() {
             cat.classList.remove('completed', 'green', 'yellow', 'red');
         }
     });
+
+    // Reset reroll button visibility for new round
+    document.getElementById('rerollBtn').classList.remove('hidden');
     
     updateGameDisplay();
 
@@ -919,6 +1046,7 @@ function setupEventListeners() {
     document.getElementById('shareBtn').onclick = shareResults;
     document.getElementById('homeBtn').onclick = goHome;
     document.getElementById('infoBtn').onclick = toggleInfo;
+    document.getElementById('rerollBtn').onclick = rerollCriteria;
 
     document.getElementById('howToPlayBtn').onclick = () => {
     document.getElementById('howToPlayModal').style.display = 'flex';
@@ -1035,6 +1163,7 @@ function saveGameState() {
         answers: gameState.answers,
         results: gameState.results,
         hasPlayed: gameState.hasPlayed,
+        rerollsUsed: gameState.rerollsUsed,
         isComplete: false
     };
     
