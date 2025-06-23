@@ -421,13 +421,13 @@ function generateDailyPuzzle() {
         gameState.letters = [];
         
         let randomIndex = 0;
-        while (gameState.letters.length < 3) {
-            const letter = alphabet[Math.floor(seededRandom(seed + randomIndex) * 26)];
-            if (!gameState.letters.includes(letter)) {
-                gameState.letters.push(letter);
+            while (gameState.letters.length < 3) {
+                const letter = alphabet[Math.floor(seededRandom(seed + randomIndex) * 26)];
+                if (!gameState.letters.includes(letter)) {
+                    gameState.letters.push(letter);
+                }
+                randomIndex++;
             }
-            randomIndex++;
-        }
     }
 }
 
@@ -611,6 +611,7 @@ function selectCategory(category) {
         input.disabled = true; // Disable input when on score
         document.getElementById('criteria').textContent = 'Current Score';
         document.getElementById('submitBtn').style.display = 'none'; // Hide submit button
+        document.getElementById('rerollBtn').classList.add('hidden'); // Hide reroll button
         
         // Select the score category
         document.querySelectorAll('.category').forEach(cat => cat.classList.remove('selected'));
@@ -633,6 +634,17 @@ function selectCategory(category) {
     input.placeholder = 'Type your answer...';
     input.disabled = false;
     document.getElementById('submitBtn').style.display = 'inline-block';
+    
+    // Show/hide reroll button based on conditions
+    const hasUsedReroll = gameState.rerollsUsed[gameState.currentRound];
+    const isCompletedCategory = gameState.results[gameState.currentRound] && 
+                               gameState.results[gameState.currentRound][category];
+    
+    if (hasUsedReroll || isCompletedCategory) {
+        document.getElementById('rerollBtn').classList.add('hidden');
+    } else {
+        document.getElementById('rerollBtn').classList.remove('hidden');
+    }
     
     gameState.currentCategory = category;
     document.querySelectorAll('.category').forEach(cat => cat.classList.remove('selected'));
@@ -1362,13 +1374,14 @@ function showInfoOverlays() {
     const overlays = [
         { selector: '#roundInfo', text: 'Current Round' },
         { selector: '#letterSquare', text: 'Answers must begin with this letter' },
-        { selector: '.categories', text: 'Categories' }, // Changed from .categories to .category-grid
-        { selector: '#criteria', text: 'Solve to get bonus points' }
+        { selector: '.categories', text: 'Categories' }, 
+        { selector: '.criteria', text: 'Solve to get bonus points' },
+        { selector: '#rerollBtn', text: 'Rerolls current criteria. You have 1 reroll per round' },
     ];
     
     overlays.forEach((overlay, index) => {
         const element = document.querySelector(overlay.selector);
-        if (element) {
+        if (element && !element.classList.contains('hidden')) {
             const infoDiv = document.createElement('div');
             infoDiv.className = 'info-overlay';
             infoDiv.textContent = overlay.text;
