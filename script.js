@@ -1,3 +1,4 @@
+
 // Fix for mobile viewport height
 function adjustViewport() {
     const vh = window.innerHeight * 0.01;
@@ -145,7 +146,11 @@ const categories = {
         'Japanese Names', 
         'Male Names', 
         'Female Names',
-        'Body Parts'
+        'Body Parts',
+        'Periodic Table Elements',
+        'Fruits',
+        'Designer and Popular Brands',
+        'Car Manufacturers',
         ],
     
     thing: ['Things Made of Metal', 
@@ -362,6 +367,39 @@ function generateDailyPuzzle() {
     let seed = 0;
     for (let i = 0; i < dateString.length; i++) {
         seed += dateString.charCodeAt(i);
+    }
+
+    // Track used criteria to avoid duplicates across rounds
+    const usedCriteria = {
+        place: new Set(),
+        animal: new Set(),
+        name: new Set(),
+        thing: new Set()
+    };
+    
+    // Generate criteria for each round ensuring no duplicates
+    for (let i = 1; i <= 3; i++) {
+        gameState.criteria[i] = {};
+        
+        // For each category, pick a criteria that hasn't been used
+        Object.keys(categories).forEach(category => {
+            const availableCriteria = categories[category].filter(criteria => 
+                !usedCriteria[category].has(criteria)
+            );
+            
+            if (availableCriteria.length === 0) {
+                // Fallback: if all criteria used, reset and pick any
+                usedCriteria[category].clear();
+                availableCriteria.push(...categories[category]);
+            }
+            
+            const selectedCriteria = availableCriteria[
+                Math.floor(seededRandom(seed + i * 100 + category.length) * availableCriteria.length)
+            ];
+            
+            gameState.criteria[i][category] = selectedCriteria;
+            usedCriteria[category].add(selectedCriteria);
+        });
     }
     
     // First, generate criteria for each round using seeded random
@@ -667,6 +705,23 @@ function selectCategory(category) {
     saveGameState();
 }
 
+function getCriteriaWords(category, criteria) {
+    const categoryData = window.dictionary[category];
+    if (!categoryData) return [];
+    
+    const criteriaData = categoryData[criteria];
+    
+    // If it's a reference to shared criteria
+    if (typeof criteriaData === 'string' && criteriaData.startsWith('@sharedCriteria.')) {
+        const sharedKey = criteriaData.replace('@sharedCriteria.', '');
+        return window.dictionary.sharedCriteria?.[sharedKey] || [];
+    }
+    
+    // If it's direct data
+    return Array.isArray(criteriaData) ? criteriaData : [];
+}
+
+
 function submitAnswer() {
     const input = document.getElementById('wordInput');
     const word = input.value.trim().toLowerCase();
@@ -698,16 +753,28 @@ function submitAnswer() {
         return;
     }
     
-    // 2. Check if word is in category at all
-    const categoryData = window.dictionary[gameState.currentCategory];
+    // 2. Check if word is in category at all (including plural forms)
     let wordFoundInCategory = false;
+    const categoryData = window.dictionary[gameState.currentCategory];
 
     if (categoryData) {
-        // Search through all criteria arrays in the category
+        // Search through all criteria in the category
         for (const criteriaKey in categoryData) {
-            if (Array.isArray(categoryData[criteriaKey]) && categoryData[criteriaKey].includes(word)) {
+            const words = getCriteriaWords(gameState.currentCategory, criteriaKey);
+            
+            // Check exact match first
+            if (words.includes(word)) {
                 wordFoundInCategory = true;
                 break;
+            }
+            
+            // Check if it's a plural form (word ends with 's' and singular form exists)
+            if (word.endsWith('s') && word.length > 1) {
+                const singularForm = word.slice(0, -1);
+                if (words.includes(singularForm)) {
+                    wordFoundInCategory = true;
+                    break;
+                }
             }
         }
     }
@@ -720,12 +787,22 @@ function submitAnswer() {
         }, 2000);
         return;
     }
-    
+
     // 3. Check if word matches specific criteria (for green score)
-    const criteriaWords = window.dictionary[gameState.currentCategory]?.[criteria] || [];
+    const criteriaWords = getCriteriaWords(gameState.currentCategory, criteria);
 
-
+    let matchesCriteria = false;
     if (criteriaWords.includes(word)) {
+        matchesCriteria = true;
+    } else if (word.endsWith('s') && word.length > 1) {
+        // Check if singular form matches criteria
+        const singularForm = word.slice(0, -1);
+        if (criteriaWords.includes(singularForm)) {
+            matchesCriteria = true;
+        }
+    }
+
+    if (matchesCriteria) {
         result = 'green'; // Perfect match
     } else {
         result = 'yellow'; // Right category but wrong criteria
@@ -906,8 +983,9 @@ function showRoundDetails(round) {
         
         // Get possible answers
         let possibleAnswers = [];
-        if (dictionary[category] && dictionary[category][criteria]) {
-            possibleAnswers = dictionary[category][criteria]
+        const words = getCriteriaWords(category, criteria);
+        if (words.length > 0) {
+            possibleAnswers = words
                 .filter(word => word.startsWith(letter.toLowerCase()))
                 .slice(0, 5);
         }
