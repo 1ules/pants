@@ -1037,6 +1037,7 @@ function shareResults() {
             fallbackCopyToClipboard(shareText);
         }
     }
+}
 
 function fallbackCopyToClipboard(text) {
     const textArea = document.createElement('textarea');
