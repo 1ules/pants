@@ -150,7 +150,7 @@ const categories = {
         'Periodic Table Elements',
         'Fruits',
         'Designer and Popular Brands',
-        'Car Manufacturers',
+        'Car Manufacturers'
         ],
     
     thing: ['Things Made of Metal', 
@@ -170,7 +170,8 @@ const categories = {
         'Designer and Popular Brands',
         'Car Manufacturers',
         'Clothing & Accessories',
-        'Something Round/Circular'
+        'Something Round/Circular',
+        'Snacks'
         ]
 };
 
