@@ -144,7 +144,10 @@ const categories = {
         'Indian Names', 
         'Japanese Names', 
         'Male Names', 
-        'Female Names'],
+        'Female Names',
+        'Body Parts'
+        ],
+    
     thing: ['Things Made of Metal', 
         'Common household items', 
         'Food', 
