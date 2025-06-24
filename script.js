@@ -1016,18 +1016,27 @@ function shareResults() {
     const totalScore = calculateTotalScore();
     shareText += `Score: ${totalScore}/24`;
     
-    // Try modern clipboard API first, fall back to older method
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert('Results copied to clipboard!');
-        }).catch(() => {
-            // Fallback method
+    // Check if Web Share API is available (typically on mobile)
+    if (navigator.share) {
+        navigator.share({
+            text: shareText
+        }).catch(err => {
+            console.log('Error sharing:', err);
+            // Fallback to clipboard copy if sharing fails
             fallbackCopyToClipboard(shareText);
         });
     } else {
-        fallbackCopyToClipboard(shareText);
+        // Desktop/unsupported browsers - copy to clipboard
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('Results copied to clipboard!');
+            }).catch(() => {
+                fallbackCopyToClipboard(shareText);
+            });
+        } else {
+            fallbackCopyToClipboard(shareText);
+        }
     }
-}
 
 function fallbackCopyToClipboard(text) {
     const textArea = document.createElement('textarea');
