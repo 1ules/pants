@@ -44,27 +44,36 @@ function rerollCriteria() {
     const availableCriteria = categories[currentCategory];
     const currentCriteria = gameState.criteria[currentRound][currentCategory];
     
-    // Filter out current criteria
-    const otherCriteria = availableCriteria.filter(c => c !== currentCriteria);
-    
-    if (otherCriteria.length === 0) return;
-    
+    // Filter out current criteria and check which ones have valid words for the current letter
+    const currentLetter = gameState.letters[currentRound - 1].toLowerCase();
+    const validCriteria = availableCriteria.filter(criteria => {
+        if (criteria === currentCriteria) return false; // Exclude current criteria
+        
+        // Get words for this criteria
+        const words = getCriteriaWords(currentCategory, criteria);
+        
+        // Check if any word starts with the current letter
+        return words.some(word => word.startsWith(currentLetter));
+    });
+
+    if (validCriteria.length === 0) return; // No valid alternatives
+
     // Mark reroll as used for this round
     gameState.rerollsUsed[currentRound] = true;
-    
+
     // Hide reroll button
     document.getElementById('rerollBtn').classList.add('hidden');
-    
+
     // Start slot machine animation
     const criteriaElement = document.getElementById('criteria');
     criteriaElement.classList.add('criteria-animation');
-    
+
     let animationStep = 0;
     const animationSteps = 20;
     const animationInterval = 100; // 100ms per step = 2 seconds total
-    
+
     const slotAnimation = setInterval(() => {
-        // Show random criteria during animation
+        // Show random criteria during animation (can be any from available, just for animation)
         const randomCriteria = availableCriteria[Math.floor(Math.random() * availableCriteria.length)];
         criteriaElement.textContent = randomCriteria;
         
@@ -73,8 +82,8 @@ function rerollCriteria() {
         if (animationStep >= animationSteps) {
             clearInterval(slotAnimation);
             
-            // Select final criteria (not the original one)
-            const finalCriteria = otherCriteria[Math.floor(Math.random() * otherCriteria.length)];
+            // Select final criteria from valid ones only
+            const finalCriteria = validCriteria[Math.floor(Math.random() * validCriteria.length)];
             gameState.criteria[currentRound][currentCategory] = finalCriteria;
             criteriaElement.textContent = finalCriteria;
             
