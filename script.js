@@ -154,8 +154,15 @@ const categories = {
         'Found in a Toolbox',
         'Used in the Kitchen', 
         'Liquids', 
+        'Musical Instruments',
+        'Gems and Minerals',
+        'Periodic Table Elements',
         'Technology & Equipment', 
-        'Clothing & Accessories'
+        'Fruits',
+        'Designer and Popular Brands',
+        'Car Manufacturers',
+        'Clothing & Accessories',
+        'Something Round/Circular'
         ]
 };
 
