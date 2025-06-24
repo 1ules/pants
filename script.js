@@ -439,7 +439,7 @@ function generateDailyPuzzle() {
                 const hasThing = thingWords.some(word => word.startsWith(lowerLetter));
                 
                 // For name category, check if there are names starting with this letter
-                const nameWords = window.dictionary.name?.[roundCriteria.name] || [];
+                const nameWords = getCriteriaWords('name', roundCriteria.name);
                 const hasName = nameWords.some(word => word.startsWith(lowerLetter));
                 
                 if (hasPlace && hasAnimal && hasThing && hasName) {
