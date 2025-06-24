@@ -154,7 +154,7 @@ const categories = {
         ],
     
     thing: ['Things Made of Metal', 
-        'Common household items', 
+        'Common Household Items', 
         'Food', 
         'Found in Nature', 
         'Used in School',
