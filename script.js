@@ -402,15 +402,6 @@ function generateDailyPuzzle() {
         });
     }
     
-    // First, generate criteria for each round using seeded random
-    for (let i = 1; i <= 3; i++) {
-        gameState.criteria[i] = {
-            place: categories.place[Math.floor(seededRandom(seed + i * 100) * categories.place.length)],
-            animal: categories.animal[Math.floor(seededRandom(seed + i * 200) * categories.animal.length)],
-            name: categories.name[Math.floor(seededRandom(seed + i * 300) * categories.name.length)],
-            thing: categories.thing[Math.floor(seededRandom(seed + i * 400) * categories.thing.length)]
-        };
-    }
     
     // Check if dictionary is available for smart letter selection
     if (typeof dictionary !== 'undefined' && window.dictionary) {
