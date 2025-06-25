@@ -129,16 +129,19 @@ const categories = {
         'Located in the USA', 
         'Located in Australia', 
         'Island or Archipelago', 
-        'Ends with a Vowel',
         'Capital City',
         'Tropical Place',
-        'Coastal City'
+        'Coastal City',
+        'Geographical Features',
+        'Found in a City',
+        'Hospital Rooms and Departments'
         ],
     animal: [
         '4 Legs or More', 
         'Mammal', 
         'Lives in Water', 
-        'Flies', 'Cold Blooded', 
+        'Flies', 
+        'Cold Blooded', 
         'Warm Blooded', 
         'Carnivore', 
         'Herbivore', 
@@ -159,15 +162,23 @@ const categories = {
         'Periodic Table Elements',
         'Fruits',
         'Designer and Popular Brands',
-        'Car Manufacturers'
+        'Car Manufacturers',
+        'Popular Sports',
+        'Celestial Bodies and Astronomical Objects',
+        'Common Occupations',
+        'Musical Genres',
+        'Emotions',
+        'Academic Disciplines and Subjects',
+        'Plants and Flowers'
         ],
     
-    thing: ['Things Made of Metal', 
+    thing: [
+        'Things Made of Metal', 
         'Common Household Items', 
         'Food', 
         'Found in Nature', 
         'Used in School',
-        'Sports',
+        'Sports Related',
         'Found in a Toolbox',
         'Used in the Kitchen', 
         'Liquids', 
@@ -180,7 +191,10 @@ const categories = {
         'Car Manufacturers',
         'Clothing & Accessories',
         'Something Round/Circular',
-        'Snacks'
+        'Snacks',
+        'Materials and Substances',
+        'Found in a Hospital',
+        'Plants and Flowers'
         ]
 };
 
