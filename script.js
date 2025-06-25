@@ -621,7 +621,6 @@ function updateGameDisplay() {
     
     // Clear input
     document.getElementById('wordInput').value = '';
-    document.getElementById('errorMessage').textContent = '';
     document.getElementById('passPrompt').style.display = 'none';
     gameState.showingPass = false;
 
@@ -756,15 +755,10 @@ function submitAnswer() {
     
     // Validate word
     let result = 'red';
-    let errorMessage = '';
     
     // 1. Check if word starts with correct letter
     if (!word.startsWith(currentLetter)) {
-        errorMessage = `Word must start with ${gameState.letters[gameState.currentRound - 1]}`;
-        document.getElementById('errorMessage').textContent = errorMessage;
-        setTimeout(() => {
-            document.getElementById('errorMessage').textContent = '';
-        }, 2000);
+        showInputError(`Word must start with ${gameState.letters[gameState.currentRound - 1]}`);
         return;
     }
     
@@ -795,11 +789,7 @@ function submitAnswer() {
     }
 
     if (!wordFoundInCategory) {
-        errorMessage = `That ${gameState.currentCategory} isn't in the dictionary yet, try another ${gameState.currentCategory.toLowerCase()}.`;
-        document.getElementById('errorMessage').textContent = errorMessage;
-        setTimeout(() => {
-            document.getElementById('errorMessage').textContent = '';
-        }, 2000);
+        showInputError(`Try another ${gameState.currentCategory}`);
         return;
     }
 
@@ -834,7 +824,6 @@ function submitAnswer() {
     
     // Clear input and errors
     document.getElementById('wordInput').value = '';
-    document.getElementById('errorMessage').textContent = '';
     
     nextCategory();
 }
@@ -1516,4 +1505,24 @@ function hideInfoOverlays() {
     document.querySelectorAll('.info-overlay').forEach(overlay => {
         overlay.remove();
     });
+}
+
+
+function showInputError(message) {
+    const input = document.getElementById('wordInput');
+    const inputContainer = input.closest('.text-input');
+    const originalPlaceholder = input.placeholder;
+    
+    // Clear input and show error message
+    input.value = '';
+    input.placeholder = message;
+    
+    // Add error animation classes to the container
+    inputContainer.classList.add('error-shake', 'error-glow');
+    
+    // Remove animation classes and restore placeholder after animation
+    setTimeout(() => {
+        inputContainer.classList.remove('error-shake', 'error-glow');
+        input.placeholder = originalPlaceholder;
+    }, 1500);
 }
