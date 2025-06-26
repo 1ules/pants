@@ -268,12 +268,15 @@ function completeLoading() {
     loadingScreen.style.transition = 'opacity 0.5s ease-out';
     loadingScreen.style.opacity = '0';
     
-    setTimeout(() => {
-        loadingScreen.style.display = 'none';
-        
-        // Initialize the actual game
-        initializeGameLogic();
-    }, 500);
+setTimeout(() => {
+    loadingScreen.style.display = 'none';
+    
+    // Set up event listeners immediately so buttons work
+    setupEventListeners();
+    
+    // Initialize the actual game
+    initializeGameLogic();
+}, 500);
 
 // Hide info button initially
 document.getElementById('infoBtn').style.display = 'none';
@@ -372,9 +375,8 @@ function initializeGameLogic() {
         gameState.rerollsUsed = {};
         generateDailyPuzzle();
     }
-    
-    setupEventListeners();
     createKeyboard();
+    setupEventListeners();
 }
 
 function generateDailyPuzzle() {
@@ -540,6 +542,7 @@ function startGame() {
     document.getElementById('gameArea').style.display = 'block';
     document.getElementById('homeBtn').style.display = 'block';
     document.getElementById('infoBtn').style.display = 'block';
+    createKeyboard();
     
     updateGameDisplay();
 }
@@ -823,7 +826,7 @@ function submitAnswer() {
     saveGameState();
     
     // Clear input and errors
-    document.getElementById('wordInput').value = '';
+    showInputSuccess(result, word);
     
     nextCategory();
 }
@@ -1524,5 +1527,46 @@ function showInputError(message) {
     setTimeout(() => {
         inputContainer.classList.remove('error-shake', 'error-glow');
         input.placeholder = originalPlaceholder;
+    }, 1500);
+}
+
+
+function showInputSuccess(result, word) {
+    const input = document.getElementById('wordInput');
+    const inputContainer = input.closest('.text-input');
+    
+    const messages = {
+        green: [
+            'Perfect!', 'Excellent!', 'Spot on!', 'Brilliant!', 'Amazing!',
+            'Fantastic!', 'Outstanding!', 'Well done!', 'Superb!', 'Genius!',
+            'Flawless!', 'Impeccable!', 'Masterful!', 'Unbeatable!', 'Magnificent!',
+            'Exceptional!', 'Stupendous!', 'Phenomenal!', 'Incredible!', 'Spectacular!',
+            'Wonderful!', 'Bravo!', 'Nailed it!', 'You got it!', 'Absolutely!',
+            'Precisely!', 'Exactly!', 'Bingo!', 'Exemplary!', 'Distinguished!',
+            'Commendable!', 'Triumphant!', 'Victoriously!', 'Top-notch!', 'First-rate!',
+            'High-five!', "You're a star!", 'Correct!', 'Right!', 'Yes!'
+        ],
+        yellow: [
+            'Good word!', 'Nice try!', 'Not bad!', 'Good effort!',
+            'Getting there!', 'Solid attempt!', 'On the right track!', 'Decent!',
+            'Fair enough!', 'Acceptable!', 'Respectable!', 'Competent!', 'Adequate!',
+            'Satisfactory!', 'Well done!', 'You got it!', 'That works!'
+        ]
+    };
+    
+    // Show success message
+    const messageArray = messages[result];
+    const randomMessage = messageArray[Math.floor(Math.random() * messageArray.length)];
+    input.value = '';
+    input.placeholder = randomMessage;
+    
+    // Add success glow
+    const glowClass = result === 'green' ? 'success-glow-green' : 'success-glow-yellow';
+    inputContainer.classList.add(glowClass);
+    
+    // Remove glow and restore placeholder after animation
+    setTimeout(() => {
+        inputContainer.classList.remove(glowClass);
+        input.placeholder = 'Type your answer...';
     }, 1500);
 }
