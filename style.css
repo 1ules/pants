@@ -810,6 +810,15 @@ body {
     20%, 40%, 60%, 80% { transform: translateX(1.5px); }
 }
 
+.success-glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.8) !important;
+    border-color: rgba(34, 197, 94, 0.8) !important;
+}
+
+.success-glow-yellow {
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.8) !important;
+    border-color: rgba(234, 179, 8, 0.8) !important;
+}
 
 .pass-prompt {
     position: absolute;
