@@ -1079,6 +1079,8 @@ function fallbackCopyToClipboard(text) {
 
 function createKeyboard() {
     const keyboard = document.getElementById('keyboard');
+
+    keyboard.innerHTML = '';
     
     // First row - QWERTYUIOP (10 keys)
     'QWERTYUIOP'.split('').forEach(letter => {
