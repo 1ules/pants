@@ -1,5 +1,6 @@
 {
     "place":{
+        "Places Ending with Vowels":[],
         "Located in Europe": [
             "aachen", "aalborg", "aarhus", "aberdeen", "abruzzo", "adler", "agde", "aix", "ajaccio", "alanya", "alba", "albacete", "albania", "albarracin", "alberobello", "alcala", "algarve", "algeciras", "alicante", "almeria", "alsace", "altea", "amalfi", "amsterdam", "andorra", "andria", "angers", "anklam", "annecy", "antalya", "antwerp", "aosta", "aosta", "apulia", "arles", "arna", "arona", "arras", "ascona", "assisi", "asturias", "athens", "athlone", "augsburg", "avignon", "avila", "aalen", "aars", "abbeville", "abrantes", "acireale", "adapazari", "aegina", "aesch", "agrigento", "aigle", "aix-les-bains", "alassio", "albergaria", "albstadt", "alcala", "alcaraz", "alcaudete", "alcoutim", "aldershot", "alencon", "alesund", "alexandroupoli", "algeciras", "aljubarrota", "allier", "almodovar", "almunecar", "alpi", "alps", "altamura", "altena", "altenburg", "altmark", "alzey", "amberg", "amersfoort", "amiens", "ammerland", "amorbach", "ampurias", "ancona", "andernach", "andizhan", "andorra", "angra", "anhalt", "annaba", "ansbach", "antakya", "antiparos", "antony", "aosta", "appenheim", "appenzell", "arad", "aragon", "aranda", "arcachon", "arcos", "ardennes", "arezzo", "argeles", "argostoli", "arhus", "arkhangelsk", "armagh", "arnhem", "arruda", "aruba", "ascoli", "askja", "assenede", "astorga", "astrakhan", "atalaia", "ath", "attersee", "aubagne", "aubusson", "auchen", "aue", "auerbach", "augst", "aulnay", "aurillac", "auvergne", "auxerre", "aveiro", "avellaneda", "axams", "ayamonte", "azores", "azov", 
             "badajoz", "baden", "baden", "baden", "bagnols", "baku", "balaton", "baleares", "bali", "ballenstedt", "baltics", "bamberg", "barcelona", "bari", "barnaul", "barolo", "basel", "basque", "bassano", "bastia", "bath", "bavaria", "bayonne", "beaulieu", "beaune", "beirut", "belfast", "belgium", "belgrade", "bellagio", "belluno", "bendery", "benevento", "bergamo", "bergen", "berlin", "bern", "besalu", "bessarabia", "beyond", "bielefeld", "bilbao", "birmingham", "bischofshofen", "bishkek", "biskra", "blackforest", "blagoevgrad", "blanes", "bled", "bologna", "bolzano", "bonifacio", "bordeaux", "bordighera", "borobudur", "bosnia", "bosphorus", "boston", "bottrop", "boudry", "bournemouth", "bovec", "brabant", "bradford", "bradford", "braga", "brampton", "brasov", "bratislava", "braunschweig", "bray", "bremen", "brest", "brighton", "brindisi", "bristol", "brittany", "brno", "brno", "brodenbach", "brugge", "brunico", "brussels", "bucharest", "budapest", "bugey", "bulgaria", "burgas", "burgundy", "bury", "bydgoszcz", "badajoz", "badalona", "badberg", "baden", "badhoevedorp", "badia", "badrinath", "baia", "bailen", "baja", "balbriggan", "balearics", "balikesir", "ballarat", "ballater", "ballina", "ballymena", "balti", "bammental", "banbridge", "bandon", "bangor", "banska", "bar-le-duc", "barcelos", "barents", "barga", "bari", "barnstaple", "barreiro", "barry", "barsinghausen", "bartin", "basel", "basildon", "basingstoke", "bassens", "bastogne", "batavia", "batumi", "bautzen", "bavaria", "bayreuth", "beaconsfield", "beaumaris", "beaune", "beja", "belcastro", "belfort", "belgorod", "bellaria", "bellinzona", "belmonte", "bendorf", "bene", "benidorm", "bennekom", "berat", "berck", "bergamo", "berkane", "berkhamsted", "bermeo", "bernau", "beroun", "besancon", "betanzos", "bettembourg", "beziers", "bialystok", "biberach", "bielefeld", "bielsko", "bihac", "bihor", "bilhorod", "billingham", "binz", "birkenfeld", "birstall", "biscay", "bitburg", "bitola", "bitonto", "bjelovar", "blankenberge", "blankenfelde", "blantyre", "bleicherode", "blieskastel", "blieskastel", "bloemendaal", "bludenz", "bobingen", "bobowa", "boca", "bockenheim", "bodegraven", "bodensee", "bogense", "bognor", "boizenburg", "bol", "bolbec", "boleslawiec", "bolgrad", "bolivar", "bollnas", "bolnuevo", "bolzano", "bonn", "bonnes", "bopfingen", "boras", "bordeaux", "bordighera", "borgarnes", "borgholm", "borgloon", "borgo", "borna", "bornem", "bornholm", "borovets", "borssele", "bosa", "boskoop", "bottrop", "boulogne", "bourges", "boves", "bovolone", "boxmeer", "bozen", "brackel", "bracknell", "bradford", "braga", "braganca", "brampton", "brandenburg", "brandys", "brasov", "braunau", "braunlage", "braunschweig", "bray", "breclav", "breda", "bree", "bregenz", "bremerhaven", "bremervorde", "brentwood", "brescia", "breslau", "bressanone", "bressuire", "bretagne", "breukelen", "briancon", "briare", "bridgend", "bridgeton", "bridgwater", "brieg", "brienz", "brig", "brighton", "brindisi", "brixen", "brixlegg", "brixton", "brno", "brody", "bronkhorst", "bronnoysund", "bruck", "bruges", "brunssum", "brusque", "bruttig", "bryansk", "bucak", "buchloe", "buckow", "budva", "buedelsdorf", "buenos", "buffalo", "buhl", "bulle", "bunclody", "bunde", "buren", "burg", "burgdorf", "burghausen", "burgos", "burhaniye", "burlington", "burnley", "bursa", "burscheid", "burton", "bury", "bushey", "butzbach", "buxtehude", "bytom",
@@ -290,6 +291,7 @@
     },
 
     "animal": {
+        "Animals Ending with Vowels": [],
         "4 Legs or More": [
             "aardvark", "addax", "agama", "akita", "alpaca", "anteater", "antelope", "armadillo", "alligator", "axolotl", "ant", "aphid", "assassinbug", 
             "badger", "bandicoot", "barb", "basset", "beagle", "bear", "beaver", "bison", "boar", "bobcat", "buffalo", "bull", "bulldog", "bumblebee", "baboon", "barnacle", "beetle", "binturong", "bongo", "booklice", "bovid", 
@@ -613,6 +615,7 @@
 
     },
     "thing": {
+        "Things Ending with Vowels": [],
         "Things Made of Metal": [
             "abacus","accelerator","accordion","actuator","adapter","adjuster","aerator","agitator","airbrush","airliner","airplane","alarm","alligator","alternator","amplifier","anchor","antenna","anvil","appliance","archway","armor","arrow","ashtray","atomizer","auger","automobile","axe","axle",
             "badge","bag","ball","ballpoint","bandsaw","bar","barbell","barbershop","barrier","barrel","base","basin","basket","battery","bayonet","beacon","beam","bearing","bed","bedframe","bell","belt","bench","bicycle","bin","binoculars","bit","blade","blanket","blender","block","boat","boiler","bolt","bomb","book","boot","bottle","bowl","box","brace","bracket","brake","branch","bridge","brush","bucket","buckle","building","bulb","bullet","bumper","burner","bus","button","buzzer",
@@ -998,14 +1001,95 @@
         "Car Manufacturers": "@sharedCriteria.Car Manufacturers",
         "Designer and Popular Brands": "@sharedCriteria.Designer and Popular Brands",
         "Fruits": "@sharedCriteria.Fruits",
-        "Plants and Flowers": "@sharedCriteria.Plants and Flowers"
+        "Plants and Flowers": "@sharedCriteria.Plants and Flowers",
+        "Periodic Table Elements": "@sharedCriteria.Periodic Table Elements"
         
     },
     "name": {
-        "Unisex": ["adrian","ainsley","aiden","alex","alexis","angel","ari","ariel","artemis","ash","ashton","atlas","august","austin","avery","bailey","bay","berlin","blake","blue","bo","briar","brooklyn","bryce","cade","cameron","carey","carol","casey","cedar","charlie","chen","chris","claude","clay","dakota","dallas","dana","dani","devon","drew","dylan","eden","eli","ellis","emerson","emery","finley","flynn","francis","frankie","gabriel","gray","grey","harley","harper","hayden","hunter","indigo","jaime","jamie","jay","jesse","jordan","jules","justice","kai","kelly","kendall","kennedy","kerry","kim","lane","lee","leslie","logan","london","lou","lyon","mackenzie","madison","maple","marin","marley","max","micah","mickey","milan","montana","morgan","nav","nico","noah","noel","ocean","ollie","parker","pat","phoenix","presley","quinn","rain","reed","reese","remi","riley","river","robin","rory","rowan","ruby","ryan","sage","sam","sandy","sawyer","scout","shay","shannon","shiloh","sky","sloan avery","sterling","storm","summer","sunny","sydney","tanner","taylor","tegan","terry","timber","trinity","val","vivian","wesley","west","winter","wren","yale","zion"],
-        "Biblical Names": ["aaron","abel","abigail","abraham","absalom","adam","agatha","ahab","alexander","andrew","anna","asher","bathsheba","benjamin","bethany","caleb","chloe","daniel","david","deborah","delilah","dinah","eden","eli","elijah","elisha","elizabeth","emmanuel","esau","esther","ethan","eve","ezekiel","ezra","faith","felix","gabriel","gideon","grace","hannah","hezekiah","hosea","isaac","isaiah","israel","jacob","james","jeremiah","jesse","jesus","jezebel","job","joel","john","jonah","jonathan","jordan","joseph","joshua","josiah","judith","laban","lazarus","leah","levi","luke","lydia","magdalene","malachi","mark","martha","mary","matthew","melchizedek","micah","miriam","moses","naomi","nathan","nathaniel","nehemiah","nicodemus","noah","obadiah","paul","peter","phineas","priscilla","rachel","rebecca","reuben","ruth","samson","samuel","sarah","saul","seth","simon","solomon","stephen","susanna","tabitha","thaddeus","thomas","timothy","titus","uriah","zadok","zebedee","zechariah","zephaniah"],
-        "Three Letter Names": ["abe","ace","ada","alf","ali","amy","ana","ann","ant","ari","art","ash","ava","bay","ben","bob","bud","cam","cox","dan","dee","dex","don","dot","edd","eli","elm","eva","eve","fay","fox","gus","guy","hal","ham","hue","ian","ice","ida","ike","ink","irv","ivy","jan","jay","jen","jim","job","joe","jon","joy","kai","ken","kim","kit","lab","lea","lee","len","leo","lex","liz","lou","mac","mae","max","may","mia","moe","nab","nan","nat","ned","net","nia","noe","oak","oli","pam","pat","pea","phi","pia","ray","red","rex","rob","ron","roy","rue","sam","sky","sue","sun","ted","tim","tom","una","uri","val","van","vic","war","wes","win","yul","zoe","ado","air","ale","ami","arc","ash","axe","bea","bee","bow","cox","day","dew","ear","ego","era","eye","far","fee","fig","fur","gem","gun","hat","hen","hip","hue","hug","hut","ice","ink","irk","jaw","jet","joy","key","lad","lap","law","leg","lip","log","mat","mud","net","oil","ore","owl","pad","pan","paw","pie","pig","pit","pot","rag","rat","rib","rid","rug","run","sac","sea","sky","sun","tap","tar","tea","toe","top","toy","try","tub","use","van","war","wax","web","wet","wig","win","wow","yam","yes","yet","zip","zoo"],
-        "Names Ending with Vowels": ["abbie","ada","adrienne","agatha","alice","amanda","amelia","andrea","angie","annie","antonio","aria","ariana","aurora","beatrice","belle","bernadette","beverly","brooke","camille","candace","carrie","cassie","catherine","charlie","charlotte","christine","claire","claire","claire","dante","debbie","diane","dolores","dorothy","eddie","ellie","emma","eugene","eve","felicia","florence","france","frankie","gabrielle","genevieve","grace","gracie","hailey","helene","irene","jackie","jasmine","julie","kaitie","katie","kylie","leslie","louise","lucille","maggie","marie","michelle","monica","natalie","nicole","olive","paige","penelope","pierre","phoebe","phyllis","priscilla","rose","rosemarie","roxanne","sadie","sophie","stephanie","susie","tiffanie","ursula","valerie","victoria","vivienne","winnie","yvonne","zoe","ada","aisha","alicia","anna","arabella","arielle","bella","bianca","briana","camila","carolina","cecilia","christina","claudia","diana","elena","eliza","ella","emma","erica","eva","fatima","fiora","flora","georgia","gloria","helena","india","isabella","jenna","jessica","julia","kara","kendra","layla","leia","lila","luna","lydia","maria","maya","mia","nina","olivia","paula","petra","pia","rebecca","rita","sabrina","sara","stella","tea","tina","vera","viola","virginia","yolanda","zara"],
+        "Unisex": [
+            "adair", "addy", "adrian", "aiden", "ainsley", "albie", "alex", "alexis", "alton", "amari", "angel", "arden", "ari", "ariel", "arrow", "artemis", "ash", "asher", "ashlyn", "ashton", "aspen", "atlas", "aubrey", "august", "austin", "avery",
+            "bailey", "baker", "bay", "baylor", "bellamy", "berlin", "blair", "blake", "blaze", "blue", "bobby", "boston", "bowie", "brady", "brendan", "brennan", "brett", "briar", "brooke", "brooklyn", "bryce", "byron",
+            "cade", "cameron", "camryn", "carey", "carol", "carson", "carter", "casey", "cedar", "channing", "chandler", "charlie", "chen", "chris", "clarke", "claude", "clay", "cody", "collins", "cooper", "corbin", "corey", "crosby", "cruz", "cyrus",
+            "dakota", "dallas", "dana", "dani", "darian", "darren", "darcy", "davis", "denver", "devon", "dillon", "domino", "drew", "dylan",
+            "easton", "eden", "elliot", "ellis", "ember", "emerson", "emery", "emory", "erin", "evan", "everest", "ezra",
+            "fallon", "ferris", "finn", "finley", "flynn", "ford", "forest", "francis", "frankie", "freddie",
+            "gabriel", "gale", "gene", "glen", "glenn", "gold", "golden", "graham", "gray", "green", "grey", "guthrie",
+            "haiden", "harley", "harper", "haven", "hayden", "hayes", "heath", "holland", "hollis", "honor", "hunter", "houston",
+            "ian", "iman", "indigo", "ira", "isa",
+            "jackie", "jaden", "jaime", "jamie", "jay", "jensen", "jericho", "jesse", "jo", "jordan", "jude", "jules", "juniper", "justice",
+            "kai", "kansas", "keagan", "keaton", "keegan", "kelly", "kendall", "kennedy", "kerry", "kian", "kim", "kit", "knox", "kodi", "kody",
+            "laine", "lake", "landry", "lane", "lee", "leif", "lennon", "leo", "leslie", "linden", "logan", "london", "lou", "luca", "lux", "lyndon", "lyon",
+            "mackenzie", "madison", "maple", "march", "marin", "marley", "marlow", "mars", "mason", "max", "mckinley", "memphis", "merritt", "micah", "mickey", "milan", "monroe", "montana", "morgan", "murphy",
+            "nav", "neve", "nico", "nicky", "noa", "noah", "noel",
+            "oak", "ocean", "ollie", "onyx", "orion", "oslo", "olive",
+            "parker", "pat", "payton", "penn", "perry", "phoenix", "presley",
+            "quincy", "quinn",
+            "rain", "raleigh", "reagan", "reed", "reese", "reign", "remi", "remy", "ridge", "riley", "ripley", "river", "robin", "rory", "rowan", "royal", "rue", "ruby", "ryan",
+            "sable", "sage", "saint", "salem", "sam", "sandy", "sawyer", "scout", "shay", "shannon", "shiloh", "sidney", "silver", "sky", "skye", "sloan", "spencer", "star", "sterling", "stevie", "stone", "storm", "summer", "sunny", "sutton", "sydney",
+            "talon", "tanner", "tatum", "taylor", "teagan", "terry", "timber", "tobin", "toni", "truett", "trinity", "tyler",
+            "usher",
+            "val", "valentine", "vernon", "vesper", "vivian",
+            "walker", "wallis", "wesley", "west", "wilder", "willow", "winter", "wren", "wynn",
+            "xanti",
+            "yale",
+            "zephyr", "zenith", "zion", "zola"
+        ],
+        
+        "Biblical Names": [
+            "aaron", "abel", "abigail", "abijah", "abner", "abraham", "absalom", "adam", "agabus", "agatha", "ahab", "ahimelech", "alexander", "amos", "andrew", "anna", "annas", "apphia", "aquila", "araunah", "asher", "avidan", "azariah", "aziz",
+            "baal", "balaam", "barabbas", "barak", "barnabas", "bartholomew", "baruch", "barzillai", "basmath", "bathsheba", "benjamin", "bernard", "bethany", "beza", "boaz",
+            "caleb", "canaan", "candace", "carmel", "chloe", "christopher", "cornelius", "cyrus",
+            "daniel", "dathan", "david", "deborah", "demas", "delilah", "dinah", "dorcas",
+            "eden", "eli", "eliakim", "eliana", "elias", "elijah", "elimelech", "elisha", "elizabeth", "elkanah", "elora", "elza", "emmanuel", "enoch", "ephraim", "erastus", "esau", "esther", "ethan", "eve", "ezekiel", "ezra",
+            "faith", "felix", "festus",
+            "gabriel", "gad", "gallio", "gideon", "gilad", "goliath", "grace",
+            "habakkuk", "hagar", "haggai", "hannah", "helen", "herod", "hezekiah", "hillel", "hophni", "hosea", "huldah", "hur", "hushai",
+            "immamuel", "ira", "isaac", "isaiah", "ishe", "ishmael", "israel", "issachar", "ithamar",
+            "jabez", "jacob", "jael", "jairus", "james", "janna", "jared", "jason", "jedediah", "jehu", "jephthah", "jeremiah", "jesse", "jesus", "jethro", "jezebel", "joab", "joanna", "job", "joel", "john", "jonah", "jonathan", "jordan", "joseph", "joshua", "josiah", "jotham", "judah", "judas", "judith", "julia", "junia",
+            "laban", "lamech", "lazarus", "leah", "lemuel", "levi", "loammi", "lois", "lot", "luca", "lucifer", "luke", "lydia", "lysias",
+            "magdalene", "malachi", "malchus", "manasseh", "mark", "martha", "mary", "matthew", "mattias", "mazi", "melchizedek", "merab", "merari", "methuselah", "micah", "michael", "michal", "miriam", "mordecai", "moses",
+            "naaman", "nabal", "nadab", "naomi", "nathan", "nathaniel", "nazareth", "nehemiah", "nero", "nicodemus", "nicolas", "noah", "noon",
+            "obadiah", "omer", "onesimus", "orah", "othniel",
+            "paul", "peleth", "peter", "philemon", "philip", "phineas", "pilate", "priscilla", "putiel",
+            "rachel", "rahb", "ram", "raphael", "rebecca", "reuben", "rhoda", "rinnah", "ruth",
+            "saba", "sally", "salome", "samson", "samuel", "sapphira", "sarah", "satan", "saul", "selah", "seraphina", "sergius", "seth", "shelah", "silas", "simeon", "simon", "solomon", "sosipater", "sosthenes", "stephen", "susanna", "sylvanus",
+            "tabitha", "talitha", "thaddeus", "theophilus", "thomas", "tiberius", "timon", "timothy", "titus", "tryphena", "tryphosa",
+            "uriah", "uri", "uzza", "uzziah",
+            "vashti",
+            "zachariah", "zadok", "zebedee", "zechariah", "zelophehad", "zephaniah", "zerubbabel", "zipporah", "ziva"
+        ],
+        
+        "Three Letter Names": [
+            "abe", "ace", "ada", "adi", "aid", "aki", "ala", "ali", "alf", "ami", "ana", "ann", "ani", "ari", "art", "asa", "ash", "ava", "ave", "aya", "ayo",
+            "bae", "bay", "bea", "ben", "bex", "bob", "boz", "bud", "buz", "bly", "bo",
+            "cai", "cal", "cam", "caz", "ced", "che", "chi", "cid", "col", "con", "cor", "coy", "cy",
+            "dan", "dax", "dee", "del", "dex", "dez", "dia", "dio", "don", "dot", "dru", "duy",
+            "edd", "eli", "elo", "emi", "eno", "era", "eri", "eva", "eve", "evo", "ewa", "eze",
+            "fay", "feb", "fee", "fin", "flo", "fox", "fro", "fyn",
+            "geo", "gia", "gil", "gio", "goa", "gus", "guy",
+            "hal", "han", "haz", "hue", "hy",
+            "ian", "ida", "ike", "ina", "ind", "ing", "ira", "ire", "irv", "isa", "ive", "ivy",
+            "jan", "jay", "jax", "jed", "jem", "jen", "jet", "jez", "jim", "jin", "joa", "job", "joe", "jon", "joy", "jude", "jul", "jun",
+            "kai", "kal", "kam", "ken", "kim", "kit", "koi", "kon", "koz", "kya", "kye", "kym",
+            "lac", "lad", "lai", "lan", "laz", "lea", "lee", "lei", "len", "leo", "lex", "lia", "lil", "lin", "liz", "loa", "lou", "loz", "luc", "lux", "lyn", "lys",
+            "mac", "mae", "mal", "man", "mar", "mat", "max", "may", "mel", "mia", "mic", "mil", "mim", "min", "moe", "mon", "muz", "myc", "myk",
+            "nab", "nad", "nan", "nat", "ned", "nee", "nef", "nel", "nem", "neo", "net", "nia", "nic", "nik", "nim", "nin", "noa", "noe", "noi", "nor", "nox", "nuz", "nya",
+            "oak", "obi", "ola", "oli", "ona", "ono", "ora", "orb", "ori", "oro", "otto",
+            "pal", "pam", "pat", "pau", "paz", "peg", "pen", "per", "phi", "pia", "pip", "pix", "pol", "pop", "pru", "pye",
+            "qui", "quo",
+            "rae", "raj", "ran", "ray", "red", "rem", "ren", "rex", "rey", "ria", "ric", "rio", "rob", "rod", "roi", "ron", "roo", "ros", "roy", "rue", "rui", "ruh", "rye",
+            "sai", "sal", "sam", "san", "sao", "sas", "sav", "seb", "sed", "sen", "sid", "sil", "sim", "sky", "sol", "som", "sou", "spy", "stu", "sue", "sum", "sun", "suz", "syd", "syx",
+            "tai", "taj", "tam", "tan", "tas", "tay", "ted", "tek", "tem", "ten", "tex", "tia", "tim", "tin", "tod", "tom", "ton", "tor", "toy", "tra", "tre", "tru", "tut", "ty",
+            "uma", "una", "uni", "uri",
+            "val", "van", "ved", "vee", "ven", "ver", "vic", "vim", "vin", "viv", "vol", "von", "vyo",
+            "wal", "wan", "wes", "wil", "win", "wiz", "woo", "wyn",
+            "xav", "xia", "xim", "xin", "xyl",
+            "yad", "yak", "yam", "yan", "yao", "yar", "yen", "yil", "yin", "yip", "yon", "you", "yuk", "yul", "yun", "yuu",
+            "zac", "zah", "zak", "zen", "zia", "zig", "zin", "zio", "zip", "zoa", "zoe", "zoi", "zoo", "zuo", "zyx"
+        ],
+        
+        "Names Ending with Vowels": [],
+        
         "Names from Mythology": ["achilles","adonis","aegis","aeneas","agamemnon","ajax","amazon","amphitrite","andromeda","antaeus","apollo","ares","argonaut","ariadne","artemis","asura","athena","atlas","aurora","bacchus","baldur","banshee","bast","bellona","brigid","calypso","cassandra","castor","ceres","cerberus","charon","chimera","circe","cleopatra","cyclops","daedalus","damocles","daphne","demeter","diana","dido","dionysus","echo","electra","endymion","eos","europa","eurydice","faunus","flora","fortuna","freya","gaia","ganymede","gorgon","hades","hecate","hector","helen","helios","hera","hercules","hermes","hippolyte","hydra","icarus","iris","isis","janus","jason","juno","jupiter","kronos","lachesis","laertes","lancelot","leda","loki","luna","mars","medea","medusa","mercury","midas","minerva","minotaur","morpheus","nemesis","neptune","nike","nyx","odin","odysseus","orion","orpheus","osiris","pan","pandora","paris","pegasus","penelope","persephone","perseus","phaeton","phoenix","pluto","pollux","poseidon","prometheus","psyche","pyramus","quetzalcoatl","ra","remus","rhea","romulus","saturn","selene","seth","siren","sisyphus","sphinx","styx","tantalus","thalia","theseus","thisbe","thor","titan","triton","troy","ulysses","uranus","valkyrie","venus","vesta","vulcan","wotan","xerxes","ymir","zeus"],
         "Indian Names": ["aadi","aadhya","aarav","aashish","abhay","abhishek","aditi","aditya","ajay","ajit","akash","alok","amar","amara","amira","amit","amrita","ananya","anil","anita","anjali","ankur","anoop","anuj","arjun","arpit","aruna","aryan","ashish","ashok","avani","bharti","bhuvan","chandra","deepak","deepika","dev","devi","dhruv","divya","ekta","fatima","gautam","girish","gita","gopal","govind","guddu","hara","harish","hemant","indira","ishaan","jatin","jaswinder","karan","karina","kartik","kavita","kiran","kishore","krishna","kumar","kunal","lakshmi","lata","madhu","manoj","manish","maya","meera","mohit","mukesh","neeraj","neha","nikhil","nilesh","nisha","padma","payal","pooja","pradeep","pramod","pranav","prashant","priya","punit","qasim","radha","rahul","raj","rajesh","rakesh","raman","ramesh","ravi","rohit","sachin","sahil","sanjay","sanjiv","sarita","shalu","shanti","shikha","shilpa","shruti","siddharth","sita","sohan","sonali","sonia","subhash","sudhir","sumit","sunita","sunil","suresh","swati","tanvi","tarun","tejas","uday","ujjwal","usha","varun","veena","vidya","vijay","vikram","vinay","vineet","vishal","vivek","wahid","xavier","yash","yasmin","zara"],
         "Japanese Names": ["ai","akane","akiko","akira","aki","ame","aoi","asuka","atsushi","ayame","ayano","ben","chiaki","chie","chiyo","daichi","daiki","daisuke","eiji","emi","erika","fumiko","goro","hana","haruka","haruto","hayato","hibiki","hideki","hideo","hinata","hiroshi","hiroto","hisako","hitomi","ichiro","ikuko","isamu","jiro","jun","junko","kaede","kaito","kanako","kaori","kasumi","katsu","kazuo","keiko","kenji","kenta","kenzo","ki","kimiko","kiyoshi","kohei","koji","kotaro","kumiko","kyoko","mai","maki","mamoru","mana","mariko","masako","masato","michiko","midori","miho","miki","minako","minoru","mitsuko","miyuki","nana","naoki","naoto","noboru","noriko","osamu","rei","reiko","ren","rieko","riku","rina","rio","ryo","sachiko","sadako","sakura","satomi","satoshi","shigeru","shin","shinji","shizuka","sho","shoji","shuji","sora","sumiko","tadashi","takako","takeshi","takuya","taro","teruo","tetsuya","tomoko","toru","toshiko","tsutomu","umi","wataru","yamato","yasu","yasuko","yoko","yoshiko","yuki","yukiko","yuko","yuma","yuto","zen"],
@@ -1195,7 +1279,7 @@
 
             "Car Manufacturers": "@sharedCriteria.Car Manufacturers",
             "Designer and Popular Brands": "@sharedCriteria.Designer and Popular Brands",
-            "Periodic Table Elements": "@sharedCriteria.Designer and Popular Brands",
+            "Periodic Table Elements": "@sharedCriteria.Periodic Table Elements",
             "Fruits": "@sharedCriteria.Fruits",
             "Plants and Flowers": "@sharedCriteria.Plants and Flowers"
 
