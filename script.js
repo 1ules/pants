@@ -9,6 +9,20 @@ window.addEventListener('resize', adjustViewport);
 window.addEventListener('load', adjustViewport);
 adjustViewport();
 
+// Define vowel ending criteria
+const vowelEndingCriteria = {
+    name: "Names Ending with Vowels",
+    place: "Places Ending with Vowels",
+    animal: "Animals Ending with Vowels",
+    thing: "Things Ending with Vowels"
+};
+
+// Define allowed name criteria
+const allowedNameCriteria = [
+    'Unisex', 'Biblical Names', 'Three Letter Names',
+    'Indian Names', 'Japanese Names', 'Male Names', 'Female Names'
+];
+
 // Game state
 let gameState = {
     currentRound: 1,
@@ -124,6 +138,7 @@ function goHome() {
 // Game data
 const categories = {
     place: [
+        'Places Ending with Vowels', 
         'Located in Europe', 
         'Located in Asia', 
         'Located in the USA', 
@@ -137,6 +152,7 @@ const categories = {
         'Hospital Rooms and Departments'
         ],
     animal: [
+        'Animals Ending with Vowels', 
         '4 Legs or More', 
         'Mammal', 
         'Lives in Water', 
@@ -173,6 +189,7 @@ const categories = {
         ],
     
     thing: [
+        'Things Ending with Vowels', 
         'Things Made of Metal', 
         'Common Household Items', 
         'Food', 
@@ -376,7 +393,6 @@ function initializeGameLogic() {
         generateDailyPuzzle();
     }
     createKeyboard();
-    setupEventListeners();
 }
 
 function generateDailyPuzzle() {
@@ -429,7 +445,7 @@ function generateDailyPuzzle() {
     }
     
     
-    // Check if dictionary is available for smart letter selection
+// Check if dictionary is available for smart letter selection
     if (typeof dictionary !== 'undefined' && window.dictionary) {
         // Smart letter selection (your new logic)
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -443,16 +459,16 @@ function generateDailyPuzzle() {
             for (let letter of alphabet) {
                 const lowerLetter = letter.toLowerCase();
                 
-                // Check place category
-                const placeWords = window.dictionary.place?.[roundCriteria.place] || [];
+                // Check place category - USE getCriteriaWords
+                const placeWords = getCriteriaWords('place', roundCriteria.place);
                 const hasPlace = placeWords.some(word => word.startsWith(lowerLetter));
                 
-                // Check animal category
-                const animalWords = window.dictionary.animal?.[roundCriteria.animal] || [];
+                // Check animal category - USE getCriteriaWords
+                const animalWords = getCriteriaWords('animal', roundCriteria.animal);
                 const hasAnimal = animalWords.some(word => word.startsWith(lowerLetter));
                 
-                // Check thing category
-                const thingWords = window.dictionary.thing?.[roundCriteria.thing] || [];
+                // Check thing category - USE getCriteriaWords
+                const thingWords = getCriteriaWords('thing', roundCriteria.thing);
                 const hasThing = thingWords.some(word => word.startsWith(lowerLetter));
                 
                 // For name category, check if there are names starting with this letter
@@ -722,35 +738,19 @@ function selectCategory(category) {
     saveGameState();
 }
 
-function getCriteriaWords(category, criteria) {
-    const categoryData = window.dictionary[category];
-    if (!categoryData) return [];
-    
-    const criteriaData = categoryData[criteria];
-    
-    // If it's a reference to shared criteria
-    if (typeof criteriaData === 'string' && criteriaData.startsWith('@sharedCriteria.')) {
-        const sharedKey = criteriaData.replace('@sharedCriteria.', '');
-        return window.dictionary.sharedCriteria?.[sharedKey] || [];
-    }
-    
-    // If it's direct data
-    return Array.isArray(criteriaData) ? criteriaData : [];
-}
-
 
 function submitAnswer() {
     const input = document.getElementById('wordInput');
     const word = input.value.trim().toLowerCase();
     const currentLetter = gameState.letters[gameState.currentRound - 1].toLowerCase();
     const criteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    const category = gameState.currentCategory;
     
     if (gameState.showingPass) {
         return;
     }
 
     if (!word) {
-        // Show pass prompt
         gameState.showingPass = true;
         document.getElementById('passPrompt').style.display = 'block';
         return;
@@ -765,25 +765,46 @@ function submitAnswer() {
         return;
     }
     
-    // 2. Check if word is in category at all (including plural forms)
+    // 2. Check if word is in category (including plural forms)
     let wordFoundInCategory = false;
-    const categoryData = window.dictionary[gameState.currentCategory];
+    const categoryData = window.dictionary[category];
 
-    if (categoryData) {
-        // Search through all criteria in the category
-        for (const criteriaKey in categoryData) {
-            const words = getCriteriaWords(gameState.currentCategory, criteriaKey);
-            
-            // Check exact match first
-            if (words.includes(word)) {
+    // Special handling for names with vowel criteria
+    if (category === 'name' && criteria === vowelEndingCriteria.name) {
+        // Only check allowed name criteria
+        for (const crit of allowedNameCriteria) {
+            const words = getCriteriaWords(category, crit);
+            if (words.includes(word) || 
+               (word.endsWith('s') && words.includes(word.slice(0, -1))) ){
                 wordFoundInCategory = true;
                 break;
             }
-            
-            // Check if it's a plural form (word ends with 's' and singular form exists)
-            if (word.endsWith('s') && word.length > 1) {
-                const singularForm = word.slice(0, -1);
-                if (words.includes(singularForm)) {
+        }
+    } 
+    // Special handling for place/animal/thing with vowel criteria
+    else if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        // Allow any word in the category
+        if (categoryData) {
+            for (const criteriaKey in categoryData) {
+                // Skip vowel ending criteria itself
+                if (criteriaKey === vowelEndingCriteria[category]) continue;
+                
+                const words = getCriteriaWords(category, criteriaKey);
+                if (words.includes(word) || 
+                   (word.endsWith('s') && words.includes(word.slice(0, -1))) ){
+                    wordFoundInCategory = true;
+                    break;
+                }
+            }
+        }
+    }
+    // Standard category validation for other cases
+    else {
+        if (categoryData) {
+            for (const criteriaKey in categoryData) {
+                const words = getCriteriaWords(category, criteriaKey);
+                if (words.includes(word) || 
+                   (word.endsWith('s') && words.includes(word.slice(0, -1))) ){
                     wordFoundInCategory = true;
                     break;
                 }
@@ -792,20 +813,22 @@ function submitAnswer() {
     }
 
     if (!wordFoundInCategory) {
-        showInputError(`Try another ${gameState.currentCategory}`);
+        showInputError(`Try another ${category}`);
         return;
     }
 
-    // 3. Check if word matches specific criteria (for green score)
-    const criteriaWords = getCriteriaWords(gameState.currentCategory, criteria);
-
+    // 3. Check if word matches specific criteria
     let matchesCriteria = false;
-    if (criteriaWords.includes(word)) {
-        matchesCriteria = true;
-    } else if (word.endsWith('s') && word.length > 1) {
-        // Check if singular form matches criteria
-        const singularForm = word.slice(0, -1);
-        if (criteriaWords.includes(singularForm)) {
+
+    // Vowel criteria validation for all categories
+    if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        const lastChar = word.charAt(word.length - 1).toLowerCase();
+        matchesCriteria = ['a','e','i','o','u'].includes(lastChar);
+    } else {
+        // Standard criteria validation
+        const criteriaWords = getCriteriaWords(category, criteria);
+        if (criteriaWords.includes(word) || 
+           (word.endsWith('s') && criteriaWords.includes(word.slice(0, -1))) ){
             matchesCriteria = true;
         }
     }
@@ -818,9 +841,9 @@ function submitAnswer() {
     
     // Store result
     gameState.results[gameState.currentRound] = gameState.results[gameState.currentRound] || {};
-    gameState.results[gameState.currentRound][gameState.currentCategory] = result;
+    gameState.results[gameState.currentRound][category] = result;
     gameState.answers[gameState.currentRound] = gameState.answers[gameState.currentRound] || {};
-    gameState.answers[gameState.currentRound][gameState.currentCategory] = word;
+    gameState.answers[gameState.currentRound][category] = word;
 
     // Save game state
     saveGameState();
@@ -829,6 +852,49 @@ function submitAnswer() {
     showInputSuccess(result, word);
     
     nextCategory();
+}
+
+function getCriteriaWords(category, criteria) {
+    const categoryData = window.dictionary[category];
+    if (!categoryData) return [];
+    
+    const criteriaData = categoryData[criteria];
+    
+    // Handle shared criteria references
+    if (typeof criteriaData === 'string' && criteriaData.startsWith('@sharedCriteria.')) {
+        const sharedKey = criteriaData.replace('@sharedCriteria.', '');
+        return window.dictionary.sharedCriteria?.[sharedKey] || [];
+    }
+    
+    // Special handling for vowel criteria
+    if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        // For names: use allowed criteria
+        if (category === 'name') {
+            const allNames = [];
+            allowedNameCriteria.forEach(crit => {
+                const words = getCriteriaWords(category, crit);
+                allNames.push(...words);
+            });
+            return [...new Set(allNames)].filter(name => 
+                ['a','e','i','o','u'].includes(name.charAt(name.length-1)));
+        } 
+        // For place/animal/thing: use all category words
+        else {
+            const allWords = [];
+            for (const crit in categoryData) {
+                // Skip vowel criteria itself
+                if (crit === vowelEndingCriteria[category]) continue;
+                
+                const words = getCriteriaWords(category, crit);
+                allWords.push(...words);
+            }
+            return [...new Set(allWords)].filter(word => 
+                ['a','e','i','o','u'].includes(word.charAt(word.length-1)));
+        }
+    }
+    
+    // Standard case
+    return Array.isArray(criteriaData) ? criteriaData : [];
 }
 
 function nextCategory() {
