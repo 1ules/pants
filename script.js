@@ -139,7 +139,7 @@ function goHome() {
 const categories = {
     place: [
         'Places Ending with Vowels', 
-        'Located in South America'
+        'Located in South America',
         'Located in North America',
         'Located in Africa',
         'Located in Europe', 
