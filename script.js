@@ -1,3 +1,24 @@
+const CURRENT_VERSION = '0.0.1'; 
+
+function checkVersion() {
+    const savedVersion = localStorage.getItem('pantsVersion');
+    
+    if (savedVersion !== CURRENT_VERSION) {
+        // Preserve stats while clearing game state
+        const stats = localStorage.getItem('pantsGameStats');
+        
+        // Clear all game-related data except stats
+        localStorage.removeItem('pantsGameState');
+        
+        // Save stats back if they existed
+        if (stats) {
+            localStorage.setItem('pantsGameStats', stats);
+        }
+        
+        // Update to current version
+        localStorage.setItem('pantsVersion', CURRENT_VERSION);
+    }
+}
 
 // Fix for mobile viewport height
 function adjustViewport() {
@@ -167,6 +188,7 @@ const categories = {
         'Fictional and Mythological Creatures',
         'Reptiles',
         'Prehistoric Animals',
+        'Pokemon'
         ],
     name: [
         'Unisex', 
@@ -226,6 +248,7 @@ const categories = {
 
 // Initialize game with loading screen
 async function initGame() {
+    checkVersion();
     startLoadingScreen();
     
     try {
@@ -339,6 +362,7 @@ function showScoreAnimation(categoryElement, points) {
 }
 
 function initializeGameLogic() {
+    checkVersion(); 
     clearOldGameState();
     const savedGame = loadGameState();
     
@@ -1529,6 +1553,7 @@ document.getElementById('passYesBtn').onclick = function() {
 
     document.getElementById('passPrompt').style.display = 'none';
     gameState.showingPass = false;
+    showInputSuccess('red', '');
     nextCategory();
 };
 
@@ -1628,6 +1653,13 @@ function showInputSuccess(result, word) {
             'Getting there!', 'Solid attempt!', 'On the right track!', 'Decent!',
             'Fair enough!', 'Acceptable!', 'Respectable!', 'Competent!', 'Adequate!',
             'Satisfactory!', 'Well done!', 'You got it!', 'That works!'
+        ],
+        red: [
+            'Next time!', 'Awww!', 'Oh no!', 'Not this time!', 'Unlucky!',
+            'Better luck next time!', 'Missed it!', 'No dice!', 'Nope!', 
+            'Alas!', 'Hard luck!', 'Shucks!', 'Whoops!', 'Failed to connect!', 'Off target!',
+            'Invalid!', 'Denied!', 'Nope!', 'Out of luck!',
+            'No joy!', 'Fumble!'
         ]
     };
     
@@ -1638,7 +1670,8 @@ function showInputSuccess(result, word) {
     input.placeholder = randomMessage;
     
     // Add success glow
-    const glowClass = result === 'green' ? 'success-glow-green' : 'success-glow-yellow';
+    const glowClass = result === 'green' ? 'success-glow-green' : 
+                    result === 'yellow' ? 'success-glow-yellow' : 'success-glow-red';
     inputContainer.classList.add(glowClass);
     
     // Remove glow and restore placeholder after animation
