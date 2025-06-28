@@ -826,6 +826,11 @@ body {
     border-color: rgba(234, 179, 8, 0.8) !important;
 }
 
+.success-glow-red {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8) !important;
+    border-color: rgba(255, 0, 0, 0.8) !important;
+}
+
 .pass-prompt {
     position: absolute;
     top: 50%;
