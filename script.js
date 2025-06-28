@@ -165,7 +165,8 @@ const categories = {
         'Carnivore', 
         'Herbivore', 
         'Fictional and Mythological Creatures',
-        'Pokemon'
+        'Reptiles',
+        'Prehistoric Animals',
         ],
     name: [
         'Unisex', 
@@ -181,6 +182,9 @@ const categories = {
         'Periodic Table Elements',
         'Fruits',
         'Designer and Popular Brands',
+        'Colors',
+        'Geometric Shapes and Forms',
+        'Languages',
         'Car Manufacturers',
         'Popular Sports',
         'Celestial Bodies and Astronomical Objects',
@@ -188,7 +192,8 @@ const categories = {
         'Musical Genres',
         'Emotions',
         'Academic Disciplines and Subjects',
-        'Plants and Flowers'
+        'Plants and Flowers',
+        'Fiat Currencies'
         ],
     
     thing: [
@@ -214,7 +219,8 @@ const categories = {
         'Snacks',
         'Materials and Substances',
         'Found in a Hospital',
-        'Plants and Flowers'
+        'Plants and Flowers',
+        'Fiat Currencies'
         ]
 };
 
