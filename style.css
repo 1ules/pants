@@ -631,11 +631,10 @@ body {
     grid-template-columns: repeat(5, minmax(50px, 1fr));
     justify-content: center;
     gap: clamp(4px, 1vw, 8px);
-    margin-bottom: 15px;
+    margin-bottom: 3px;
     max-width: 100%;
     width: 100%;
 }
-
 
 .category {
     aspect-ratio: 1;
@@ -691,8 +690,8 @@ body {
 
 .category-name {
     color: white;
-    font-size: 0.9rem;
-    margin-top: 5px;
+    font-size: 1rem;
+    margin-top: 9px;
     min-height: 20px;
     text-align: center;
 }
