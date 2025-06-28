@@ -899,6 +899,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin: 15px 0;
+    justify-items: center;
 }
 
 .result-square {
@@ -973,16 +974,15 @@ body {
 
 .distribution-label {
     width: 60px;
-    text-align: left;
+    text-align: center;
     font-size: 0.9rem;
     font-weight: bold;
     color: #333;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .distribution-bar {
-    flex: 1;
     height: 25px;
-    margin-left: 10px;
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -991,7 +991,10 @@ body {
     color: white;
     font-weight: bold;
     font-size: 0.9rem;
-    min-width: 30px;
+    min-width: 25px;
+    transition: width 0.5s ease;
+
+    position: relative; /* Add this */
 }
 
 .distribution-bar.green {
