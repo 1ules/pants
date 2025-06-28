@@ -1101,7 +1101,7 @@ function shareResults() {
     const totalScore = calculateTotalScore();
     shareText += `Score: ${totalScore}/24`;
     
-    // Check if Web Share API is available (typically on mobile)
+    // Check if Web Share API is available 
     if (navigator.share) {
         navigator.share({
             text: shareText
@@ -1470,40 +1470,40 @@ function hasPlayedToday() {
 function displayStats() {
     const currentScore = calculateTotalScore();
     let stats;
-    
-    // Only update stats if this is a fresh completion
+
     if (!hasPlayedToday()) {
         stats = updateStats(currentScore);
     } else {
         stats = getStoredStats();
     }
-    
-    // Update statistics display
+
     document.getElementById('pantsSolved').textContent = stats.pantsSolved;
     document.getElementById('currentStreak').textContent = stats.currentStreak;
     document.getElementById('bestStreak').textContent = stats.bestStreak;
+
+    // Get the distribution values
+    const dist20 = stats.scoreDistribution['20-24'];
+    const dist10 = stats.scoreDistribution['10-19'];
+    const dist0 = stats.scoreDistribution['0-9'];
     
-    // Update distribution bars
-    const maxCount = Math.max(...Object.values(stats.scoreDistribution));
+    // Find the maximum value among the distributions
+    const maxCount = Math.max(dist20, dist10, dist0);
     
     const dist20to24 = document.getElementById('dist20to24');
     const dist10to19 = document.getElementById('dist10to19');
     const dist0to9 = document.getElementById('dist0to9');
-    
-    // Calculate bar widths as percentages
-    const width20to24 = maxCount > 0 ? (stats.scoreDistribution['20-24'] / maxCount) * 100 : 0;
-    const width10to19 = maxCount > 0 ? (stats.scoreDistribution['10-19'] / maxCount) * 100 : 0;
-    const width0to9 = maxCount > 0 ? (stats.scoreDistribution['0-9'] / maxCount) * 100 : 0;
-    
-    dist20to24.style.width = Math.max(width20to24, 15) + '%'; // Minimum width for visibility
-    dist10to19.style.width = Math.max(width10to19, 15) + '%';
-    dist0to9.style.width = Math.max(width0to9, 15) + '%';
-    
-    dist20to24.textContent = stats.scoreDistribution['20-24'];
-    dist10to19.textContent = stats.scoreDistribution['10-19'];
-    dist0to9.textContent = stats.scoreDistribution['0-9'];
-    
-    // Show the stats area
+
+    // Set widths relative to the maxCount
+    const maxWidth = 100; // Full width percentage for the highest count
+    dist20to24.style.width = maxCount > 0 ? `${(dist20 / maxCount) * maxWidth}%` : '0%';
+    dist10to19.style.width = maxCount > 0 ? `${(dist10 / maxCount) * maxWidth}%` : '0%';
+    dist0to9.style.width = maxCount > 0 ? `${(dist0 / maxCount) * maxWidth}%` : '0%';
+
+    // Update the text content
+    dist20to24.textContent = dist20;
+    dist10to19.textContent = dist10;
+    dist0to9.textContent = dist0;
+
     document.getElementById('statsArea').style.display = 'block';
 }
 
