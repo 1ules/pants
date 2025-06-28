@@ -970,6 +970,7 @@ showScoreAnimation(categorySquare, points);
             updateGameDisplay();
         }
     }
+
 }
 
 function nextRound() {
@@ -1298,6 +1299,26 @@ document.getElementById('howToPlayModal').onclick = (e) => {
     document.addEventListener('keydown', (e) => {
         // Only process if game area is visible
         if (document.getElementById('gameArea').style.display !== 'block') return;
+
+        // Handle pass confirmation
+        if (gameState.showingPass) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('passYesBtn').click();
+            } else if (e.key === 'Escape' || e.key === 'Backspace') {
+                e.preventDefault();
+                document.getElementById('passNoBtn').click();
+            }
+            return; // Exit early
+        }
+
+    // Handle next round button
+    const nextRoundBtn = document.getElementById('nextRoundBtn');
+    if (nextRoundBtn.style.display !== 'none' && e.key === 'Enter') {
+        e.preventDefault();
+        nextRoundBtn.click();
+        return;
+    }
         
         // Don't allow typing when on score category OR when input is disabled
         if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
@@ -1542,6 +1563,11 @@ initGame();
 
 // Pass button handlers
 document.getElementById('passYesBtn').onclick = function() {
+    // Add active class for visual feedback
+    this.classList.add('active');
+    setTimeout(() => {
+        this.classList.remove('active');
+    
     // User confirmed pass
     gameState.results[gameState.currentRound] = gameState.results[gameState.currentRound] || {};
     gameState.results[gameState.currentRound][gameState.currentCategory] = 'red';
@@ -1555,11 +1581,17 @@ document.getElementById('passYesBtn').onclick = function() {
     gameState.showingPass = false;
     showInputSuccess('red', '');
     nextCategory();
+    }, 100);
 };
 
 document.getElementById('passNoBtn').onclick = function() {
+        // Add active class for visual feedback
+    this.classList.add('active');
+    setTimeout(() => {
+        this.classList.remove('active');
     document.getElementById('passPrompt').style.display = 'none';
     gameState.showingPass = false;
+    }, 100);
 };
 
 let infoMode = false;
@@ -1645,21 +1677,32 @@ function showInputSuccess(result, word) {
             'Exceptional!', 'Stupendous!', 'Phenomenal!', 'Incredible!', 'Spectacular!',
             'Wonderful!', 'Bravo!', 'Nailed it!', 'You got it!', 'Absolutely!',
             'Precisely!', 'Exactly!', 'Bingo!', 'Exemplary!', 'Distinguished!',
-            'Commendable!', 'Triumphant!', 'Victoriously!', 'Top-notch!', 'First-rate!',
-            'High-five!', "You're a star!", 'Correct!', 'Right!', 'Yes!'
+            'Commendable!', 'Triumphant!', 'Victorious!', 'Top-notch!', 'First-rate!',
+            'High-five!', "You're a star!", 'Correct!', 'Right!', 'Yes!',
+            'Optimal!', 'Champion!', 'Ace!', 'Ultimate!', 'Supremacy!', 'Insane!',
+            'Pentakill!', 'M-M-M-Monster Kill!'
         ],
         yellow: [
             'Good word!', 'Nice try!', 'Not bad!', 'Good effort!',
-            'Getting there!', 'Solid attempt!', 'On the right track!', 'Decent!',
-            'Fair enough!', 'Acceptable!', 'Respectable!', 'Competent!', 'Adequate!',
-            'Satisfactory!', 'Well done!', 'You got it!', 'That works!'
+            'Getting there!', 'Solid attempt!', 'Decent!','Fair enough!', 
+            'Acceptable!', 'Respectable!', 'Competent!', 'Adequate!',
+            'Satisfactory!', 'That works!', 'Making progress!',
+            'Pretty good!', 'Reasonable!', 'Honorable mention!', 'Good enough!', 'Passed!',
+            'Through!', 'Validated!', 'Confirmed!', 'Approved!', 'Got through!',
+            'Achieved!', 'Secured!', 'Landed it!', 'Good outcome!', 'Acceptable result!',
+            'Passed the mark!', 'Met expectations!', 'Got over the line!', 'Made it!'
         ],
         red: [
             'Next time!', 'Awww!', 'Oh no!', 'Not this time!', 'Unlucky!',
-            'Better luck next time!', 'Missed it!', 'No dice!', 'Nope!', 
+            'Better luck next time!', 'Missed it!', 'No dice!', 'Nope!',
             'Alas!', 'Hard luck!', 'Shucks!', 'Whoops!', 'Failed to connect!', 'Off target!',
-            'Invalid!', 'Denied!', 'Nope!', 'Out of luck!',
-            'No joy!', 'Fumble!'
+            'Invalid!', 'Denied!', 'Out of luck!', 'No joy!', 'Fumble!',
+            'Swing and a miss!', 'Not quite!', 'Just missed!',
+            'Missed the mark!', 'No hit!', 'Slipped by!', 'Lost opportunity!', 
+            'Almost had it!', 'Not this round!', 'Too bad!',
+            'Better luck soon!', 'Try again!', 'No cigar!', 'Didn\'t land!',
+            'Unsuccessful!', 'Declined!', 'Rejected!', 'Did not pass!',
+            'No go!', 'No score!', 'No completion!', 'A champion has been slain.'
         ]
     };
     
