@@ -277,8 +277,6 @@ const categories = {
         'Herbs and Spices'
         ],
 
-
-    
 };
 
 // Initialize game with loading screen
@@ -290,10 +288,8 @@ async function initGame() {
         const response = await fetch('dictionary.json');
         const dictionaryData = await response.json();
         
-        // Ensure dictionary is fully loaded before setting window.dictionary
         if (dictionaryData && typeof dictionaryData === 'object') {
             window.dictionary = dictionaryData;
-            console.log('Dictionary loaded successfully', Object.keys(window.dictionary));
         } else {
             throw new Error('Invalid dictionary format');
         }
@@ -301,47 +297,67 @@ async function initGame() {
         console.error('Failed to load dictionary:', error);
         window.dictionary = {};
     }
+    
+    // Initialize the actual game logic after dictionary loads
+    initializeGameLogic();
 }
 
 function startLoadingScreen() {
     let progress = 0;
+    const zipperContainer = document.querySelector('.zipper-container');
+    const zipperTeethTop = document.querySelector('.zipper-teeth-top');
+    const zipperTeethBottom = document.querySelector('.zipper-teeth-bottom');
     const zipperPull = document.getElementById('zipperPull');
     const zipperOpened = document.getElementById('zipperOpened');
     const loadingPercentage = document.getElementById('loadingPercentage');
     
+    // Add zipper slider element
+    const zipperSlider = document.createElement('div');
+    zipperSlider.className = 'zipper-slider';
+    zipperContainer.appendChild(zipperSlider);
+
     const loadingInterval = setInterval(() => {
-        progress += Math.random() * 15 + 5;
-        
-        // Cap progress at 95% until dictionary is loaded
+        // Determine maxProgress (100 only when dictionary is ready)
         const maxProgress = (window.dictionary && 
-                    typeof window.dictionary === 'object' && 
-                    Object.keys(window.dictionary).length > 0 &&
-                    window.dictionary.animal && 
-                    window.dictionary.place) ? 100 : 95;
+                           typeof window.dictionary === 'object' && 
+                           Object.keys(window.dictionary).length > 0 &&
+                           window.dictionary.animal && 
+                           window.dictionary.place) ? 100 : 99;
         
-        if (progress >= maxProgress) {
-            progress = maxProgress;
-            
-            // Only complete when dictionary is ready AND we're at 100%
-            if (progress >= 100) {
-                clearInterval(loadingInterval);
-                setTimeout(() => {
-                    completeLoading();
-                }, 500);
-                return;
-            }
-        }
+        // Increment progress but cap at maxProgress
+        const increment = Math.random() * 15 + 5;
+        progress = Math.min(progress + increment, maxProgress);
         
-        // Update UI
+        // Calculate pull position (0-370px for 400px container)
         const pullPosition = (progress / 100) * 370;
         zipperPull.style.left = pullPosition + 'px';
+        
+        // Update opened width (with separation effect)
         zipperOpened.style.width = progress + '%';
         
+        // Animate teeth separation
+        const separation = (progress / 100) * 10; // 0-10px separation at 100%
+        zipperTeethTop.style.transform = `translateY(${-separation}px)`;
+        zipperTeethBottom.style.transform = `translateY(${separation}px)`;
+        
+        // Move slider with pull
+        zipperSlider.style.left = pullPosition + 'px';
+        zipperSlider.style.width = (400 - pullPosition) + 'px';
+        
+        // Update percentage display
         if (progress > 10) {
             loadingPercentage.style.opacity = '1';
         }
-        
         loadingPercentage.textContent = Math.floor(progress) + '%';
+        
+        // Complete loading when we reach 100%
+        if (progress >= 100) {
+            clearInterval(loadingInterval);
+            setTimeout(() => {
+                completeLoading();
+            }, 500);
+            return;
+        }
     }, 100);
 }
 
@@ -396,11 +412,20 @@ function showScoreAnimation(categoryElement, points) {
     }, 2500);
 }
 
+
 function initializeGameLogic() {
-    checkVersion(); 
+    checkVersion();
     clearOldGameState();
     const savedGame = loadGameState();
     
+    // Always start by showing the start area
+    document.getElementById('startArea').style.display = 'block';
+    document.getElementById('gameArea').style.display = 'none';
+    document.getElementById('resultsArea').style.display = 'none';
+    document.getElementById('statsArea').style.display = 'none';
+    document.getElementById('homeBtn').style.display = 'none';
+    document.getElementById('infoBtn').style.display = 'none';
+
     if (savedGame) {
         // Load saved game state
         gameState = {
@@ -418,10 +443,7 @@ function initializeGameLogic() {
         if (savedGame.isComplete) {
             // Game is complete, show results
             document.getElementById('startArea').style.display = 'none';
-            document.getElementById('gameArea').style.display = 'none';
             document.getElementById('resultsArea').style.display = 'block';
-            document.getElementById('homeBtn').style.display = 'none'; 
-            document.getElementById('infoBtn').style.display = 'none';
             showResults();
             displayStats();
         } else {
@@ -442,23 +464,21 @@ function initializeGameLogic() {
                 // Game is actually complete, show results
                 markGameComplete();
                 document.getElementById('startArea').style.display = 'none';
-                document.getElementById('gameArea').style.display = 'none';
                 document.getElementById('resultsArea').style.display = 'block';
                 showResults();
                 displayStats();
             } else {
-                // Game is in progress, resume
-                document.getElementById('startArea').style.display = 'none';
-                document.getElementById('gameArea').style.display = 'block';
-                document.getElementById('homeBtn').style.display = 'block';
-                document.getElementById('infoBtn').style.display = 'block';
-                updateGameDisplay();
+                // Game is in progress - show start menu with start button
+                document.getElementById('startBtn').style.display = 'inline-block';
+                document.getElementById('countdown').style.display = 'none';
             }
         }
     } else {
         // New game
         gameState.rerollsUsed = {};
         generateDailyPuzzle();
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('countdown').style.display = 'none';
     }
     createKeyboard();
 }
