@@ -1,4 +1,4 @@
-const CURRENT_VERSION = '0.0.1'; 
+const CURRENT_VERSION = '0.0.2'; 
 
 function checkVersion() {
     const savedVersion = localStorage.getItem('pantsVersion');
@@ -110,7 +110,15 @@ function rerollCriteria() {
     const slotAnimation = setInterval(() => {
         // Show random criteria during animation (can be any from available, just for animation)
         const randomCriteria = availableCriteria[Math.floor(Math.random() * availableCriteria.length)];
-        criteriaElement.textContent = randomCriteria;
+        
+        // Special handling for Letter Pattern to show the pattern instead of the text
+        if (randomCriteria === 'Letter Pattern') {
+            // Generate a temporary pattern for animation purposes
+            const tempPattern = generatePattern(currentRound, currentCategory);
+            criteriaElement.textContent = tempPattern.pattern;
+        } else {
+            criteriaElement.textContent = randomCriteria;
+        }
         
         animationStep++;
         
@@ -120,7 +128,14 @@ function rerollCriteria() {
             // Select final criteria from valid ones only
             const finalCriteria = validCriteria[Math.floor(Math.random() * validCriteria.length)];
             gameState.criteria[currentRound][currentCategory] = finalCriteria;
-            criteriaElement.textContent = finalCriteria;
+            
+            // Update display based on final criteria
+            if (finalCriteria === 'Letter Pattern') {
+                const pattern = getPatternForRound(currentRound, currentCategory);
+                criteriaElement.textContent = pattern.pattern;
+            } else {
+                criteriaElement.textContent = finalCriteria;
+            }
             
             // Remove animation class
             setTimeout(() => {
@@ -160,64 +175,75 @@ function goHome() {
 const categories = {
     place: [
         'Places Ending with Vowels', 
+        'Countries in South America',
         'Located in South America',
+        'Countries in North America',
         'Located in North America',
+        'Countries in Africa',
         'Located in Africa',
+        'Countries in Europe',
         'Located in Europe', 
+        'Countries in Asia',
         'Located in Asia', 
-        'Located in the USA', 
-        'Located in Australia', 
-        'Island or Archipelago', 
+        'Countries in Oceania',
+        'Located in Oceania',
+        'States of America', 
         'Capital City',
-        'Tropical Place',
-        'Coastal City',
         'Geographical Features',
         'Found in a City',
-        'Hospital Rooms and Departments'
+        'Hospital Rooms and Departments',
+        'Letter Pattern'
         ],
+
     animal: [
         'Animals Ending with Vowels', 
-        '4 Legs or More', 
+        'Has 4 Legs', 
         'Mammal', 
-        'Lives in Water', 
-        'Flies', 
+        'Aquatic', 
+        'Flies or Glides', 
         'Cold Blooded', 
         'Warm Blooded', 
+        'Omnivore',
         'Carnivore', 
         'Herbivore', 
         'Fictional and Mythological Creatures',
         'Reptiles',
+        'Insects',
         'Prehistoric Animals',
-        'Pokemon'
+        'Letter Pattern'
         ],
+
     name: [
         'Unisex', 
         'Biblical Names',
         'Three Letter Names', 
         'Names Ending with Vowels', 
         'Names from Mythology', 
-        'Indian Names', 
-        'Japanese Names', 
         'Male Names', 
         'Female Names',
         'Body Parts',
-        'Periodic Table Elements',
-        'Fruits',
-        'Designer and Popular Brands',
-        'Colors',
-        'Geometric Shapes and Forms',
-        'Languages',
-        'Car Manufacturers',
         'Popular Sports',
         'Celestial Bodies and Astronomical Objects',
         'Common Occupations',
         'Musical Genres',
         'Emotions',
         'Academic Disciplines and Subjects',
+        'Colors',
+        'Geometric Shapes and Forms',
+        'Languages',
+        'Superheroes and Villains',
+        'One Half of a Popular Duo',
+        'Disney Characters',
+        'Letter Pattern',
+        //shared criterias
+        'Car Manufacturers',
+        'Designer and Popular Brands',
+        'Periodic Table Elements',
+        'Fruits',
         'Plants and Flowers',
         'Fiat Currencies'
-        ],
-    
+        ],    
+
     thing: [
         'Things Ending with Vowels', 
         'Things Made of Metal', 
@@ -231,19 +257,24 @@ const categories = {
         'Liquids', 
         'Musical Instruments',
         'Gems and Minerals',
-        'Periodic Table Elements',
         'Technology & Equipment', 
-        'Fruits',
-        'Designer and Popular Brands',
-        'Car Manufacturers',
         'Clothing & Accessories',
         'Something Round/Circular',
         'Snacks',
         'Materials and Substances',
         'Found in a Hospital',
+        'Letter Pattern',
+        //shared criterias
+        'Car Manufacturers', 
+        'Designer and Popular Brands',
+        'Fruits',       
         'Plants and Flowers',
+        'Periodic Table Elements',
         'Fiat Currencies'
-        ]
+        ],
+
+
+    
 };
 
 // Initialize game with loading screen
@@ -608,9 +639,16 @@ function updateGameDisplay() {
     // Update letter square
     document.getElementById('letterSquare').textContent = gameState.letters[gameState.currentRound - 1];
     
-    // Update criteria
-    document.getElementById('criteria').textContent = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    // Update criteria - special handling for Letter Pattern
+    const currentCriteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    if (currentCriteria === 'Letter Pattern') {
+        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        document.getElementById('criteria').textContent = pattern.pattern;
+    } else {
+        document.getElementById('criteria').textContent = currentCriteria;
+    }
     
+    // Rest of the function remains the same...
     // Reset category selection - don't reset completed categories from current round
     document.querySelectorAll('.category').forEach(cat => {
         cat.classList.remove('selected');
@@ -663,7 +701,14 @@ function updateGameDisplay() {
             if (!isCompleted) {
                 gameState.currentCategory = category;
                 categoryElement.classList.add('selected');
-                document.getElementById('criteria').textContent = gameState.criteria[gameState.currentRound][category];
+                // Update criteria display for the new category
+                const newCriteria = gameState.criteria[gameState.currentRound][category];
+                if (newCriteria === 'Letter Pattern') {
+                    const pattern = getPatternForRound(gameState.currentRound, category);
+                    document.getElementById('criteria').textContent = pattern.pattern;
+                } else {
+                    document.getElementById('criteria').textContent = newCriteria;
+                }
                 break;
             }
         }
@@ -692,7 +737,6 @@ function updateGameDisplay() {
     } else {
         rerollBtn.classList.remove('hidden');
     }
-
 }
 
 function updateCategoryName() {
@@ -765,7 +809,15 @@ function selectCategory(category) {
     document.querySelector(`[data-category="${category}"]`).classList.add('selected');
     
     updateCategoryName();
-    document.getElementById('criteria').textContent = gameState.criteria[gameState.currentRound][category];
+    
+    // Update criteria display - special handling for Letter Pattern
+    const criteria = gameState.criteria[gameState.currentRound][category];
+    if (criteria === 'Letter Pattern') {
+        const pattern = getPatternForRound(gameState.currentRound, category);
+        document.getElementById('criteria').textContent = pattern.pattern;
+    } else {
+        document.getElementById('criteria').textContent = criteria;
+    }
     
     // Save current category selection
     saveGameState();
@@ -784,6 +836,7 @@ function submitAnswer() {
     }
 
     if (!word) {
+        updatePassMessage();
         gameState.showingPass = true;
         document.getElementById('passPrompt').style.display = 'block';
         return;
@@ -792,7 +845,7 @@ function submitAnswer() {
     // Validate word
     let result = 'red';
     
-    // 1. Check if word starts with correct letter
+    // 1. Check if word starts with correct letter (applies to all criteria)
     if (!word.startsWith(currentLetter)) {
         showInputError(`Word must start with ${gameState.letters[gameState.currentRound - 1]}`);
         return;
@@ -857,7 +910,14 @@ function submitAnswer() {
     if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
         const lastChar = word.charAt(word.length - 1).toLowerCase();
         matchesCriteria = ['a','e','i','o','u'].includes(lastChar);
-    } else {
+    } 
+    // Letter pattern criteria validation
+    else if (criteria === 'Letter Pattern') {
+        // Get the pattern for this round/category
+        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        matchesCriteria = checkWordAgainstPattern(word, pattern);
+    }
+    else {
         // Standard criteria validation
         const criteriaWords = getCriteriaWords(category, criteria);
         if (criteriaWords.includes(word) || 
@@ -866,10 +926,11 @@ function submitAnswer() {
         }
     }
 
+    // With this: (FIXED LOGIC)
     if (matchesCriteria) {
-        result = 'green'; // Perfect match
+        result = 'green'; 
     } else {
-        result = 'yellow'; // Right category but wrong criteria
+        result = 'yellow'; // Word is in category but not criteria
     }
     
     // Store result
@@ -887,9 +948,117 @@ function submitAnswer() {
     nextCategory();
 }
 
+// Helper function to get the pattern for a specific round and category
+function getPatternForRound(round, category) {
+    // This should return the pattern that was generated for this round/category
+    // We need to store this in gameState when generating the criteria
+    if (!gameState.patterns) gameState.patterns = {};
+    if (!gameState.patterns[round]) gameState.patterns[round] = {};
+    
+    // If pattern doesn't exist, generate one
+    if (!gameState.patterns[round][category]) {
+        gameState.patterns[round][category] = generatePattern(round, category);
+    }
+    
+    return gameState.patterns[round][category];
+}
+
+// Helper function to generate a pattern for a round/category
+function generatePattern(round, category) {
+    const currentLetter = gameState.letters[round - 1].toLowerCase();
+    const words = getCriteriaWords(category, 'Letter Pattern');
+    
+    // Filter words that start with the current letter and are exactly 5 letters
+    const validWords = words.filter(word => 
+        word.startsWith(currentLetter) && word.length === 5
+    );
+    
+    if (validWords.length === 0) {
+        // Fallback pattern if no 5-letter words found - use a default consonant
+        return {
+            pattern: `${currentLetter.toUpperCase()} _ _ _ _`,
+            consonant: 'l',
+            position: 2
+        };
+    }
+    
+    // Pick a random word from valid 5-letter words
+    const randomWord = validWords[Math.floor(Math.random() * validWords.length)];
+    
+    // Find consonants in the word (excluding first letter)
+    const consonants = [];
+    for (let i = 1; i < randomWord.length; i++) {
+        const char = randomWord[i];
+        if (!['a','e','i','o','u'].includes(char)) {
+            consonants.push({ char, position: i });
+        }
+    }
+    
+    // If no consonants found, use a default
+    if (consonants.length === 0) {
+        return {
+            pattern: `${currentLetter.toUpperCase()} _ l _ _`,
+            consonant: 'l',
+            position: 2
+        };
+    }
+    
+    // Pick a random consonant from the word
+    const selectedConsonant = consonants[Math.floor(Math.random() * consonants.length)];
+    
+    // Generate the 5-letter pattern string
+    let patternStr = currentLetter.toUpperCase();
+    for (let i = 1; i < 5; i++) {
+        if (i === selectedConsonant.position) {
+            patternStr += ' ' + selectedConsonant.char.toUpperCase();
+        } else {
+            patternStr += ' _';
+        }
+    }
+    
+    return {
+        pattern: patternStr,
+        consonant: selectedConsonant.char,
+        position: selectedConsonant.position
+    };
+}
+
+// Helper function to check if a word matches a pattern
+function checkWordAgainstPattern(word, pattern) {
+    // Check if word starts with the first letter (already checked in submitAnswer)
+    if (word[0].toLowerCase() !== pattern.pattern[0].toLowerCase()) {
+        return false;
+    }
+    
+    // Enforce 5-letter words only
+    if (word.length !== 5) {
+        return false;
+    }
+    
+    // Check the consonant is in the right position
+    return word[pattern.position] === pattern.consonant;
+}
+
 function getCriteriaWords(category, criteria) {
     const categoryData = window.dictionary[category];
     if (!categoryData) return [];
+    
+    // Handle letter pattern criteria
+    if (criteria === 'Letter Pattern') {
+        // For letter pattern, we need to return all words in the category
+        const allWords = [];
+        for (const crit in categoryData) {
+            // Skip shared criteria references and vowel criteria
+            if (crit === vowelEndingCriteria[category] || 
+                (typeof categoryData[crit] === 'string' && categoryData[crit].startsWith('@sharedCriteria.'))) {
+                continue;
+            }
+            
+            const words = Array.isArray(categoryData[crit]) ? categoryData[crit] : [];
+            allWords.push(...words);
+        }
+        return [...new Set(allWords)]; // Remove duplicates
+    }
     
     const criteriaData = categoryData[criteria];
     
@@ -898,7 +1067,7 @@ function getCriteriaWords(category, criteria) {
         const sharedKey = criteriaData.replace('@sharedCriteria.', '');
         return window.dictionary.sharedCriteria?.[sharedKey] || [];
     }
-    
+
     // Special handling for vowel criteria
     if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
         // For names: use allowed criteria
@@ -1088,10 +1257,23 @@ function showRoundDetails(round) {
             ? gameState.answers[round][category] 
             : 'Passed';
         
+        // Get the result for this category
+        const result = gameState.results[round][category] || 'red'; // Default to red if missing
+        
         // Get possible answers
         let possibleAnswers = [];
         const words = getCriteriaWords(category, criteria);
-        if (words.length > 0) {
+        
+        if (criteria === 'Letter Pattern') {
+            const pattern = getPatternForRound(round, category);
+            possibleAnswers = words
+                .filter(word => {
+                    return word.startsWith(letter.toLowerCase()) && 
+                           word.length === 5 && // Only show 5-letter words
+                           word[pattern.position] === pattern.consonant;
+                })
+                .slice(0, 5);
+        } else if (words.length > 0) {
             possibleAnswers = words
                 .filter(word => word.startsWith(letter.toLowerCase()))
                 .slice(0, 5);
@@ -1101,8 +1283,9 @@ function showRoundDetails(round) {
         
         html += `
             <div class="category-detail">
-                <div class="category-title">${categoryName}: ${criteria}</div>
-                <div class="user-answer">Your answer: ${userAnswer}</div>
+                <div class="category-title">${categoryName}: ${criteria === 'Letter Pattern' ? 
+                    getPatternForRound(round, category).pattern : criteria}</div>
+                <div class="user-answer ${result}">Your answer: ${userAnswer}</div>
                 <div class="possible-answers">
                     ${possibleAnswers.length > 0 
                         ? `Possible answers: ${possibleAnswers.join(', ')}` 
@@ -1233,6 +1416,7 @@ function passWord() {
     if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
     
     // Show pass prompt directly (same as when submitting empty word)
+    updatePassMessage();
     gameState.showingPass = true;
     document.getElementById('passPrompt').style.display = 'block';
 }
@@ -1700,7 +1884,7 @@ function showInputSuccess(result, word) {
             'Swing and a miss!', 'Not quite!', 'Just missed!',
             'Missed the mark!', 'No hit!', 'Slipped by!', 'Lost opportunity!', 
             'Almost had it!', 'Not this round!', 'Too bad!',
-            'Better luck soon!', 'Try again!', 'No cigar!', 'Didn\'t land!',
+            'Better luck soon!', 'No cigar!', 'Didn\'t land!',
             'Unsuccessful!', 'Declined!', 'Rejected!', 'Did not pass!',
             'No go!', 'No score!', 'No completion!', 'A champion has been slain.'
         ]
@@ -1722,4 +1906,19 @@ function showInputSuccess(result, word) {
         inputContainer.classList.remove(glowClass);
         input.placeholder = 'Type your answer...';
     }, 1500);
+}
+
+function updatePassMessage() {
+    const categoryNames = {
+        place: 'Place',
+        animal: 'Animal',
+        name: 'Name',
+        thing: 'Thing'
+    };
+    
+    const currentCategory = gameState.currentCategory;
+    const currentLetter = gameState.letters[gameState.currentRound - 1];
+    
+    document.getElementById('currentCategoryText').textContent = categoryNames[currentCategory] || 'word';
+    document.getElementById('currentLetterText').textContent = currentLetter;
 }
