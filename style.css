@@ -835,7 +835,6 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: transparent;
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -843,9 +842,51 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.2);
     z-index: 100;
     text-align: center;
-    font-weight: bold;
     font-size: 1.1rem;
     min-width: 280px;
+    color: #ffffff;
+    background: 
+    /* White thread texture overlay */
+    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
+    radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
+    radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
+    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
+    /* Denim texture pattern */
+    repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
+    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
+    /* Main darker denim gradient */
+    linear-gradient(
+    0deg,
+    #0a1a3a 0%,      /* Deep navy (almost black-blue) */
+    #11244d 20%,     /* Dark denim */
+    #1a2f60 40%,     /* Mid-dark blue denim */
+    #243d75 60%,     /* Classic denim blue */
+    #3a4f8c 80%,     /* Soft light denim */
+    #4d69a8 100%     /* Light washed blue */
+    );
+background-size: 
+    100px 100px,
+    120px 120px,
+    80px 80px,
+    150px 150px,
+    90px 90px,
+    110px 110px,
+    130px 130px,
+    8px 8px,
+    6px 6px,
+    100% 100%;
+}
+
+.pass-prompt > div:first-child {
+    margin-bottom: 8px;
+}
+
+#passYesBtn.active, #passNoBtn.active {
+    transform: scale(0.95);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
 .pass-buttons {
@@ -1184,4 +1225,19 @@ body.results-view {
     60% { opacity: 0.8; }
     80% { opacity: 0.9; }
     100% { opacity: 1; }
+}
+
+.user-answer.green {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.user-answer.yellow {
+    color: #FFC107;
+    font-weight: bold;
+}
+
+.user-answer.red {
+    color: #f44336;
+    font-weight: bold;
 }
