@@ -757,7 +757,7 @@ body {
 
 .keyboard {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(20, 1fr);
     gap: clamp(1px, 0.5vw, 3px);
     margin: clamp(15px, 3vh, 25px) 0;
     width: min(99vw, 600px);
@@ -783,6 +783,7 @@ body {
     user-select: none;
     padding: 0;
     min-width: 0;
+    grid-column: span 2;
 }
 
 .key:hover {
@@ -790,10 +791,44 @@ body {
     transform: translateY(-1px);
 }
 
-.key.wide {
-    grid-column: span 2;
-}
+/* First row - Q-P (columns 1-20, each key spans 2) */
+.key:nth-child(1) { grid-column: 1 / span 2; } /* Q */
+.key:nth-child(2) { grid-column: 3 / span 2; } /* W */
+.key:nth-child(3) { grid-column: 5 / span 2; } /* E */
+.key:nth-child(4) { grid-column: 7 / span 2; } /* R */
+.key:nth-child(5) { grid-column: 9 / span 2; } /* T */
+.key:nth-child(6) { grid-column: 11 / span 2; } /* Y */
+.key:nth-child(7) { grid-column: 13 / span 2; } /* U */
+.key:nth-child(8) { grid-column: 15 / span 2; } /* I */
+.key:nth-child(9) { grid-column: 17 / span 2; } /* O */
+.key:nth-child(10) { grid-column: 19 / span 2; } /* P */
 
+/* Second row - A-L (offset by 1, centered between first row keys) */
+.key:nth-child(11) { grid-column: 2 / span 2; } /* A */
+.key:nth-child(12) { grid-column: 4 / span 2; } /* S */
+.key:nth-child(13) { grid-column: 6 / span 2; } /* D */
+.key:nth-child(14) { grid-column: 8 / span 2; } /* F */
+.key:nth-child(15) { grid-column: 10 / span 2; } /* G */
+.key:nth-child(16) { grid-column: 12 / span 2; } /* H */
+.key:nth-child(17) { grid-column: 14 / span 2; } /* J */
+.key:nth-child(18) { grid-column: 16 / span 2; } /* K */
+.key:nth-child(19) { grid-column: 18 / span 2; } /* L */
+
+/* Third row - PASS aligned with Q, Z-M aligned with S-K, backspace aligned with P */
+.key:nth-child(20) { grid-column: 1 / span 3; } /* PASS */
+.key:nth-child(21) { grid-column: 4 / span 2; } /* Z - aligned with S */
+.key:nth-child(22) { grid-column: 6 / span 2; } /* X - aligned with D */
+.key:nth-child(23) { grid-column: 8 / span 2; } /* C - aligned with F */
+.key:nth-child(24) { grid-column: 10 / span 2; } /* V - aligned with G */
+.key:nth-child(25) { grid-column: 12 / span 2; } /* B - aligned with H */
+.key:nth-child(26) { grid-column: 14 / span 2; } /* N - aligned with J */
+.key:nth-child(27) { grid-column: 16 / span 2; } /* M - aligned with K */
+.key:nth-child(28) { grid-column: 19 / span 2; } /* ⌫ - aligned with P */
+.key:nth-child(28) { 
+    grid-column: 18 / span 3; 
+    font-size: clamp(11px, 2.5vw, 14px);
+    font-size: clamp(18px, 4vw, 24px);
+}
 
 .text-input.error-shake {
     animation: shake 0.5s ease-in-out;
