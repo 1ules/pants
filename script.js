@@ -241,12 +241,14 @@ const categories = {
         'Periodic Table Elements',
         'Fruits',
         'Plants and Flowers',
-        'Fiat Currencies'
+        'Fiat Currencies',
+        'Pasta and Bread',
+        'Herbs and Spices'
         ],    
 
     thing: [
         'Things Ending with Vowels', 
-        'Things Made of Metal', 
+        'Has Metal', 
         'Common Household Items', 
         'Food', 
         'Found in Nature', 
@@ -270,7 +272,9 @@ const categories = {
         'Fruits',       
         'Plants and Flowers',
         'Periodic Table Elements',
-        'Fiat Currencies'
+        'Fiat Currencies',
+        'Pasta and Bread',
+        'Herbs and Spices'
         ],
 
 
