@@ -1,1278 +1,1921 @@
-html, body {
-    overflow: hidden;
-    touch-action: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: 
-        /* White thread texture overlay */
-        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
-        radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
-        radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
-        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
-        radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
-        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
-        /* Denim texture pattern */
-        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
-        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
-        /* Main darker denim gradient */
-        linear-gradient(
-        0deg,
-        #0a1a3a 0%,      /* Deep navy (almost black-blue) */
-        #11244d 20%,     /* Dark denim */
-        #1a2f60 40%,     /* Mid-dark blue denim */
-        #243d75 60%,     /* Classic denim blue */
-        #3a4f8c 80%,     /* Soft light denim */
-        #4d69a8 100%     /* Light washed blue */
-        );
-    background-size: 
-        100px 100px,
-        120px 120px,
-        80px 80px,
-        150px 150px,
-        90px 90px,
-        110px 110px,
-        130px 130px,
-        8px 8px,
-        6px 6px,
-        100% 100%;
-}
+const CURRENT_VERSION = '0.0.2'; 
 
-/* Loading Screen Styles */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        /* White thread texture overlay */
-        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
-        radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
-        radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
-        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
-        radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
-        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
-        /* Denim texture pattern */
-        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
-        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
-        /* Main darker denim gradient */
-        linear-gradient(
-        0deg,
-        #0a1a3a 0%,      /* Deep navy (almost black-blue) */
-        #11244d 20%,     /* Dark denim */
-        #1a2f60 40%,     /* Mid-dark blue denim */
-        #243d75 60%,     /* Classic denim blue */
-        #3a4f8c 80%,     /* Soft light denim */
-        #4d69a8 100%     /* Light washed blue */
-        );
-    background-size: 
-        100px 100px,
-        120px 120px,
-        80px 80px,
-        150px 150px,
-        90px 90px,
-        110px 110px,
-        130px 130px,
-        8px 8px,
-        6px 6px,
-        100% 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.loading-title {
-    font-size: 4rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 50px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 8px;
-}
-
-.zipper-container {
-    position: relative;
-    width: 400px;
-    height: 60px;
-    margin-bottom: 30px;
-}
-
-.zipper-track {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: #444;
-    border-radius: 4px;
-    transform: translateY(-50%);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.zipper-teeth-top,
-.zipper-teeth-bottom {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 12px;
-    background: repeating-linear-gradient(
-        to right,
-        #666 0px,
-        #666 8px,
-        #888 8px,
-        #888 16px
-    );
-}
-
-.zipper-teeth-top {
-    top: 18px;
-    clip-path: polygon(0 100%, 6.25% 0, 12.5% 100%, 18.75% 0, 25% 100%, 31.25% 0, 37.5% 100%, 43.75% 0, 50% 100%, 56.25% 0, 62.5% 100%, 68.75% 0, 75% 100%, 81.25% 0, 87.5% 100%, 93.75% 0, 100% 100%);
-}
-
-.zipper-teeth-bottom {
-    bottom: 18px;
-    clip-path: polygon(0 0, 6.25% 100%, 12.5% 0, 18.75% 100%, 25% 0, 31.25% 100%, 37.5% 0, 43.75% 100%, 50% 0, 56.25% 100%, 62.5% 0, 68.75% 100%, 75% 0, 81.25% 100%, 87.5% 0, 93.75% 100%, 100% 0);
-}
-
-.zipper-pull {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 30px;
-    height: 40px;
-    background: linear-gradient(45deg, #c0c0c0, #e0e0e0);
-    border-radius: 15px 15px 5px 5px;
-    transform: translateY(-50%);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: left 2s ease-in-out;
-    z-index: 10;
-}
-
-.zipper-pull::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    width: 12px;
-    height: 8px;
-    background: #999;
-    border-radius: 6px;
-    transform: translateX(-50%);
-}
-
-.zipper-pull::after {
-    content: '';
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    width: 8px;
-    height: 4px;
-    background: #777;
-    border-radius: 2px;
-    transform: translateX(-50%);
-}
-
-.zipper-opened {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(2px);
-    transition: width 2s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.loading-percentage {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
-
-.loading-text {
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-
-.title {
-    margin: 0; 
-}
-
-.header-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 1px;
-}
-
-.home-btn {
-    position: absolute;
-    width: 50px;  /* Fixed width */
-    height: 50px; /* Fixed height */
-    left: 10px;
-    top: 40%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    padding: 8px 12px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.home-btn:hover {
-    background: rgba(255,255,255,0.3);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.how-to-play-btn {
-    background: rgba(255,255,255,0.3);
-    color: white;
-    border: 2px solid rgba(255,255,255,0.5);
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    backdrop-filter: blur(10px);
-}
-
-.info-btn {
-    position: absolute;
-    width: 50px;  /* Fixed width */
-    height: 50px; /* Fixed height */
-    right: 18px; 
-    top: 40%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    padding: 8px 12px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.info-btn:hover {
-    background: rgba(255,255,255,0.3);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.info-btn.active {
-    background: rgba(255,255,255,0.4);
-    color: white;
-    text-shadow: 0 0 10px white;
-    box-shadow: 0 0 20px rgba(255,255,255,0.5);
-}
-
-.info-overlay {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(50px);
-    font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    pointer-events: none;
-    z-index: 1000;
-    display: none;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.how-to-play-btn:hover {
-    background: rgba(255,255,255,0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-}
-
-.how-to-play-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-}
-
-.how-to-play-content {
-    background: transparent;
-    backdrop-filter: blur(10px);
-    color: white;
-    padding: 25px;
-    border-radius: 20px;
-    max-width: 400px;
-    width: 100%;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    border: 2px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    text-align: left;
-}
-
-.how-to-play-content h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.how-to-play-content p {
-    margin-bottom: 15px;
-    line-height: 1.4;
-    font-size: 0.95rem;
-}
-
-.categories-demo {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 15px 0;
-    flex-wrap: wrap;
-}
-
-.category-demo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.category-demo-square {
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.3);
-    border: 3px solid rgba(255,255,255,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border-radius: 8px;
-    color: white;
-    margin-bottom: 5px;
-}
-
-.category-demo-text {
-    font-size: 0.8rem;
-    color: white;
-    font-weight: bold;
-}
-
-.close-btn {
-    background: white;
-    color: #667eea;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: block;
-    margin: 20px auto 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.close-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.score-popup {
-    position: absolute;
-    font-size: 1.5rem;
-    font-weight: bold;
-    pointer-events: none;
-    z-index: 1000;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    animation: floatScore 2.5s ease-out forwards;
-}
-
-.score-popup.green {
-    color: #4CAF50;
-}
-
-.score-popup.yellow {
-    color: #FFC107;
-}
-
-.score-popup.red {
-    color: #f44336;
-}
-
-.score-popup {
-    position: absolute;
-    font-size: 1.5rem;
-    font-weight: bold;
-    pointer-events: none;
-    z-index: 1000;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    animation: floatScore 2.5s ease-out forwards;
-}
-
-.score-popup.green {
-    color: #4CAF50;
-}
-
-.score-popup.yellow {
-    color: #FFC107;
-}
-
-.score-popup.red {
-    color: #f44336;
-}
-
-@keyframes floatScore {
-    0% {
-        transform: translateX(-50%) translateY(0px);
-        opacity: 0;
-    }
-    20% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(-50%) translateY(-80px);
-        opacity: 0;
-    }
-}
-        
-.game-area {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
-    flex: 1;
-    min-height: 0;
-    justify-content: space-between; 
-    width: 100%; 
-}
-
-.categories-container {
-    flex-shrink: 0;
-}
-.criteria {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    margin-bottom: 1vh;
-}
-
-.input-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-    min-height: 0;
-}
-
-.message-container {
-    position: relative;
-    flex-shrink: 0;
-}
-
-
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
-    flex-shrink: 0;
-}
-
-/* EXISTING CSS BELOW */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 20px;
-    color: #333;
-}
-
-.container {
-    max-width: min(400px, 95vw);
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding-top: max(0.5vh, 2px); 
-    position: relative;
-}
-
-.title {
-    font-size: clamp(2rem, 8vw, 3rem);
-    font-weight: bold;
-    color: white;
-    margin-bottom: clamp(5px, 1vh, 10px);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: clamp(2px, 2vw, 8px);
-}
-
-.start-btn, .submit-btn, .next-round-btn, .share-btn {
-    background: white;
-    color: #000000;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin: 5px;
-}
-
-.start-btn:hover, .submit-btn:hover, .next-round-btn:hover, .share-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.game-area {
-    display: none;
-}
-
-.round-info {
-    color: white;
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.letter-square {
-    width: clamp(50px, 15vw, 70px);
-    height: clamp(50px, 15vw, 70px);
-    background: white;
-    border: 3px solid #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    font-weight: bold;
-    margin: 0 auto 15px;
-    border-radius: 10px;
-    color: #333;
-    transition: all 0.3s ease;
-}
-
-.letter-square.green {
-    background: #4CAF50;
-    color: white;
-    border-color: #45a049;
-}
-
-.letter-square.yellow {
-    background: #FFC107;
-    color: white;
-    border-color: #ffb300;
-}
-
-.letter-square.red {
-    background: #f44336;
-    color: white;
-    border-color: #d32f2f;
-}
-
-.categories {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(50px, 1fr));
-    justify-content: center;
-    gap: clamp(4px, 1vw, 8px);
-    margin-bottom: 3px;
-    max-width: 100%;
-    width: 100%;
-}
-
-.category {
-    aspect-ratio: 1;
-    min-width: 50px;
-    max-width: 70px;
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1.2rem, 4vw, 1.8rem);
-    font-weight: bold;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
-}
-
-.category.place, .category.animal, .category.name, .category.thing, .category.score { 
-    background: rgba(255,255,255,0.3); 
-    border: 5px solid rgba(255,255,255,0.5);
-}
-
-.category:hover:not(.completed) {
-    box-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.4);
-    border-color: rgba(255,255,255,0.8);
-    background: rgba(255,255,255,0.4);
-}
-
-.category.selected {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255,255,255,0.5);
-}
-
-.category.completed {
-    cursor: not-allowed !important;
-    opacity: 0.8;
-}
-
-.category.completed.green {
-    background: #4CAF50 !important;
+function checkVersion() {
+    const savedVersion = localStorage.getItem('pantsVersion');
     
+    if (savedVersion !== CURRENT_VERSION) {
+        // Preserve stats while clearing game state
+        const stats = localStorage.getItem('pantsGameStats');
+        
+        // Clear all game-related data except stats
+        localStorage.removeItem('pantsGameState');
+        
+        // Save stats back if they existed
+        if (stats) {
+            localStorage.setItem('pantsGameStats', stats);
+        }
+        
+        // Update to current version
+        localStorage.setItem('pantsVersion', CURRENT_VERSION);
+    }
 }
 
-.category.completed.yellow {
-    background: #FFC107 !important;
+// Fix for mobile viewport height
+function adjustViewport() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
 
-.category.completed.red {
-    background: #f44336 !important;
+window.addEventListener('resize', adjustViewport);
+window.addEventListener('load', adjustViewport);
+adjustViewport();
+
+// Define vowel ending criteria
+const vowelEndingCriteria = {
+    name: "Names Ending with Vowels",
+    place: "Places Ending with Vowels",
+    animal: "Animals Ending with Vowels",
+    thing: "Things Ending with Vowels"
+};
+
+// Define allowed name criteria
+const allowedNameCriteria = [
+    'Unisex', 'Biblical Names', 'Three Letter Names',
+    'Indian Names', 'Japanese Names', 'Male Names', 'Female Names'
+];
+
+// Game state
+let gameState = {
+    currentRound: 1,
+    currentCategory: 'place',
+    letters: [],
+    criteria: {},
+    answers: {},
+    results: {},
+    hasPlayed: false,
+    showingPass: false,
+    rerollsUsed: {} 
+};
+
+// Add reroll function
+function rerollCriteria() {
+    const currentRound = gameState.currentRound;
+    const currentCategory = gameState.currentCategory;
+    
+    // Check if already used reroll for this round
+    if (gameState.rerollsUsed[currentRound]) {
+        return;
+    }
+    
+    // Don't allow reroll on score category or completed categories
+    if (currentCategory === 'score') return;
+    
+    const categoryElement = document.querySelector(`[data-category="${currentCategory}"]`);
+    const isCompleted = gameState.results[currentRound] && 
+                       gameState.results[currentRound][currentCategory];
+    if (isCompleted) return;
+    
+    // Get all available criteria for this category
+    const availableCriteria = categories[currentCategory];
+    const currentCriteria = gameState.criteria[currentRound][currentCategory];
+    
+    // Filter out current criteria and check which ones have valid words for the current letter
+    const currentLetter = gameState.letters[currentRound - 1].toLowerCase();
+    const validCriteria = availableCriteria.filter(criteria => {
+        if (criteria === currentCriteria) return false; // Exclude current criteria
+        
+        // Get words for this criteria
+        const words = getCriteriaWords(currentCategory, criteria);
+        
+        // Check if any word starts with the current letter
+        return words.some(word => word.startsWith(currentLetter));
+    });
+
+    if (validCriteria.length === 0) return; // No valid alternatives
+
+    // Mark reroll as used for this round
+    gameState.rerollsUsed[currentRound] = true;
+
+    // Hide reroll button
+    document.getElementById('rerollBtn').classList.add('hidden');
+
+    // Start slot machine animation
+    const criteriaElement = document.getElementById('criteria');
+    criteriaElement.classList.add('criteria-animation');
+
+    let animationStep = 0;
+    const animationSteps = 20;
+    const animationInterval = 100; // 100ms per step = 2 seconds total
+
+    const slotAnimation = setInterval(() => {
+        // Show random criteria during animation (can be any from available, just for animation)
+        const randomCriteria = availableCriteria[Math.floor(Math.random() * availableCriteria.length)];
+        
+        // Special handling for Letter Pattern to show the pattern instead of the text
+        if (randomCriteria === 'Letter Pattern') {
+            // Generate a temporary pattern for animation purposes
+            const tempPattern = generatePattern(currentRound, currentCategory);
+            criteriaElement.textContent = tempPattern.pattern;
+        } else {
+            criteriaElement.textContent = randomCriteria;
+        }
+        
+        animationStep++;
+        
+        if (animationStep >= animationSteps) {
+            clearInterval(slotAnimation);
+            
+            // Select final criteria from valid ones only
+            const finalCriteria = validCriteria[Math.floor(Math.random() * validCriteria.length)];
+            gameState.criteria[currentRound][currentCategory] = finalCriteria;
+            
+            // Update display based on final criteria
+            if (finalCriteria === 'Letter Pattern') {
+                const pattern = getPatternForRound(currentRound, currentCategory);
+                criteriaElement.textContent = pattern.pattern;
+            } else {
+                criteriaElement.textContent = finalCriteria;
+            }
+            
+            // Remove animation class
+            setTimeout(() => {
+                criteriaElement.classList.remove('criteria-animation');
+            }, 100);
+            
+            // Save game state
+            saveGameState();
+        }
+    }, animationInterval);
+}
+
+function goHome() {
+    // Hide all game areas
+    document.getElementById('gameArea').style.display = 'none';
+    document.getElementById('resultsArea').style.display = 'none';
+    document.getElementById('statsArea').style.display = 'none';
+    
+    // Show start area
+    document.getElementById('startArea').style.display = 'block';
+    
+    // Hide home and info button
+    document.getElementById('homeBtn').style.display = 'none';
+    document.getElementById('infoBtn').style.display = 'none';
+    
+    // Check if game is complete to show countdown or start button
+    const savedGame = loadGameState();
+    if (savedGame && savedGame.isComplete) {
+        showCountdown();
+    } else {
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('countdown').style.display = 'none';
+    }
+}
+
+// Game data
+const categories = {
+    place: [
+        'Places Ending with Vowels', 
+        'Countries in South America',
+        'Located in South America',
+        'Countries in North America',
+        'Located in North America',
+        'Countries in Africa',
+        'Located in Africa',
+        'Countries in Europe',
+        'Located in Europe', 
+        'Countries in Asia',
+        'Located in Asia', 
+        'Countries in Oceania',
+        'Located in Oceania',
+        'States of America', 
+        'Capital City',
+        'Geographical Features',
+        'Found in a City',
+        'Hospital Rooms and Departments',
+        'Letter Pattern'
+        ],
+
+    animal: [
+        'Animals Ending with Vowels', 
+        'Has 4 Legs', 
+        'Mammal', 
+        'Aquatic', 
+        'Flies or Glides', 
+        'Cold Blooded', 
+        'Warm Blooded', 
+        'Omnivore',
+        'Carnivore', 
+        'Herbivore', 
+        'Fictional and Mythological Creatures',
+        'Reptiles',
+        'Insects',
+        'Prehistoric Animals',
+        'Letter Pattern'
+        ],
+
+    name: [
+        'Unisex', 
+        'Biblical Names',
+        'Three Letter Names', 
+        'Names Ending with Vowels', 
+        'Names from Mythology', 
+        'Male Names', 
+        'Female Names',
+        'Body Parts',
+        'Popular Sports',
+        'Celestial Bodies and Astronomical Objects',
+        'Common Occupations',
+        'Musical Genres',
+        'Emotions',
+        'Academic Disciplines and Subjects',
+        'Colors',
+        'Geometric Shapes and Forms',
+        'Languages',
+        'Superheroes and Villains',
+        'One Half of a Popular Duo',
+        'Disney Characters',
+        'Letter Pattern',
+        //shared criterias
+        'Car Manufacturers',
+        'Designer and Popular Brands',
+        'Periodic Table Elements',
+        'Fruits',
+        'Plants and Flowers',
+        'Fiat Currencies',
+        'Pasta and Bread',
+        'Herbs and Spices'
+        ],    
+
+    thing: [
+        'Things Ending with Vowels', 
+        'Has Metal', 
+        'Common Household Items', 
+        'Food', 
+        'Found in Nature', 
+        'Used in School',
+        'Sports Related',
+        'Found in a Toolbox',
+        'Used in the Kitchen', 
+        'Liquids', 
+        'Musical Instruments',
+        'Gems and Minerals',
+        'Technology & Equipment', 
+        'Clothing & Accessories',
+        'Something Round/Circular',
+        'Snacks',
+        'Materials and Substances',
+        'Found in a Hospital',
+        'Letter Pattern',
+        //shared criterias
+        'Car Manufacturers', 
+        'Designer and Popular Brands',
+        'Fruits',       
+        'Plants and Flowers',
+        'Periodic Table Elements',
+        'Fiat Currencies',
+        'Pasta and Bread',
+        'Herbs and Spices'
+        ],
+
+
+    
+};
+
+// Initialize game with loading screen
+async function initGame() {
+    checkVersion();
+    startLoadingScreen();
+    
+    try {
+        const response = await fetch('dictionary.json');
+        const dictionaryData = await response.json();
+        
+        // Ensure dictionary is fully loaded before setting window.dictionary
+        if (dictionaryData && typeof dictionaryData === 'object') {
+            window.dictionary = dictionaryData;
+            console.log('Dictionary loaded successfully', Object.keys(window.dictionary));
+        } else {
+            throw new Error('Invalid dictionary format');
+        }
+    } catch (error) {
+        console.error('Failed to load dictionary:', error);
+        window.dictionary = {};
+    }
+}
+
+function startLoadingScreen() {
+    let progress = 0;
+    const zipperPull = document.getElementById('zipperPull');
+    const zipperOpened = document.getElementById('zipperOpened');
+    const loadingPercentage = document.getElementById('loadingPercentage');
+    
+    const loadingInterval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+        
+        // Cap progress at 95% until dictionary is loaded
+        const maxProgress = (window.dictionary && 
+                    typeof window.dictionary === 'object' && 
+                    Object.keys(window.dictionary).length > 0 &&
+                    window.dictionary.animal && 
+                    window.dictionary.place) ? 100 : 95;
+        
+        if (progress >= maxProgress) {
+            progress = maxProgress;
+            
+            // Only complete when dictionary is ready AND we're at 100%
+            if (progress >= 100) {
+                clearInterval(loadingInterval);
+                setTimeout(() => {
+                    completeLoading();
+                }, 500);
+                return;
+            }
+        }
+        
+        // Update UI
+        const pullPosition = (progress / 100) * 370;
+        zipperPull.style.left = pullPosition + 'px';
+        zipperOpened.style.width = progress + '%';
+        
+        if (progress > 10) {
+            loadingPercentage.style.opacity = '1';
+        }
+        
+        loadingPercentage.textContent = Math.floor(progress) + '%';
+    }, 100);
+}
+
+function completeLoading() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    
+    // Fade out loading screen
+    loadingScreen.style.transition = 'opacity 0.5s ease-out';
+    loadingScreen.style.opacity = '0';
+    
+setTimeout(() => {
+    loadingScreen.style.display = 'none';
+    
+    // Set up event listeners immediately so buttons work
+    setupEventListeners();
+    
+    // Initialize the actual game
+    initializeGameLogic();
+}, 500);
+
+// Hide info button initially
+document.getElementById('infoBtn').style.display = 'none';
+
+}
+
+function showScoreAnimation(categoryElement, points) {
+    const scoreText = points === 2 ? '+2' : points === 1 ? '+1' : '+0';
+    const colorClass = points === 2 ? 'green' : points === 1 ? 'yellow' : 'red';
+    
+    // Create the popup element
+    const popup = document.createElement('div');
+    popup.className = `score-popup ${colorClass}`;
+    popup.textContent = scoreText;
+    
+    // Position it relative to the category element
+    const rect = categoryElement.getBoundingClientRect();
+    const containerRect = document.querySelector('.container').getBoundingClientRect();
+    
+    popup.style.position = 'absolute';
+    popup.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+    popup.style.top = (rect.top - containerRect.top) + 'px';
+    popup.style.transform = 'translateX(-50%)';
+    
+    // Add to container
+    document.querySelector('.container').appendChild(popup);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+        if (popup.parentNode) {
+            popup.parentNode.removeChild(popup);
+        }
+    }, 2500);
+}
+
+function initializeGameLogic() {
+    checkVersion(); 
+    clearOldGameState();
+    const savedGame = loadGameState();
+    
+    if (savedGame) {
+        // Load saved game state
+        gameState = {
+            currentRound: savedGame.currentRound,
+            currentCategory: savedGame.currentCategory,
+            letters: savedGame.letters,
+            criteria: savedGame.criteria,
+            answers: savedGame.answers || {},
+            results: savedGame.results || {},
+            hasPlayed: savedGame.hasPlayed,
+            rerollsUsed: savedGame.rerollsUsed || {},
+            showingPass: false
+        };
+        
+        if (savedGame.isComplete) {
+            // Game is complete, show results
+            document.getElementById('startArea').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('resultsArea').style.display = 'block';
+            document.getElementById('homeBtn').style.display = 'none'; 
+            document.getElementById('infoBtn').style.display = 'none';
+            showResults();
+            displayStats();
+        } else {
+            // Check if game should actually be complete
+            const categories = ['place', 'animal', 'name', 'thing'];
+            let allRoundsComplete = true;
+            
+            for (let round = 1; round <= 3; round++) {
+                const roundResults = gameState.results[round] || {};
+                const roundComplete = categories.every(cat => roundResults[cat]);
+                if (!roundComplete) {
+                    allRoundsComplete = false;
+                    break;
+                }
+            }
+            
+            if (allRoundsComplete) {
+                // Game is actually complete, show results
+                markGameComplete();
+                document.getElementById('startArea').style.display = 'none';
+                document.getElementById('gameArea').style.display = 'none';
+                document.getElementById('resultsArea').style.display = 'block';
+                showResults();
+                displayStats();
+            } else {
+                // Game is in progress, resume
+                document.getElementById('startArea').style.display = 'none';
+                document.getElementById('gameArea').style.display = 'block';
+                document.getElementById('homeBtn').style.display = 'block';
+                document.getElementById('infoBtn').style.display = 'block';
+                updateGameDisplay();
+            }
+        }
+    } else {
+        // New game
+        gameState.rerollsUsed = {};
+        generateDailyPuzzle();
+    }
+    createKeyboard();
+}
+
+function generateDailyPuzzle() {
+    // Use today's date as seed for consistent daily puzzle
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    
+    // Simple seeded random function
+    function seededRandom(seed) {
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+    
+    let seed = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        seed += dateString.charCodeAt(i);
+    }
+
+    // Track used criteria to avoid duplicates across rounds
+    const usedCriteria = {
+        place: new Set(),
+        animal: new Set(),
+        name: new Set(),
+        thing: new Set()
+    };
+    
+    // Generate criteria for each round ensuring no duplicates
+    for (let i = 1; i <= 3; i++) {
+        gameState.criteria[i] = {};
+        
+        // For each category, pick a criteria that hasn't been used
+        Object.keys(categories).forEach(category => {
+            const availableCriteria = categories[category].filter(criteria => 
+                !usedCriteria[category].has(criteria)
+            );
+            
+            if (availableCriteria.length === 0) {
+                // Fallback: if all criteria used, reset and pick any
+                usedCriteria[category].clear();
+                availableCriteria.push(...categories[category]);
+            }
+            
+            const selectedCriteria = availableCriteria[
+                Math.floor(seededRandom(seed + i * 100 + category.length) * availableCriteria.length)
+            ];
+            
+            gameState.criteria[i][category] = selectedCriteria;
+            usedCriteria[category].add(selectedCriteria);
+        });
+    }
+    
+    
+// Check if dictionary is available for smart letter selection
+    if (typeof dictionary !== 'undefined' && window.dictionary) {
+        // Smart letter selection (your new logic)
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        gameState.letters = [];
+        
+        for (let round = 1; round <= 3; round++) {
+            const roundCriteria = gameState.criteria[round];
+            const validLetters = [];
+            
+            // Check each letter to see if it has valid words for all categories in this round
+            for (let letter of alphabet) {
+                const lowerLetter = letter.toLowerCase();
+                
+                // Check place category - USE getCriteriaWords
+                const placeWords = getCriteriaWords('place', roundCriteria.place);
+                const hasPlace = placeWords.some(word => word.startsWith(lowerLetter));
+                
+                // Check animal category - USE getCriteriaWords
+                const animalWords = getCriteriaWords('animal', roundCriteria.animal);
+                const hasAnimal = animalWords.some(word => word.startsWith(lowerLetter));
+                
+                // Check thing category - USE getCriteriaWords
+                const thingWords = getCriteriaWords('thing', roundCriteria.thing);
+                const hasThing = thingWords.some(word => word.startsWith(lowerLetter));
+                
+                // For name category, check if there are names starting with this letter
+                const nameWords = getCriteriaWords('name', roundCriteria.name);
+                const hasName = nameWords.some(word => word.startsWith(lowerLetter));
+                
+                if (hasPlace && hasAnimal && hasThing && hasName) {
+                    validLetters.push(letter);
+                }
+            }
+            
+            // If no valid letters found, fall back to all letters
+            const lettersToChooseFrom = validLetters.length > 0 ? validLetters : alphabet.split('');
+            
+            // Select a letter that hasn't been used yet
+            let selectedLetter;
+            let attempts = 0;
+            do {
+                const letterIndex = Math.floor(seededRandom(seed + round * 1000 + attempts) * lettersToChooseFrom.length);
+                selectedLetter = lettersToChooseFrom[letterIndex];
+                attempts++;
+            } while (gameState.letters.includes(selectedLetter) && attempts < 100);
+            
+            gameState.letters.push(selectedLetter);
+        }
+        
+        // Fix name criteria for each round
+    } else {
+        // Fallback to original random letter selection if dictionary not available
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        gameState.letters = [];
+        
+        let randomIndex = 0;
+            while (gameState.letters.length < 3) {
+                const letter = alphabet[Math.floor(seededRandom(seed + randomIndex) * 26)];
+                if (!gameState.letters.includes(letter)) {
+                    gameState.letters.push(letter);
+                }
+                randomIndex++;
+            }
+    }
+}
+
+function getRandomLetter(excludeLetter, seed = Math.random() * 1000) {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    function seededRandom(s) {
+        const x = Math.sin(s) * 10000;
+        return x - Math.floor(x);
+    }
+    
+    let letter;
+    let attempts = 0;
+    do {
+        letter = alphabet[Math.floor(seededRandom(seed + attempts) * 26)];
+        attempts++;
+    } while (letter === excludeLetter && attempts < 50);
+    
+    return letter;
+}
+
+function showCountdown() {
+    document.getElementById('startBtn').style.display = 'none';
+    const countdown = document.getElementById('countdown');
+    countdown.style.display = 'block';
+    
+    function updateCountdown() {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        
+        const diff = tomorrow - now;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        countdown.textContent = `Next puzzle in ${hours}h ${minutes}m ${seconds}s`;
+    }
+    
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
+
+function startGame() {
+    document.getElementById('startArea').style.display = 'none';
+    document.getElementById('gameArea').style.display = 'block';
+    document.getElementById('homeBtn').style.display = 'block';
+    document.getElementById('infoBtn').style.display = 'block';
+    createKeyboard();
+    
+    updateGameDisplay();
+}
+
+function updateGameDisplay() {
+    // Update round info
+    const roundInfo = document.getElementById('roundInfo');
+    if (gameState.currentRound === 3) {
+        roundInfo.textContent = 'Final Round';
+    } else {
+        roundInfo.textContent = `Round ${gameState.currentRound}/3`;
+    }
+    
+    // Update letter square
+    document.getElementById('letterSquare').textContent = gameState.letters[gameState.currentRound - 1];
+    
+    // Update criteria - special handling for Letter Pattern
+    const currentCriteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    if (currentCriteria === 'Letter Pattern') {
+        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        document.getElementById('criteria').textContent = pattern.pattern;
+    } else {
+        document.getElementById('criteria').textContent = currentCriteria;
+    }
+    
+    // Rest of the function remains the same...
+    // Reset category selection - don't reset completed categories from current round
+    document.querySelectorAll('.category').forEach(cat => {
+        cat.classList.remove('selected');
+        
+        if (cat.dataset.category === 'score') {
+            cat.style.opacity = '1';
+            cat.style.cursor = 'pointer';
+            return;
+        }
+        
+        // Check if this category is completed in current round
+        const isCompleted = gameState.results[gameState.currentRound] && 
+                          gameState.results[gameState.currentRound][cat.dataset.category];
+        
+        if (isCompleted) {
+            // Keep it completed and unclickable
+            if (!cat.classList.contains('completed')) {
+                cat.classList.add('completed');
+                cat.classList.add(gameState.results[gameState.currentRound][cat.dataset.category]);
+            }
+            cat.style.opacity = '0.8';
+            cat.style.cursor = 'not-allowed';
+        } else {
+            // Make it available for this round
+            cat.classList.remove('completed', 'green', 'yellow', 'red');
+            cat.style.opacity = '1';
+            cat.style.cursor = 'pointer';
+
+            // Ensure input is enabled/disabled properly
+            const input = document.getElementById('wordInput');
+            if (gameState.currentCategory === 'score') {
+                input.disabled = true;
+            } else {
+                input.disabled = false;
+            }
+        }
+    });
+    
+    // Select current category if it's not completed
+    const currentCategoryElement = document.querySelector(`[data-category="${gameState.currentCategory}"]`);
+    if (currentCategoryElement && !currentCategoryElement.classList.contains('completed')) {
+        currentCategoryElement.classList.add('selected');
+    } else {
+        // Find first non-completed category
+        const availableCategories = ['place', 'animal', 'name', 'thing'];
+        for (let category of availableCategories) {
+            const categoryElement = document.querySelector(`[data-category="${category}"]`);
+            const isCompleted = gameState.results[gameState.currentRound] && 
+                              gameState.results[gameState.currentRound][category];
+            if (!isCompleted) {
+                gameState.currentCategory = category;
+                categoryElement.classList.add('selected');
+                // Update criteria display for the new category
+                const newCriteria = gameState.criteria[gameState.currentRound][category];
+                if (newCriteria === 'Letter Pattern') {
+                    const pattern = getPatternForRound(gameState.currentRound, category);
+                    document.getElementById('criteria').textContent = pattern.pattern;
+                } else {
+                    document.getElementById('criteria').textContent = newCriteria;
+                }
+                break;
+            }
+        }
+    }
+    
+    updateCategoryName();
+    
+    // Clear input
+    document.getElementById('wordInput').value = '';
+    document.getElementById('passPrompt').style.display = 'none';
+    gameState.showingPass = false;
+
+    // Ensure input is enabled and submit button is visible for game categories
+    document.getElementById('wordInput').disabled = false;
+    document.getElementById('submitBtn').style.display = 'inline-block';
+
+    // Show/hide reroll button based on round and category
+    const rerollBtn = document.getElementById('rerollBtn');
+    const hasUsedReroll = gameState.rerollsUsed[gameState.currentRound];
+    const isScoreCategory = gameState.currentCategory === 'score';
+    const isCompletedCategory = gameState.results[gameState.currentRound] && 
+                               gameState.results[gameState.currentRound][gameState.currentCategory];
+    
+    if (hasUsedReroll || isScoreCategory || isCompletedCategory) {
+        rerollBtn.classList.add('hidden');
+    } else {
+        rerollBtn.classList.remove('hidden');
+    }
+}
+
+function updateCategoryName() {
+    const categoryNames = document.querySelectorAll('.category-name');
+    categoryNames.forEach(name => name.textContent = '');
+    
+    const selectedCategory = document.querySelector('.category.selected');
+    if (selectedCategory) {
+        const categoryName = selectedCategory.nextElementSibling;
+        const categoryType = selectedCategory.dataset.category;
+        const names = {
+            place: 'Place',
+            animal: 'Animal',
+            name: 'Name',
+            thing: 'Thing',
+            score: 'Score'
+        };
+        categoryName.textContent = names[categoryType] || '';
+    }
+}
+
+function selectCategory(category) {
+    const input = document.getElementById('wordInput');
+    
+    if (category === 'score') {
+        // Show current score in the input field
+        const score = calculateTotalScore();
+        input.placeholder = `${score}/24`;
+        input.value = '';
+        input.disabled = true; // Disable input when on score
+        document.getElementById('criteria').textContent = 'Current Score';
+        document.getElementById('submitBtn').style.display = 'none'; // Hide submit button
+        document.getElementById('rerollBtn').classList.add('hidden'); // Hide reroll button
+        
+        // Select the score category
+        document.querySelectorAll('.category').forEach(cat => cat.classList.remove('selected'));
+        document.querySelector(`[data-category="${category}"]`).classList.add('selected');
+        
+        updateCategoryName();
+        return; // Important: return early for score category
+    }
+    
+    // Check if category is already completed for current round
+    const categoryElement = document.querySelector(`[data-category="${category}"]`);
+    const isCompleted = gameState.results[gameState.currentRound] && 
+                       gameState.results[gameState.currentRound][category];
+    
+    if (isCompleted || categoryElement.classList.contains('completed')) {
+        return; // Don't allow selection of completed categories
+    }
+    
+    // For other categories, restore normal functionality
+    input.placeholder = 'Type your answer...';
+    input.disabled = false;
+    document.getElementById('submitBtn').style.display = 'inline-block';
+    
+    // Show/hide reroll button based on conditions
+    const hasUsedReroll = gameState.rerollsUsed[gameState.currentRound];
+    const isCompletedCategory = gameState.results[gameState.currentRound] && 
+                               gameState.results[gameState.currentRound][category];
+    
+    if (hasUsedReroll || isCompletedCategory) {
+        document.getElementById('rerollBtn').classList.add('hidden');
+    } else {
+        document.getElementById('rerollBtn').classList.remove('hidden');
+    }
+    
+    gameState.currentCategory = category;
+    document.querySelectorAll('.category').forEach(cat => cat.classList.remove('selected'));
+    document.querySelector(`[data-category="${category}"]`).classList.add('selected');
+    
+    updateCategoryName();
+    
+    // Update criteria display - special handling for Letter Pattern
+    const criteria = gameState.criteria[gameState.currentRound][category];
+    if (criteria === 'Letter Pattern') {
+        const pattern = getPatternForRound(gameState.currentRound, category);
+        document.getElementById('criteria').textContent = pattern.pattern;
+    } else {
+        document.getElementById('criteria').textContent = criteria;
+    }
+    
+    // Save current category selection
+    saveGameState();
 }
 
 
-.category-name {
-    color: white;
-    font-size: 1rem;
-    margin-top: 9px;
-    min-height: 20px;
-    text-align: center;
+function submitAnswer() {
+    const input = document.getElementById('wordInput');
+    const word = input.value.trim().toLowerCase();
+    const currentLetter = gameState.letters[gameState.currentRound - 1].toLowerCase();
+    const criteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    const category = gameState.currentCategory;
+    
+    if (gameState.showingPass) {
+        return;
+    }
+
+    if (!word) {
+        updatePassMessage();
+        gameState.showingPass = true;
+        document.getElementById('passPrompt').style.display = 'block';
+        return;
+    }
+    
+    // Validate word
+    let result = 'red';
+    
+    // 1. Check if word starts with correct letter (applies to all criteria)
+    if (!word.startsWith(currentLetter)) {
+        showInputError(`Word must start with ${gameState.letters[gameState.currentRound - 1]}`);
+        return;
+    }
+    
+    // 2. Check if word is in category (including plural forms)
+    let wordFoundInCategory = false;
+    const categoryData = window.dictionary[category];
+
+    // Special handling for names with vowel criteria
+    if (category === 'name' && criteria === vowelEndingCriteria.name) {
+        // Only check allowed name criteria
+        for (const crit of allowedNameCriteria) {
+            const words = getCriteriaWords(category, crit);
+            if (words.includes(word) || 
+               (word.endsWith('s') && words.includes(word.slice(0, -1))) ){
+                wordFoundInCategory = true;
+                break;
+            }
+        }
+    } 
+    // Special handling for place/animal/thing with vowel criteria
+    else if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        // Allow any word in the category
+        if (categoryData) {
+            for (const criteriaKey in categoryData) {
+                // Skip vowel ending criteria itself
+                if (criteriaKey === vowelEndingCriteria[category]) continue;
+                
+                const words = getCriteriaWords(category, criteriaKey);
+                if (words.includes(word) || 
+                   (word.endsWith('s') && words.includes(word.slice(0, -1))) ){
+                    wordFoundInCategory = true;
+                    break;
+                }
+            }
+        }
+    }
+    // Standard category validation for other cases
+    else {
+        if (categoryData) {
+            for (const criteriaKey in categoryData) {
+                const words = getCriteriaWords(category, criteriaKey);
+                if (words.includes(word) || 
+                   (word.endsWith('s') && words.includes(word.slice(0, -1))) ){
+                    wordFoundInCategory = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!wordFoundInCategory) {
+        showInputError(`Try another ${category}`);
+        return;
+    }
+
+    // 3. Check if word matches specific criteria
+    let matchesCriteria = false;
+
+    // Vowel criteria validation for all categories
+    if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        const lastChar = word.charAt(word.length - 1).toLowerCase();
+        matchesCriteria = ['a','e','i','o','u'].includes(lastChar);
+    } 
+    // Letter pattern criteria validation
+    else if (criteria === 'Letter Pattern') {
+        // Get the pattern for this round/category
+        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        matchesCriteria = checkWordAgainstPattern(word, pattern);
+    }
+    else {
+        // Standard criteria validation
+        const criteriaWords = getCriteriaWords(category, criteria);
+        if (criteriaWords.includes(word) || 
+           (word.endsWith('s') && criteriaWords.includes(word.slice(0, -1))) ){
+            matchesCriteria = true;
+        }
+    }
+
+    // With this: (FIXED LOGIC)
+    if (matchesCriteria) {
+        result = 'green'; 
+    } else {
+        result = 'yellow'; // Word is in category but not criteria
+    }
+    
+    // Store result
+    gameState.results[gameState.currentRound] = gameState.results[gameState.currentRound] || {};
+    gameState.results[gameState.currentRound][category] = result;
+    gameState.answers[gameState.currentRound] = gameState.answers[gameState.currentRound] || {};
+    gameState.answers[gameState.currentRound][category] = word;
+
+    // Save game state
+    saveGameState();
+    
+    // Clear input and errors
+    showInputSuccess(result, word);
+    
+    nextCategory();
 }
 
-.criteria {
-    background: rgba(255,255,255,0.9);
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    font-weight: bold;
-    color: #333;
-    font-size: 0.95rem;
+// Helper function to get the pattern for a specific round and category
+function getPatternForRound(round, category) {
+    // This should return the pattern that was generated for this round/category
+    // We need to store this in gameState when generating the criteria
+    if (!gameState.patterns) gameState.patterns = {};
+    if (!gameState.patterns[round]) gameState.patterns[round] = {};
+    
+    // If pattern doesn't exist, generate one
+    if (!gameState.patterns[round][category]) {
+        gameState.patterns[round][category] = generatePattern(round, category);
+    }
+    
+    return gameState.patterns[round][category];
 }
 
-.text-input {
-    width: 100%;
-    max-width: 400px;
-    height: 60px;
-    border: 4px solid white;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0.5 auto 1vh;
-    background: rgba(255,255,255,0.9);
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
-    color: #333;
-    box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    font-weight: bold;
-    position: relative;
-    overflow: hidden;
- }
-
-.text-input input {
-    background: none;
-    border: none;
-    outline: none;
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-    width: 100%;
-    pointer-events: none; 
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    caret-color: transparent;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.text-input.pulse {
-    animation: pulse 0.3s ease-in-out;
-}
-
-.keyboard {
-    display: grid;
-    grid-template-columns: repeat(20, 1fr);
-    gap: clamp(1px, 0.5vw, 3px);
-    margin: clamp(15px, 3vh, 25px) 0;
-    width: min(99vw, 600px);
-    margin-left: 50%;
-    transform: translateX(-50%);
-    padding: 0 5px;
-}
-
-.key {
-    background: rgba(255,255,255,0.9);
-    color: #1a1a1b;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: clamp(13px, 2.8vw, 16px);
-    transition: all 0.2s ease;
-    height: clamp(48px, 10vw, 65px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-    user-select: none;
-    padding: 0;
-    min-width: 0;
-    grid-column: span 2;
-}
-
-.key:hover {
-    background: white;
-    transform: translateY(-1px);
-}
-
-/* First row - Q-P (columns 1-20, each key spans 2) */
-.key:nth-child(1) { grid-column: 1 / span 2; } /* Q */
-.key:nth-child(2) { grid-column: 3 / span 2; } /* W */
-.key:nth-child(3) { grid-column: 5 / span 2; } /* E */
-.key:nth-child(4) { grid-column: 7 / span 2; } /* R */
-.key:nth-child(5) { grid-column: 9 / span 2; } /* T */
-.key:nth-child(6) { grid-column: 11 / span 2; } /* Y */
-.key:nth-child(7) { grid-column: 13 / span 2; } /* U */
-.key:nth-child(8) { grid-column: 15 / span 2; } /* I */
-.key:nth-child(9) { grid-column: 17 / span 2; } /* O */
-.key:nth-child(10) { grid-column: 19 / span 2; } /* P */
-
-/* Second row - A-L (offset by 1, centered between first row keys) */
-.key:nth-child(11) { grid-column: 2 / span 2; } /* A */
-.key:nth-child(12) { grid-column: 4 / span 2; } /* S */
-.key:nth-child(13) { grid-column: 6 / span 2; } /* D */
-.key:nth-child(14) { grid-column: 8 / span 2; } /* F */
-.key:nth-child(15) { grid-column: 10 / span 2; } /* G */
-.key:nth-child(16) { grid-column: 12 / span 2; } /* H */
-.key:nth-child(17) { grid-column: 14 / span 2; } /* J */
-.key:nth-child(18) { grid-column: 16 / span 2; } /* K */
-.key:nth-child(19) { grid-column: 18 / span 2; } /* L */
-
-/* Third row - PASS aligned with Q, Z-M aligned with S-K, backspace aligned with P */
-.key:nth-child(20) { grid-column: 1 / span 3; } /* PASS */
-.key:nth-child(21) { grid-column: 4 / span 2; } /* Z - aligned with S */
-.key:nth-child(22) { grid-column: 6 / span 2; } /* X - aligned with D */
-.key:nth-child(23) { grid-column: 8 / span 2; } /* C - aligned with F */
-.key:nth-child(24) { grid-column: 10 / span 2; } /* V - aligned with G */
-.key:nth-child(25) { grid-column: 12 / span 2; } /* B - aligned with H */
-.key:nth-child(26) { grid-column: 14 / span 2; } /* N - aligned with J */
-.key:nth-child(27) { grid-column: 16 / span 2; } /* M - aligned with K */
-.key:nth-child(28) { grid-column: 19 / span 2; } /* ⌫ - aligned with P */
-.key:nth-child(28) { 
-    grid-column: 18 / span 3; 
-    font-size: clamp(11px, 2.5vw, 14px);
-    font-size: clamp(18px, 4vw, 24px);
-}
-
-.text-input.error-shake {
-    animation: shake 0.5s ease-in-out;
-}
-
-.text-input.error-glow {
-    box-shadow: 
-        0 0 10px #ff4444, 
-        0 0 20px #ff4444,
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    border-color: #ff4444;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-1.5px); }
-    20%, 40%, 60%, 80% { transform: translateX(1.5px); }
-}
-
-.success-glow-green {
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.8) !important;
-    border-color: rgba(34, 197, 94, 0.8) !important;
-}
-
-.success-glow-yellow {
-    box-shadow: 0 0 20px rgba(234, 179, 8, 0.8) !important;
-    border-color: rgba(234, 179, 8, 0.8) !important;
-}
-
-.success-glow-red {
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8) !important;
-    border-color: rgba(255, 0, 0, 0.8) !important;
-}
-
-.pass-prompt {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(50px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    z-index: 100;
-    text-align: center;
-    font-size: 1.1rem;
-    min-width: 280px;
-    color: #ffffff;
-    background: 
-    /* White thread texture overlay */
-    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
-    radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
-    radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
-    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
-    /* Denim texture pattern */
-    repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
-    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
-    /* Main darker denim gradient */
-    linear-gradient(
-    0deg,
-    #0a1a3a 0%,      /* Deep navy (almost black-blue) */
-    #11244d 20%,     /* Dark denim */
-    #1a2f60 40%,     /* Mid-dark blue denim */
-    #243d75 60%,     /* Classic denim blue */
-    #3a4f8c 80%,     /* Soft light denim */
-    #4d69a8 100%     /* Light washed blue */
+// Helper function to generate a pattern for a round/category
+function generatePattern(round, category) {
+    const currentLetter = gameState.letters[round - 1].toLowerCase();
+    const words = getCriteriaWords(category, 'Letter Pattern');
+    
+    // Filter words that start with the current letter and are exactly 5 letters
+    const validWords = words.filter(word => 
+        word.startsWith(currentLetter) && word.length === 5
     );
-background-size: 
-    100px 100px,
-    120px 120px,
-    80px 80px,
-    150px 150px,
-    90px 90px,
-    110px 110px,
-    130px 130px,
-    8px 8px,
-    6px 6px,
-    100% 100%;
-}
-
-.pass-prompt > div:first-child {
-    margin-bottom: 8px;
-}
-
-#passYesBtn.active, #passNoBtn.active {
-    transform: scale(0.95);
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-}
-
-.pass-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.pass-btn {
-    background: white;
-    color: #667eea;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    min-width: 80px;
-}
-
-.pass-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.pass-btn.no {
-    background: #f44336;
-    color: white;
-}
-
-.results-area {
-    display: none;
-    background: rgba(255,255,255,0.9);
-    padding: 15px;
-    border-radius: 15px;
-    margin-top: 15px;
-}
-
-.thank-you-message {
-    background: rgba(255,255,255,0.9);
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #333;
-}
-
-.result-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin: 15px 0;
-    justify-items: center;
-}
-
-.result-square {
-    width: 35px;
-    height: 35px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: white;
-}
-
-.stats-area,
-.distribution-section,
-.round-details-area {
-    background: rgba(255,255,255,0.9);
-    padding: 15px;
-    border-radius: 15px;
-    margin-top: 10px;
-    width: 100%; /* or whatever specific width you want */
-    box-sizing: border-box; /* ensures padding doesn't add to width */
-}
-
-.stats-header {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stat-number {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 2px;
-    text-align: center;
-    line-height: 1.2;
-}
-
-
-.distribution-header {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.distribution-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.distribution-label {
-    width: 60px;
-    text-align: center;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #333;
-    flex-shrink: 0; /* Prevent shrinking */
-}
-
-.distribution-bar {
-    height: 25px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 8px;
-    color: white;
-    font-weight: bold;
-    font-size: 0.9rem;
-    min-width: 25px;
-    transition: width 0.5s ease;
-
-    position: relative; /* Add this */
-}
-
-.distribution-bar.green {
-    background: #4CAF50;
-}
-
-.distribution-bar.yellow {
-    background: #FFC107;
-}
-
-.distribution-bar.red {
-    background: #f44336;
-}
-
-.result-square.green { background: #4CAF50; }
-.result-square.yellow { background: #FFC107; }
-.result-square.red { background: #f44336; }
-
-/* Spotlight effect for Next Round button */
-.spotlight-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 50;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    pointer-events: none;
-}
-
-.spotlight-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.next-round-btn.spotlight {
-    position: relative;
-    z-index: 60;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.4);
-    animation: spotlight-pulse 2s ease-in-out infinite;
-}
-
-@keyframes spotlight-pulse {
-    0%, 100% { 
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.4);
-        transform: scale(1);
+    
+    if (validWords.length === 0) {
+        // Fallback pattern if no 5-letter words found - use a default consonant
+        return {
+            pattern: `${currentLetter.toUpperCase()} _ _ _ _`,
+            consonant: 'l',
+            position: 2
+        };
     }
-    50% { 
-        box-shadow: 0 0 40px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6);
-        transform: scale(1.05);
+    
+    // Pick a random word from valid 5-letter words
+    const randomWord = validWords[Math.floor(Math.random() * validWords.length)];
+    
+    // Find consonants in the word (excluding first letter)
+    const consonants = [];
+    for (let i = 1; i < randomWord.length; i++) {
+        const char = randomWord[i];
+        if (!['a','e','i','o','u'].includes(char)) {
+            consonants.push({ char, position: i });
+        }
+    }
+    
+    // If no consonants found, use a default
+    if (consonants.length === 0) {
+        return {
+            pattern: `${currentLetter.toUpperCase()} _ l _ _`,
+            consonant: 'l',
+            position: 2
+        };
+    }
+    
+    // Pick a random consonant from the word
+    const selectedConsonant = consonants[Math.floor(Math.random() * consonants.length)];
+    
+    // Generate the 5-letter pattern string
+    let patternStr = currentLetter.toUpperCase();
+    for (let i = 1; i < 5; i++) {
+        if (i === selectedConsonant.position) {
+            patternStr += ' ' + selectedConsonant.char.toUpperCase();
+        } else {
+            patternStr += ' _';
+        }
+    }
+    
+    return {
+        pattern: patternStr,
+        consonant: selectedConsonant.char,
+        position: selectedConsonant.position
+    };
+}
+
+// Helper function to check if a word matches a pattern
+function checkWordAgainstPattern(word, pattern) {
+    // Check if word starts with the first letter (already checked in submitAnswer)
+    if (word[0].toLowerCase() !== pattern.pattern[0].toLowerCase()) {
+        return false;
+    }
+    
+    // Enforce 5-letter words only
+    if (word.length !== 5) {
+        return false;
+    }
+    
+    // Check the consonant is in the right position
+    return word[pattern.position] === pattern.consonant;
+}
+
+function getCriteriaWords(category, criteria) {
+    const categoryData = window.dictionary[category];
+    if (!categoryData) return [];
+    
+    // Handle letter pattern criteria
+    if (criteria === 'Letter Pattern') {
+        // For letter pattern, we need to return all words in the category
+        const allWords = [];
+        for (const crit in categoryData) {
+            // Skip shared criteria references and vowel criteria
+            if (crit === vowelEndingCriteria[category] || 
+                (typeof categoryData[crit] === 'string' && categoryData[crit].startsWith('@sharedCriteria.'))) {
+                continue;
+            }
+            
+            const words = Array.isArray(categoryData[crit]) ? categoryData[crit] : [];
+            allWords.push(...words);
+        }
+        return [...new Set(allWords)]; // Remove duplicates
+    }
+    
+    const criteriaData = categoryData[criteria];
+    
+    // Handle shared criteria references
+    if (typeof criteriaData === 'string' && criteriaData.startsWith('@sharedCriteria.')) {
+        const sharedKey = criteriaData.replace('@sharedCriteria.', '');
+        return window.dictionary.sharedCriteria?.[sharedKey] || [];
+    }
+
+    // Special handling for vowel criteria
+    if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        // For names: use allowed criteria
+        if (category === 'name') {
+            const allNames = [];
+            allowedNameCriteria.forEach(crit => {
+                const words = getCriteriaWords(category, crit);
+                allNames.push(...words);
+            });
+            return [...new Set(allNames)].filter(name => 
+                ['a','e','i','o','u'].includes(name.charAt(name.length-1)));
+        } 
+        // For place/animal/thing: use all category words
+        else {
+            const allWords = [];
+            for (const crit in categoryData) {
+                // Skip vowel criteria itself
+                if (crit === vowelEndingCriteria[category]) continue;
+                
+                const words = getCriteriaWords(category, crit);
+                allWords.push(...words);
+            }
+            return [...new Set(allWords)].filter(word => 
+                ['a','e','i','o','u'].includes(word.charAt(word.length-1)));
+        }
+    }
+    
+    // Standard case
+    return Array.isArray(criteriaData) ? criteriaData : [];
+}
+
+function nextCategory() {
+    const categories = ['place', 'animal', 'name', 'thing'];
+    
+    // Update category square color
+const categorySquare = document.querySelector(`[data-category="${gameState.currentCategory}"]`);
+const result = gameState.results[gameState.currentRound][gameState.currentCategory];
+categorySquare.classList.add('completed', result);
+
+// Show score animation
+const points = result === 'green' ? 2 : result === 'yellow' ? 1 : 0;
+showScoreAnimation(categorySquare, points);
+    
+    // Check if all categories are completed in current round
+    const currentRoundResults = gameState.results[gameState.currentRound] || {};
+    const allCategoriesCompleted = categories.every(cat => currentRoundResults[cat]);
+    
+    if (allCategoriesCompleted) {
+        // Round complete
+        document.getElementById('wordInput').disabled = true;
+        if (gameState.currentRound < 3) {
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextRoundBtn').style.display = 'inline-block';
+
+            // Add spotlight effect
+            document.getElementById('spotlightOverlay').classList.add('active');
+            document.getElementById('nextRoundBtn').classList.add('spotlight');
+            
+        } else {
+            // Game complete
+            endGame();
+        }
+    } else {
+        // Move to next incomplete category
+        const nextCategory = categories.find(cat => !currentRoundResults[cat]);
+        
+        if (nextCategory) {
+            gameState.currentCategory = nextCategory;
+            updateGameDisplay();
+        }
+    }
+
+}
+
+function nextRound() {
+    // Remove spotlight effect
+    document.getElementById('spotlightOverlay').classList.remove('active');
+    document.getElementById('nextRoundBtn').classList.remove('spotlight');
+    gameState.currentRound++;
+    gameState.currentCategory = 'place';
+    document.getElementById('wordInput').disabled = false;
+    document.getElementById('submitBtn').style.display = 'inline-block';
+    document.getElementById('nextRoundBtn').style.display = 'none';
+    
+    // Reset all category colors for new round
+    document.querySelectorAll('.category').forEach(cat => {
+        if (cat.dataset.category !== 'score') {
+            cat.classList.remove('completed', 'green', 'yellow', 'red');
+        }
+    });
+
+    // Reset reroll button visibility for new round
+    document.getElementById('rerollBtn').classList.remove('hidden');
+    
+    updateGameDisplay();
+
+    saveGameState();
+}
+
+function endGame() {
+    // Mark game as complete
+    markGameComplete();
+    
+    document.getElementById('gameArea').style.display = 'none';
+    document.getElementById('resultsArea').style.display = 'block';
+    document.getElementById('homeBtn').style.display = 'none';
+    document.getElementById('infoBtn').style.display = 'none';
+    showResults();
+    displayStats();
+}
+
+function addLetter(letter) {
+    // Prevent typing when on score screen
+     if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
+    
+    const input = document.getElementById('wordInput');
+    input.value += letter.toLowerCase();
+    input.focus();
+    pulseInputCircle();
+}
+
+function deleteLetter() {
+    // Prevent deleting when on score screen
+    if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
+
+    const input = document.getElementById('wordInput');
+    input.value = input.value.slice(0, -1);
+    input.focus();
+    pulseInputCircle();
+}
+
+function showResults() {
+    const resultGrid = document.getElementById('resultGrid');
+    resultGrid.innerHTML = '';
+    
+    let totalScore = 0;
+    const categories = ['place', 'animal', 'name', 'thing'];
+    
+    for (let round = 1; round <= 3; round++) {
+        categories.forEach(category => {
+            const square = document.createElement('div');
+            square.className = `result-square ${gameState.results[round][category]}`;
+            
+            const scores = { green: 2, yellow: 1, red: 0 };
+            totalScore += scores[gameState.results[round][category]];
+            
+            resultGrid.appendChild(square);
+        });
+    }
+    
+    document.getElementById('finalScore').textContent = `Score: ${totalScore}/24`;
+    
+// Enable scrolling for results screen
+document.documentElement.classList.add('results-view'); // Add to html element
+document.body.classList.add('results-view');
+document.querySelector('.container').classList.add('results-view');
+    
+    // Show round details section
+    document.getElementById('roundDetailsArea').style.display = 'block';
+    
+    // Initialize round breakdown
+    setupRoundBreakdown();
+    showRoundDetails(1);
+}
+
+function setupRoundBreakdown() {
+    document.querySelectorAll('.round-btn').forEach(btn => {
+        btn.onclick = () => {
+            const round = parseInt(btn.dataset.round);
+            document.querySelectorAll('.round-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showRoundDetails(round);
+        };
+    });
+}
+
+function showRoundDetails(round) {
+    const roundContent = document.getElementById('roundContent');
+    const letter = gameState.letters[round - 1];
+    const categories = ['place', 'animal', 'name', 'thing'];
+    
+    let html = `<div class="round-letter">Letter: ${letter}</div>`;
+    
+    categories.forEach(category => {
+        const criteria = gameState.criteria[round][category];
+        const userAnswer = gameState.answers[round] && gameState.answers[round][category] 
+            ? gameState.answers[round][category] 
+            : 'Passed';
+        
+        // Get the result for this category
+        const result = gameState.results[round][category] || 'red'; // Default to red if missing
+        
+        // Get possible answers
+        let possibleAnswers = [];
+        const words = getCriteriaWords(category, criteria);
+        
+        if (criteria === 'Letter Pattern') {
+            const pattern = getPatternForRound(round, category);
+            possibleAnswers = words
+                .filter(word => {
+                    return word.startsWith(letter.toLowerCase()) && 
+                           word.length === 5 && // Only show 5-letter words
+                           word[pattern.position] === pattern.consonant;
+                })
+                .slice(0, 5);
+        } else if (words.length > 0) {
+            possibleAnswers = words
+                .filter(word => word.startsWith(letter.toLowerCase()))
+                .slice(0, 5);
+        }
+        
+        const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+        
+        html += `
+            <div class="category-detail">
+                <div class="category-title">${categoryName}: ${criteria === 'Letter Pattern' ? 
+                    getPatternForRound(round, category).pattern : criteria}</div>
+                <div class="user-answer ${result}">Your answer: ${userAnswer}</div>
+                <div class="possible-answers">
+                    ${possibleAnswers.length > 0 
+                        ? `Possible answers: ${possibleAnswers.join(', ')}` 
+                        : 'No examples available'}
+                </div>
+            </div>
+        `;
+    });
+    
+    roundContent.innerHTML = html;
+}
+
+function shareResults() {
+    const categories = ['place', 'animal', 'name', 'thing'];
+    let shareText = 'PANTS Puzzle\n';
+    shareText += new Date().toLocaleDateString() + '\n';
+    
+    for (let round = 1; round <= 3; round++) {
+        categories.forEach(category => {
+            const result = gameState.results[round][category];
+            const emoji = { green: '🟩', yellow: '🟨', red: '🟥' };
+            shareText += emoji[result];
+        });
+        shareText += '\n';
+    }
+    
+    const totalScore = calculateTotalScore();
+    shareText += `Score: ${totalScore}/24`;
+    
+    // Check if Web Share API is available 
+    if (navigator.share) {
+        navigator.share({
+            text: shareText
+        }).catch(err => {
+            console.log('Error sharing:', err);
+            // Fallback to clipboard copy if sharing fails
+            fallbackCopyToClipboard(shareText);
+        });
+    } else {
+        // Desktop/unsupported browsers - copy to clipboard
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('Results copied to clipboard!');
+            }).catch(() => {
+                fallbackCopyToClipboard(shareText);
+            });
+        } else {
+            fallbackCopyToClipboard(shareText);
+        }
     }
 }
 
-
-.round-selector {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+function fallbackCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        alert('Results copied to clipboard!');
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        // Show the text in an alert as last resort
+        alert('Copy failed. Here are your results:\n\n' + text);
+    }
+    
+    document.body.removeChild(textArea);
 }
 
-.round-btn {
-    background: white;
-    color: #667eea;
-    border: 2px solid #667eea;
-    padding: 8px 16px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 40px;
+function createKeyboard() {
+    const keyboard = document.getElementById('keyboard');
+    keyboard.innerHTML = '';
+    
+    // First row - QWERTYUIOP (10 keys)
+    'QWERTYUIOP'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
+    });
+    
+    // Second row - ASDFGHJKL (9 keys, centered)
+    'ASDFGHJKL'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
+    });
+    
+    // Third row - PASS ZXCVBNM ⌫ (PASS + 7 letters + backspace)
+    const passKey = document.createElement('button');
+    passKey.className = 'key';
+    passKey.textContent = 'PASS';
+    passKey.onclick = passWord;
+    keyboard.appendChild(passKey);
+    
+    'ZXCVBNM'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
+    });
+    
+    const backspaceKey = document.createElement('button');
+    backspaceKey.className = 'key';
+    backspaceKey.textContent = '⌫';
+    backspaceKey.onclick = deleteLetter;
+    keyboard.appendChild(backspaceKey);
 }
 
-.round-btn:hover {
-    transform: translateY(-1px);
+function passWord() {
+    // Prevent passing when on score screen
+    if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
+    
+    // Show pass prompt directly (same as when submitting empty word)
+    updatePassMessage();
+    gameState.showingPass = true;
+    document.getElementById('passPrompt').style.display = 'block';
 }
 
-.round-btn.active {
-    background: #667eea;
-    color: white;
+function clearInput() {
+    // Prevent clearing when on score screen
+    if (gameState.currentCategory === 'score') return;
+    
+    const input = document.getElementById('wordInput');
+    input.value = '';
+    input.placeholder = 'Type your answer...';
+    input.focus();
+    pulseInputCircle();
 }
 
-.round-content {
-    line-height: 1.6;
+function pulseInputCircle() {
+    const inputCircle = document.querySelector('.text-input');
+    inputCircle.classList.remove('pulse');
+    // Trigger reflow to restart animation
+    void inputCircle.offsetWidth;
+    inputCircle.classList.add('pulse');
 }
 
-.round-letter {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-    text-align: center;
+function setupEventListeners() {
+    const wordInput = document.getElementById('wordInput');
+    
+    document.getElementById('startBtn').onclick = startGame;
+    document.getElementById('submitBtn').onclick = submitAnswer;
+    document.getElementById('nextRoundBtn').onclick = nextRound;
+    document.getElementById('shareBtn').onclick = shareResults;
+    document.getElementById('homeBtn').onclick = goHome;
+    document.getElementById('infoBtn').onclick = toggleInfo;
+    document.getElementById('rerollBtn').onclick = rerollCriteria;
+
+    document.getElementById('howToPlayBtn').onclick = () => {
+    document.getElementById('howToPlayModal').style.display = 'flex';
+};
+
+document.getElementById('closeHowToPlay').onclick = () => {
+    document.getElementById('howToPlayModal').style.display = 'none';
+};
+
+// Close modal when clicking outside
+document.getElementById('howToPlayModal').onclick = (e) => {
+    if (e.target === document.getElementById('howToPlayModal')) {
+        document.getElementById('howToPlayModal').style.display = 'none';
+    }
+};
+    
+    // Category selection
+    document.querySelectorAll('.category').forEach(category => {
+        category.onclick = () => selectCategory(category.dataset.category);
+    });
+    
+    // Prevent mobile keyboard from appearing
+    if ('ontouchstart' in window) {
+        wordInput.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            wordInput.blur();
+        });
+    }
+    
+    // Handle physical keyboard input
+    document.addEventListener('keydown', (e) => {
+        // Only process if game area is visible
+        if (document.getElementById('gameArea').style.display !== 'block') return;
+
+        // Handle pass confirmation
+        if (gameState.showingPass) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('passYesBtn').click();
+            } else if (e.key === 'Escape' || e.key === 'Backspace') {
+                e.preventDefault();
+                document.getElementById('passNoBtn').click();
+            }
+            return; // Exit early
+        }
+
+    // Handle next round button
+    const nextRoundBtn = document.getElementById('nextRoundBtn');
+    if (nextRoundBtn.style.display !== 'none' && e.key === 'Enter') {
+        e.preventDefault();
+        nextRoundBtn.click();
+        return;
+    }
+        
+        // Don't allow typing when on score category OR when input is disabled
+        if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
+        
+        // Handle key presses
+        if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+            e.preventDefault();
+            addLetter(e.key);
+        } else if (e.key === 'Backspace') {
+            e.preventDefault();
+            deleteLetter();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            submitAnswer();
+        }
+    });
 }
 
-.category-detail {
-    margin-bottom: 20px;
-    padding: 12px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 8px;
+function calculateTotalScore() {
+    let total = 0;
+    const scores = { green: 2, yellow: 1, red: 0 };
+    const categories = ['place', 'animal', 'name', 'thing'];
+    
+    for (let round = 1; round <= 3; round++) {
+        const roundResults = gameState.results[round] || {};
+        categories.forEach(category => {
+            const result = roundResults[category];
+            if (result) {
+                total += scores[result];
+            }
+        });
+    }
+    return total;
 }
 
-.category-title {
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
+function getStoredStats() {
+    const defaultStats = {
+        pantsSolved: 0,
+        totalGames: 0,
+        currentStreak: 0,
+        bestStreak: 0,
+        lastPlayedDate: null,
+        scoreDistribution: {
+            '20-24': 0,
+            '10-19': 0,
+            '0-9': 0
+        },
+        gamesPlayed: {} // Will store date -> score mapping
+    };
+    
+    try {
+        const stored = localStorage.getItem('pantsGameStats');
+        if (stored) {
+            const parsedStats = JSON.parse(stored);
+            // Merge with defaults to handle any missing properties
+            return { ...defaultStats, ...parsedStats };
+        }
+    } catch (error) {
+        console.log('Error reading stats from localStorage:', error);
+    }
+    
+    return defaultStats;
 }
 
-.user-answer {
-    color: #666;
-    margin-bottom: 8px;
-    font-style: italic;
+function saveStats(stats) {
+    try {
+        localStorage.setItem('pantsGameStats', JSON.stringify(stats));
+    } catch (error) {
+        console.log('Error saving stats to localStorage:', error);
+    }
 }
 
-.possible-answers {
-    color: #444;
-    font-size: 0.9rem;
+function saveGameState() {
+    const today = new Date().toDateString();
+    const gameData = {
+        date: today,
+        currentRound: gameState.currentRound,
+        currentCategory: gameState.currentCategory,
+        letters: gameState.letters,
+        criteria: gameState.criteria,
+        answers: gameState.answers,
+        results: gameState.results,
+        hasPlayed: gameState.hasPlayed,
+        rerollsUsed: gameState.rerollsUsed,
+        isComplete: false
+    };
+    
+    try {
+        localStorage.setItem('pantsGameState', JSON.stringify(gameData));
+    } catch (error) {
+        console.log('Error saving game state:', error);
+    }
 }
 
-/* Allow scrolling on results screen */
-html.results-view,
-body.results-view {
-    overflow: auto !important;
-    touch-action: auto !important;
-    position: static !important;
-    height: auto !important;
-    min-height: 100vh !important;
+function loadGameState() {
+    try {
+        const stored = localStorage.getItem('pantsGameState');
+        if (stored) {
+            const gameData = JSON.parse(stored);
+            const today = new Date().toDateString();
+            
+            // Only load if it's from today
+            if (gameData.date === today) {
+                return gameData;
+            }
+        }
+    } catch (error) {
+        console.log('Error loading game state:', error);
+    }
+    return null;
 }
 
-.container.results-view {
-    position: static !important;
-    height: auto !important;
-    min-height: auto !important;
-    overflow: visible !important;
-    max-height: none !important;
+function markGameComplete() {
+    const today = new Date().toDateString();
+    const gameData = {
+        date: today,
+        currentRound: gameState.currentRound,
+        currentCategory: gameState.currentCategory,
+        letters: gameState.letters,
+        criteria: gameState.criteria,
+        answers: gameState.answers,
+        results: gameState.results,
+        hasPlayed: true,
+        isComplete: true
+    };
+    
+    try {
+        localStorage.setItem('pantsGameState', JSON.stringify(gameData));
+    } catch (error) {
+        console.log('Error marking game complete:', error);
+    }
 }
 
-.criteria-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    position: relative;
+function clearOldGameState() {
+    // Clear game state from previous days
+    const stored = loadGameState();
+    if (!stored) {
+        localStorage.removeItem('pantsGameState');
+    }
 }
 
-.reroll-btn {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 5px;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-    position: absolute;
-    right: 10px;
+function updateStats(currentScore) {
+    const stats = getStoredStats();
+    const today = new Date().toDateString();
+    
+    // Check if already played today
+    if (stats.gamesPlayed[today]) {
+        return stats; // Don't update if already played today
+    }
+    
+    // Record today's game
+    stats.gamesPlayed[today] = currentScore;
+    
+    // Update score distribution
+    if (currentScore >= 20) {
+        stats.scoreDistribution['20-24']++;
+    } else if (currentScore >= 10) {
+        stats.scoreDistribution['10-19']++;
+    } else {
+        stats.scoreDistribution['0-9']++;
+    }
+    
+    // Only count as win if score is 10 or above
+    stats.pantsSolved++;
+
+    stats.totalGames++;
+    
+    // Calculate streak
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toDateString();
+    
+    if (stats.lastPlayedDate === yesterdayString || stats.lastPlayedDate === null) {
+        // Streak continues or this is first game
+        stats.currentStreak++;
+    } else {
+        // Streak broken
+        stats.currentStreak = 1;
+    }
+    
+    // Update best streak
+    if (stats.currentStreak > stats.bestStreak) {
+        stats.bestStreak = stats.currentStreak;
+    }
+    
+    stats.lastPlayedDate = today;
+    
+    // Save to localStorage
+    saveStats(stats);
+    
+    return stats;
 }
 
-.reroll-btn:hover {
-    opacity: 1;
+function hasPlayedToday() {
+    const stats = getStoredStats();
+    const today = new Date().toDateString();
+    return stats.gamesPlayed[today] !== undefined;
 }
 
-.reroll-btn.hidden {
-    display: none;
+function displayStats() {
+    const currentScore = calculateTotalScore();
+    let stats;
+
+    if (!hasPlayedToday()) {
+        stats = updateStats(currentScore);
+    } else {
+        stats = getStoredStats();
+    }
+
+    document.getElementById('pantsSolved').textContent = stats.pantsSolved;
+    document.getElementById('currentStreak').textContent = stats.currentStreak;
+    document.getElementById('bestStreak').textContent = stats.bestStreak;
+
+    // Get the distribution values
+    const dist20 = stats.scoreDistribution['20-24'];
+    const dist10 = stats.scoreDistribution['10-19'];
+    const dist0 = stats.scoreDistribution['0-9'];
+    
+    // Find the maximum value among the distributions
+    const maxCount = Math.max(dist20, dist10, dist0);
+    
+    const dist20to24 = document.getElementById('dist20to24');
+    const dist10to19 = document.getElementById('dist10to19');
+    const dist0to9 = document.getElementById('dist0to9');
+
+    // Set widths relative to the maxCount
+    const maxWidth = 100; // Full width percentage for the highest count
+    dist20to24.style.width = maxCount > 0 ? `${(dist20 / maxCount) * maxWidth}%` : '0%';
+    dist10to19.style.width = maxCount > 0 ? `${(dist10 / maxCount) * maxWidth}%` : '0%';
+    dist0to9.style.width = maxCount > 0 ? `${(dist0 / maxCount) * maxWidth}%` : '0%';
+
+    // Update the text content
+    dist20to24.textContent = dist20;
+    dist10to19.textContent = dist10;
+    dist0to9.textContent = dist0;
+
+    document.getElementById('statsArea').style.display = 'block';
 }
 
-.criteria-text {
-    flex: 1;
-    text-align: center;
-    overflow: hidden;
+// Initialize the game
+initGame();
+
+// Pass button handlers
+document.getElementById('passYesBtn').onclick = function() {
+    // Add active class for visual feedback
+    this.classList.add('active');
+    setTimeout(() => {
+        this.classList.remove('active');
+    
+    // User confirmed pass
+    gameState.results[gameState.currentRound] = gameState.results[gameState.currentRound] || {};
+    gameState.results[gameState.currentRound][gameState.currentCategory] = 'red';
+    gameState.answers[gameState.currentRound] = gameState.answers[gameState.currentRound] || {};
+    gameState.answers[gameState.currentRound][gameState.currentCategory] = '';
+
+    // Save game state
+    saveGameState();
+
+    document.getElementById('passPrompt').style.display = 'none';
+    gameState.showingPass = false;
+    showInputSuccess('red', '');
+    nextCategory();
+    }, 100);
+};
+
+document.getElementById('passNoBtn').onclick = function() {
+        // Add active class for visual feedback
+    this.classList.add('active');
+    setTimeout(() => {
+        this.classList.remove('active');
+    document.getElementById('passPrompt').style.display = 'none';
+    gameState.showingPass = false;
+    }, 100);
+};
+
+let infoMode = false;
+
+function toggleInfo() {
+    const infoBtn = document.getElementById('infoBtn');
+    infoMode = !infoMode;
+    
+    if (infoMode) {
+        infoBtn.classList.add('active');
+        showInfoOverlays();
+    } else {
+        infoBtn.classList.remove('active');
+        hideInfoOverlays();
+    }
 }
 
-.criteria-text.criteria-animation {
-    animation: criteriaSlot 2s ease-out;
+function showInfoOverlays() {
+    const overlays = [
+        { selector: '#roundInfo', text: 'Current Round' },
+        { selector: '#letterSquare', text: 'Answers must begin with this letter' },
+        { selector: '.categories', text: 'Categories' }, 
+        { selector: '.criteria', text: 'Solve to get bonus points' },
+        { selector: '#rerollBtn', text: 'Rerolls current criteria. You have 1 reroll per round' },
+    ];
+    
+    overlays.forEach((overlay, index) => {
+        const element = document.querySelector(overlay.selector);
+        if (element && !element.classList.contains('hidden')) {
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'info-overlay';
+            infoDiv.textContent = overlay.text;
+            infoDiv.id = `info-${index}`;
+            
+            const rect = element.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            
+            infoDiv.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+            infoDiv.style.top = (rect.top - containerRect.top + rect.height / 2) + 'px';
+            infoDiv.style.display = 'block';
+            
+            document.querySelector('.container').appendChild(infoDiv);
+        }
+    });
 }
 
-@keyframes criteriaSlot {
-    0% { opacity: 1; }
-    20% { opacity: 0.7; }
-    40% { opacity: 0.5; }
-    60% { opacity: 0.8; }
-    80% { opacity: 0.9; }
-    100% { opacity: 1; }
+function hideInfoOverlays() {
+    document.querySelectorAll('.info-overlay').forEach(overlay => {
+        overlay.remove();
+    });
 }
 
-.user-answer.green {
-    color: #4CAF50;
-    font-weight: bold;
+
+function showInputError(message) {
+    const input = document.getElementById('wordInput');
+    const inputContainer = input.closest('.text-input');
+    const originalPlaceholder = input.placeholder;
+    
+    // Clear input and show error message
+    input.value = '';
+    input.placeholder = message;
+    
+    // Add error animation classes to the container
+    inputContainer.classList.add('error-shake', 'error-glow');
+    
+    // Remove animation classes and restore placeholder after animation
+    setTimeout(() => {
+        inputContainer.classList.remove('error-shake', 'error-glow');
+        input.placeholder = originalPlaceholder;
+    }, 1500);
 }
 
-.user-answer.yellow {
-    color: #FFC107;
-    font-weight: bold;
+
+function showInputSuccess(result, word) {
+    const input = document.getElementById('wordInput');
+    const inputContainer = input.closest('.text-input');
+    
+    const messages = {
+        green: [
+            'Perfect!', 'Excellent!', 'Spot on!', 'Brilliant!', 'Amazing!',
+            'Fantastic!', 'Outstanding!', 'Well done!', 'Superb!', 'Genius!',
+            'Flawless!', 'Impeccable!', 'Masterful!', 'Unbeatable!', 'Magnificent!',
+            'Exceptional!', 'Stupendous!', 'Phenomenal!', 'Incredible!', 'Spectacular!',
+            'Wonderful!', 'Bravo!', 'Nailed it!', 'You got it!', 'Absolutely!',
+            'Precisely!', 'Exactly!', 'Bingo!', 'Exemplary!', 'Distinguished!',
+            'Commendable!', 'Triumphant!', 'Victorious!', 'Top-notch!', 'First-rate!',
+            'High-five!', "You're a star!", 'Correct!', 'Right!', 'Yes!',
+            'Optimal!', 'Champion!', 'Ace!', 'Ultimate!', 'Supremacy!', 'Insane!',
+            'Pentakill!', 'M-M-M-Monster Kill!'
+        ],
+        yellow: [
+            'Good word!', 'Nice try!', 'Not bad!', 'Good effort!',
+            'Getting there!', 'Solid attempt!', 'Decent!','Fair enough!', 
+            'Acceptable!', 'Respectable!', 'Competent!', 'Adequate!',
+            'Satisfactory!', 'That works!', 'Making progress!',
+            'Pretty good!', 'Reasonable!', 'Honorable mention!', 'Good enough!', 'Passed!',
+            'Through!', 'Validated!', 'Confirmed!', 'Approved!', 'Got through!',
+            'Achieved!', 'Secured!', 'Landed it!', 'Good outcome!', 'Acceptable result!',
+            'Passed the mark!', 'Met expectations!', 'Got over the line!', 'Made it!'
+        ],
+        red: [
+            'Next time!', 'Awww!', 'Oh no!', 'Not this time!', 'Unlucky!',
+            'Better luck next time!', 'Missed it!', 'No dice!', 'Nope!',
+            'Alas!', 'Hard luck!', 'Shucks!', 'Whoops!', 'Failed to connect!', 'Off target!',
+            'Invalid!', 'Denied!', 'Out of luck!', 'No joy!', 'Fumble!',
+            'Swing and a miss!', 'Not quite!', 'Just missed!',
+            'Missed the mark!', 'No hit!', 'Slipped by!', 'Lost opportunity!', 
+            'Almost had it!', 'Not this round!', 'Too bad!',
+            'Better luck soon!', 'No cigar!', 'Didn\'t land!',
+            'Unsuccessful!', 'Declined!', 'Rejected!', 'Did not pass!',
+            'No go!', 'No score!', 'No completion!', 'A champion has been slain.'
+        ]
+    };
+    
+    // Show success message
+    const messageArray = messages[result];
+    const randomMessage = messageArray[Math.floor(Math.random() * messageArray.length)];
+    input.value = '';
+    input.placeholder = randomMessage;
+    
+    // Add success glow
+    const glowClass = result === 'green' ? 'success-glow-green' : 
+                    result === 'yellow' ? 'success-glow-yellow' : 'success-glow-red';
+    inputContainer.classList.add(glowClass);
+    
+    // Remove glow and restore placeholder after animation
+    setTimeout(() => {
+        inputContainer.classList.remove(glowClass);
+        input.placeholder = 'Type your answer...';
+    }, 1500);
 }
 
-.user-answer.red {
-    color: #f44336;
-    font-weight: bold;
+function updatePassMessage() {
+    const categoryNames = {
+        place: 'Place',
+        animal: 'Animal',
+        name: 'Name',
+        thing: 'Thing'
+    };
+    
+    const currentCategory = gameState.currentCategory;
+    const currentLetter = gameState.letters[gameState.currentRound - 1];
+    
+    document.getElementById('currentCategoryText').textContent = categoryNames[currentCategory] || 'word';
+    document.getElementById('currentLetterText').textContent = currentLetter;
 }
