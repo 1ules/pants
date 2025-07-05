@@ -1362,7 +1362,6 @@ function fallbackCopyToClipboard(text) {
 
 function createKeyboard() {
     const keyboard = document.getElementById('keyboard');
-
     keyboard.innerHTML = '';
     
     // First row - QWERTYUIOP (10 keys)
@@ -1374,8 +1373,23 @@ function createKeyboard() {
         keyboard.appendChild(key);
     });
     
-    // Second row - ASDFGHJKL← (9 letters + 1 arrow = 10 keys)
+    // Second row - ASDFGHJKL (9 keys, centered)
     'ASDFGHJKL'.split('').forEach(letter => {
+        const key = document.createElement('button');
+        key.className = 'key';
+        key.textContent = letter;
+        key.onclick = () => addLetter(letter);
+        keyboard.appendChild(key);
+    });
+    
+    // Third row - PASS ZXCVBNM ⌫ (PASS + 7 letters + backspace)
+    const passKey = document.createElement('button');
+    passKey.className = 'key';
+    passKey.textContent = 'PASS';
+    passKey.onclick = passWord;
+    keyboard.appendChild(passKey);
+    
+    'ZXCVBNM'.split('').forEach(letter => {
         const key = document.createElement('button');
         key.className = 'key';
         key.textContent = letter;
@@ -1385,30 +1399,9 @@ function createKeyboard() {
     
     const backspaceKey = document.createElement('button');
     backspaceKey.className = 'key';
-    backspaceKey.textContent = '←';
+    backspaceKey.textContent = '⌫';
     backspaceKey.onclick = deleteLetter;
     keyboard.appendChild(backspaceKey);
-    
-    // Third row - ZXCVBNM PASS CLEAR (7 letters + 1 pass + 1 clear spanning 2 = 10 total width)
-    'ZXCVBNM'.split('').forEach(letter => {
-        const key = document.createElement('button');
-        key.className = 'key';
-        key.textContent = letter;
-        key.onclick = () => addLetter(letter);
-        keyboard.appendChild(key);
-    });
-    
-    const passKey = document.createElement('button');
-    passKey.className = 'key';
-    passKey.textContent = 'PASS';
-    passKey.onclick = passWord;
-    keyboard.appendChild(passKey);
-    
-    const clearKey = document.createElement('button');
-    clearKey.className = 'key wide';
-    clearKey.textContent = 'CLEAR';
-    clearKey.onclick = clearInput;
-    keyboard.appendChild(clearKey);
 }
 
 function passWord() {
