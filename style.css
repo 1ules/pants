@@ -539,6 +539,7 @@ body {
   margin-bottom: 0;
   text-shadow: 5px 5px 0 #000;
   letter-spacing: 8px;
+  white-space: nowrap;
 }
 
 .start-btn, .next-round-btn, .share-btn {
