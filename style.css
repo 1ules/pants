@@ -540,8 +540,8 @@ body {
   font-weight: 700;
   color: white;
   margin-bottom: 0;
-  text-shadow: 4px 4px 0 #000;
-  letter-spacing: clamp(2px, 2vw, 8px);
+  text-shadow: 5px 5px 0 #000;
+  letter-spacing: 8px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
