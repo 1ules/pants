@@ -542,19 +542,25 @@ body {
 
 @media (max-width: 768px) {
   .title {
-    text-shadow: 4px 4px 0 #000; /* Reduced shadow offset */
-    letter-spacing: 6px; /* Slightly reduced spacing */
+    /* Use text-shadow to create a faux bold effect */
+    text-shadow: 
+      0.5px 0.5px 0 white,
+      -0.5px -0.5px 0 white,
+      0.5px -0.5px 0 white,
+      -0.5px 0.5px 0 white;
+    
+    /* Slightly reduce other effects that might make it look thinner */
+    letter-spacing: 6px;
+    text-shadow: 5px 5px 0 #000; /* Reduced shadow offset */
   }
   
   .loading-title {
-    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
-  }
-}
-
-@media (max-width: 768px) {
-  .title {
-    -webkit-text-stroke: 0.5px white; /* Thin white outline */
-    paint-order: stroke fill; /* Ensure stroke renders behind */
+    /* Similar treatment for loading text */
+    text-shadow: 
+      0.5px 0.5px 0 rgba(255,255,255,0.3),
+      -0.5px -0.5px 0 rgba(255,255,255,0.3),
+      0.5px -0.5px 0 rgba(255,255,255,0.3),
+      -0.5px 0.5px 0 rgba(255,255,255,0.3);
   }
 }
 
