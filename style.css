@@ -206,21 +206,37 @@ html, body {
 }
 
 .header-container {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 50px; /* Adjust gap as needed */
     width: 100%;
-    margin-bottom: 1px;
+    margin-bottom: 0px;
+    position: relative;
 }
 
-.home-btn {
-    position: absolute;
+.button-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.left {
+    order: 1;
+}
+.right {
+    order: 3;
+}
+.title {
+    order: 2;
+}
+
+.home-btn, .info-btn  {
+    position: static;
     width: 50px;  /* Fixed width */
     height: 50px; /* Fixed height */
     left: 10px;
     top: 40%;
-    transform: translateY(-50%);
+    transform: none;
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
@@ -236,9 +252,9 @@ html, body {
     justify-content: center;
 }
 
-.home-btn:hover {
+.home-btn:hover, .info-btn:hover  {
     background: rgba(255,255,255,0.3);
-    transform: translateY(-50%) scale(1.1);
+    transform: scale(1.1);
 }
 
 .how-to-play-btn {
@@ -253,33 +269,6 @@ html, body {
     transition: all 0.3s ease;
     margin-top: 10px;
     backdrop-filter: blur(10px);
-}
-
-.info-btn {
-    position: absolute;
-    width: 50px;  /* Fixed width */
-    height: 50px; /* Fixed height */
-    right: 18px; 
-    top: 40%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    padding: 8px 12px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.info-btn:hover {
-    background: rgba(255,255,255,0.3);
-    transform: translateY(-50%) scale(1.1);
 }
 
 .info-btn.active {
@@ -521,6 +510,7 @@ html, body {
 }
 
 body {
+    padding: 0 20px 20px !important;
     font-family: 'Arial', sans-serif;
     min-height: 100vh;
     display: flex;
@@ -551,11 +541,7 @@ body {
     font-style: normal;
     font-size: 4rem;
     color: white;
-    margin-bottom: clamp(5px, 1vh, 10px);
-    text-shadow: 0 2px 0 #000,
-                 0 3px 0 #000,
-                 0 4px 0 #000,
-                 0 5px 0 #000;
+    margin-bottom: 0;
 }
 
 .start-btn, .submit-btn, .next-round-btn, .share-btn {
@@ -572,7 +558,27 @@ body {
     margin: 5px;
 }
 
-.start-btn:hover, .submit-btn:hover, .next-round-btn:hover, .share-btn:hover {
+.submit-btn {
+    background: white;
+    color: #000000;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    margin-top: -5px;
+    box-shadow: 
+    6px 6px 0 #000;
+}
+
+.submit-btn:hover {
+    transform: scale(1.1);
+}
+
+.start-btn:hover, .next-round-btn:hover, .share-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
@@ -584,6 +590,7 @@ body {
 .round-info {
     color: white;
     font-size: 1.3rem;
+    margin-top: -5px;
     margin-bottom: 10px;
     font-weight: bold;
 }
@@ -592,7 +599,10 @@ body {
     width: clamp(50px, 15vw, 70px);
     height: clamp(50px, 15vw, 70px);
     background: white;
-    border: 3px solid #ddd;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid #ddd;
+    border-bottom: 3px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -602,6 +612,8 @@ body {
     border-radius: 10px;
     color: #333;
     transition: all 0.3s ease;
+    box-shadow: 
+    6px 6px 0px #000;
 }
 
 .letter-square.green {
@@ -641,7 +653,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
     font-weight: bold;
     border-radius: 15px;
     cursor: pointer;
@@ -706,7 +718,10 @@ body {
     width: 100%;
     max-width: 400px;
     height: 60px;
-    border: 4px solid white;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid #ddd;
+    border-bottom: 3px solid #ddd;
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -716,9 +731,7 @@ body {
     font-size: clamp(1rem, 2.5vw, 1.4rem);
     color: #333;
     box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        6px 6px 0 #000;
     font-weight: bold;
     position: relative;
     overflow: hidden;
