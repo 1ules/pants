@@ -573,7 +573,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin-top: -20px;
+    margin-top: -15px;
     box-shadow: 
     6px 6px 0 #000;
 }
@@ -772,7 +772,7 @@ body {
 .keyboard {
     display: grid;
     grid-template-columns: repeat(20, 1fr);
-    gap: clamp(1px, 0.5vw, 3px);
+    gap: clamp(2px, 1vw, 6px);
     margin: clamp(15px, 3vh, 25px) 0;
     width: min(99vw, 600px);
     margin-left: 50%;
