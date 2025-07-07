@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <div class="loading-screen" id="loadingScreen">
@@ -120,7 +121,7 @@
 
             <div class="message-container">
                 <div class="pass-prompt" id="passPrompt" style="display: none;">
-                    <div>You can submit any <span id="currentCategoryText"></span> that starts with <span id="currentLetterText"></span>.</div>
+                    <div><strong>You can submit any <span id="currentCategoryText"></span> that starts with <span id="currentLetterText"></span>.</strong></div>
                     <div>Are you sure you want to pass?</div>
                     <div class="pass-buttons">
                         <button class="pass-btn no" id="passNoBtn">No</button>
@@ -129,13 +130,17 @@
                 </div>
             </div>
 
-            <div class="keyboard" id="keyboard"></div>
+            <div class="keyboard-footer">
 
-            <div class="button-container">
-                <button class="submit-btn" id="submitBtn">Submit</button>
-                <button class="next-round-btn" id="nextRoundBtn" style="display: none;">Next Round</button>
+                <div class="keyboard" id="keyboard"></div>
+
+                <div class="button-container">
+                    <button class="submit-btn" id="submitBtn">Submit</button>
+                    <button class="next-round-btn" id="nextRoundBtn" style="display: none;">Next Round</button>
+                </div>
             </div>
-        </div>
+
+            </div>
         
 
         <div class="results-area" id="resultsArea">
@@ -197,5 +202,13 @@
     </div>
     <script src="dictionary.json"></script>
     <script src="script.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5924VHX2CB"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-5924VHX2CB');
+    </script>
 </body>
 </html>
