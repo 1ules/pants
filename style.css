@@ -540,6 +540,24 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+@media (max-width: 768px) {
+  .title {
+    text-shadow: 4px 4px 0 #000; /* Reduced shadow offset */
+    letter-spacing: 6px; /* Slightly reduced spacing */
+  }
+  
+  .loading-title {
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    -webkit-text-stroke: 0.5px white; /* Thin white outline */
+    paint-order: stroke fill; /* Ensure stroke renders behind */
+  }
+}
+
 .start-btn, .next-round-btn, .share-btn {
     background: white;
     color: #000000;
