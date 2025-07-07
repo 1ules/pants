@@ -37,9 +37,6 @@ html, body {
         8px 8px,
         6px 6px,
         100% 100%;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    text-size-adjust: 100%;
 }
 
 /* Loading Screen Styles */
@@ -536,15 +533,12 @@ body {
 
 .title {
   font-family: 'DM Serif Display', serif;
-  font-size: 4rem;
+  font-size: 64px;
   font-weight: 700;
   color: white;
   margin-bottom: 0;
   text-shadow: 5px 5px 0 #000;
   letter-spacing: 8px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 .start-btn, .next-round-btn, .share-btn {
