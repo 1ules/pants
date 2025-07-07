@@ -87,12 +87,13 @@ html, body {
 }
 
 .loading-title {
+    font-family: "Abril Fatface", serif;
+    font-weight: 400;
+    font-style: normal;
     font-size: 4rem;
-    font-weight: bold;
+    font-size: 4rem;
     color: white;
-    margin-bottom: 50px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 8px;
 }
 
 .zipper-container {
@@ -561,18 +562,22 @@ body {
 .submit-btn {
     background: white;
     color: #000000;
-    border: none;
-    padding: 12px 25px;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid #ddd;
+    border-bottom: 3px solid #ddd;
+    padding: 7px 20px;
     font-size: 1.1rem;
     font-weight: bold;
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin-top: -5px;
+    margin-top: -20px;
     box-shadow: 
     6px 6px 0 #000;
 }
+
 
 .submit-btn:hover {
     transform: scale(1.1);
@@ -784,7 +789,7 @@ body {
     font-weight: bold;
     font-size: clamp(13px, 2.8vw, 16px);
     transition: all 0.2s ease;
-    height: clamp(48px, 10vw, 65px);
+    height: clamp(53px, 10vw, 70px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -880,49 +885,23 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
+    border-top: 3px solid rgb(0, 0, 0);
+    border-left: 3px solid rgb(0, 0, 0);
+    border-right: 3px solid #000000;
+    border-bottom: 3px solid #000000;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(50px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
     z-index: 100;
     text-align: center;
     font-size: 1.1rem;
     min-width: 280px;
-    color: #ffffff;
-    background: 
-    /* White thread texture overlay */
-    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
-    radial-gradient(circle at 60% 90%, rgba(255,255,255,0.12) 1px, transparent 1px),
-    radial-gradient(circle at 90% 60%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 10% 30%, rgba(255,255,255,0.09) 1px, transparent 1px),
-    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.11) 1px, transparent 1px),
-    /* Denim texture pattern */
-    repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
-    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
-    /* Main darker denim gradient */
-    linear-gradient(
-    0deg,
-    #0a1a3a 0%,      /* Deep navy (almost black-blue) */
-    #11244d 20%,     /* Dark denim */
-    #1a2f60 40%,     /* Mid-dark blue denim */
-    #243d75 60%,     /* Classic denim blue */
-    #3a4f8c 80%,     /* Soft light denim */
-    #4d69a8 100%     /* Light washed blue */
-    );
-background-size: 
-    100px 100px,
-    120px 120px,
-    80px 80px,
-    150px 150px,
-    90px 90px,
-    110px 110px,
-    130px 130px,
-    8px 8px,
-    6px 6px,
-    100% 100%;
+    color: #000000;
+    background: #ffffff;
+    box-shadow: 
+    6px 6px 0px #000;
 }
+
 
 .pass-prompt > div:first-child {
     margin-bottom: 8px;
