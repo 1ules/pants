@@ -87,8 +87,7 @@ html, body {
 }
 
 .loading-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-size: 4rem;
     font-weight: bold;
     color: white;
     margin-bottom: 50px;
@@ -202,26 +201,26 @@ html, body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-.header-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px; /* Adjust this value for spacing between title and buttons */
-    position: relative;
-    width: 100%;
-    margin-bottom: 0px;
-    min-height: 70px; /* Ensure enough vertical space */
+.title {
+    margin: 0; 
 }
 
-.home-btn, .info-btn {
-    position: static; /* Remove absolute positioning */
-    width: 50px;
-    height: 50px;
-    transform: none; /* Remove transform */
-    top: auto;
-    left: auto;
-    right: auto;
-    margin: 0;
+.header-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1px;
+}
+
+.home-btn {
+    position: absolute;
+    width: 50px;  /* Fixed width */
+    height: 50px; /* Fixed height */
+    left: 10px;
+    top: 40%;
+    transform: translateY(-50%);
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
@@ -237,15 +236,50 @@ html, body {
     justify-content: center;
 }
 
-
 .home-btn:hover {
     background: rgba(255,255,255,0.3);
-    transform: scale(1.1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.how-to-play-btn {
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.5);
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.info-btn {
+    position: absolute;
+    width: 50px;  /* Fixed width */
+    height: 50px; /* Fixed height */
+    right: 18px; 
+    top: 40%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .info-btn:hover {
     background: rgba(255,255,255,0.3);
-    transform: scale(1.1);
+    transform: translateY(-50%) scale(1.1);
 }
 
 .info-btn.active {
@@ -273,21 +307,6 @@ html, body {
     text-align: center;
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
-
-.how-to-play-btn {
-    background: rgba(255,255,255,0.3);
-    color: white;
-    border: 2px solid rgba(255,255,255,0.5);
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    backdrop-filter: blur(10px);
-}
-
 
 .how-to-play-btn:hover {
     background: rgba(255,255,255,0.4);
@@ -508,7 +527,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 0 20px 20px;
+    padding: 20px;
     color: #333;
 }
 
@@ -527,44 +546,19 @@ body {
 }
 
 .title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 64px;
-  color: white;
-  margin-bottom: 0;
-  text-shadow: 5px 5px 0 #000;
-  letter-spacing: 8px;
-  flex-shrink: 0;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+    font-family: "Abril Fatface", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 4rem;
+    color: white;
+    margin-bottom: clamp(5px, 1vh, 10px);
+    text-shadow: 0 2px 0 #000,
+                 0 3px 0 #000,
+                 0 4px 0 #000,
+                 0 5px 0 #000;
 }
 
-@media (max-width: 768px) {
-  .title {
-    /* Use text-shadow to create a faux bold effect */
-    text-shadow: 
-      0.5px 0.5px 0 white,
-      -0.5px -0.5px 0 white,
-      0.5px -0.5px 0 white,
-      -0.5px 0.5px 0 white;
-    
-    /* Slightly reduce other effects that might make it look thinner */
-    letter-spacing: 6px;
-    text-shadow: 5px 5px 0 #000; /* Reduced shadow offset */
-  }
-  
-  .loading-title {
-    /* Similar treatment for loading text */
-    text-shadow: 
-      0.5px 0.5px 0 rgba(255,255,255,0.3),
-      -0.5px -0.5px 0 rgba(255,255,255,0.3),
-      0.5px -0.5px 0 rgba(255,255,255,0.3),
-      -0.5px 0.5px 0 rgba(255,255,255,0.3);
-  }
-}
-
-.start-btn, .next-round-btn, .share-btn {
+.start-btn, .submit-btn, .next-round-btn, .share-btn {
     background: white;
     color: #000000;
     border: none;
@@ -578,26 +572,9 @@ body {
     margin: 5px;
 }
 
-.submit-btn{
-    background: white;
-    color: #000000;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 6px 6px 0 #000;
-}
-
-.start-btn:hover, .next-round-btn:hover, .share-btn:hover {
+.start-btn:hover, .submit-btn:hover, .next-round-btn:hover, .share-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.submit-btn:hover {
-    transform: scale(1.1);
 }
 
 .game-area {
@@ -607,9 +584,7 @@ body {
 .round-info {
     color: white;
     font-size: 1.3rem;
-    margin-top: -5px !important; /* Pull element upward */
-    margin-bottom: 10px !important; /* Reduce bottom spacing */
-    padding-top: 0 !important;
+    margin-bottom: 10px;
     font-weight: bold;
 }
 
@@ -627,7 +602,6 @@ body {
     border-radius: 10px;
     color: #333;
     transition: all 0.3s ease;
-    box-shadow: 6px 6px 0 #000;
 }
 
 .letter-square.green {
@@ -741,7 +715,10 @@ body {
     background: rgba(255,255,255,0.9);
     font-size: clamp(1rem, 2.5vw, 1.4rem);
     color: #333;
-    box-shadow: 6px 6px 0 #000;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
     font-weight: bold;
     position: relative;
     overflow: hidden;
