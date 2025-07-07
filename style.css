@@ -87,7 +87,8 @@ html, body {
 }
 
 .loading-title {
-    font-size: 4rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.5rem, 10vw, 4rem);
     font-weight: bold;
     color: white;
     margin-bottom: 50px;
@@ -201,26 +202,31 @@ html, body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-.title {
-    margin: 0; 
-}
-
 .header-container {
-    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    gap: 30px; /* Adjust this value for spacing between title and buttons */
+    position: relative;
     width: 100%;
-    margin-bottom: 1px;
+    margin-bottom: 0px;
+    min-height: 70px; /* Ensure enough vertical space */
 }
 
-.home-btn {
-    position: absolute;
-    width: 50px;  /* Fixed width */
-    height: 50px; /* Fixed height */
-    left: 10px;
-    top: 40%;
-    transform: translateY(-50%);
+.title {
+    margin: 0;
+    flex-shrink: 0; /* Prevents title from shrinking */
+}
+
+.home-btn, .info-btn {
+    position: static; /* Remove absolute positioning */
+    width: 50px;
+    height: 50px;
+    transform: none; /* Remove transform */
+    top: auto;
+    left: auto;
+    right: auto;
+    margin: 0;
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
@@ -235,51 +241,16 @@ html, body {
     align-items: center;
     justify-content: center;
 }
+
 
 .home-btn:hover {
     background: rgba(255,255,255,0.3);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.how-to-play-btn {
-    background: rgba(255,255,255,0.3);
-    color: white;
-    border: 2px solid rgba(255,255,255,0.5);
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    backdrop-filter: blur(10px);
-}
-
-.info-btn {
-    position: absolute;
-    width: 50px;  /* Fixed width */
-    height: 50px; /* Fixed height */
-    right: 18px; 
-    top: 40%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    padding: 8px 12px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transform: scale(1.1);
 }
 
 .info-btn:hover {
     background: rgba(255,255,255,0.3);
-    transform: translateY(-50%) scale(1.1);
+    transform: scale(1.1);
 }
 
 .info-btn.active {
@@ -307,6 +278,21 @@ html, body {
     text-align: center;
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
+
+.how-to-play-btn {
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.5);
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    backdrop-filter: blur(10px);
+}
+
 
 .how-to-play-btn:hover {
     background: rgba(255,255,255,0.4);
@@ -514,7 +500,6 @@ html, body {
     flex-shrink: 0;
 }
 
-/* EXISTING CSS BELOW */
 * {
     margin: 0;
     padding: 0;
@@ -528,7 +513,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 20px;
+    padding: 0 20px 20px;
     color: #333;
 }
 
@@ -547,15 +532,16 @@ body {
 }
 
 .title {
-    font-size: clamp(2rem, 8vw, 3rem);
-    font-weight: bold;
-    color: white;
-    margin-bottom: clamp(5px, 1vh, 10px);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: clamp(2px, 2vw, 8px);
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0;
+  text-shadow: 5px 5px 0 #000;
+  letter-spacing: clamp(2px, 2vw, 8px);
 }
 
-.start-btn, .submit-btn, .next-round-btn, .share-btn {
+.start-btn, .next-round-btn, .share-btn {
     background: white;
     color: #000000;
     border: none;
@@ -569,9 +555,26 @@ body {
     margin: 5px;
 }
 
-.start-btn:hover, .submit-btn:hover, .next-round-btn:hover, .share-btn:hover {
+.submit-btn{
+    background: white;
+    color: #000000;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 0 #000;
+}
+
+.start-btn:hover, .next-round-btn:hover, .share-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.submit-btn:hover {
+    transform: scale(1.1);
 }
 
 .game-area {
@@ -581,7 +584,9 @@ body {
 .round-info {
     color: white;
     font-size: 1.3rem;
-    margin-bottom: 10px;
+    margin-top: -5px !important; /* Pull element upward */
+    margin-bottom: 10px !important; /* Reduce bottom spacing */
+    padding-top: 0 !important;
     font-weight: bold;
 }
 
@@ -599,6 +604,7 @@ body {
     border-radius: 10px;
     color: #333;
     transition: all 0.3s ease;
+    box-shadow: 6px 6px 0 #000;
 }
 
 .letter-square.green {
@@ -712,10 +718,7 @@ body {
     background: rgba(255,255,255,0.9);
     font-size: clamp(1rem, 2.5vw, 1.4rem);
     color: #333;
-    box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    box-shadow: 6px 6px 0 #000;
     font-weight: bold;
     position: relative;
     overflow: hidden;
