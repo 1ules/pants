@@ -593,11 +593,14 @@ body {
 }
 
 .round-info {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
     color: white;
-    font-size: 1.3rem;
-    margin-top: -5px;
+    font-size: 0.95rem;
+    margin-top: -10px;
     margin-bottom: 10px;
-    font-weight: bold;
 }
 
 .letter-square {
@@ -702,6 +705,7 @@ body {
 
 
 .category-name {
+    
     color: white;
     font-size: 1rem;
     margin-top: 9px;
@@ -740,6 +744,7 @@ body {
     font-weight: bold;
     position: relative;
     overflow: hidden;
+    margin-bottom: -5px;
  }
 
 .text-input input {
