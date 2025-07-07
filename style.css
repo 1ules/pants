@@ -213,11 +213,6 @@ html, body {
     min-height: 70px; /* Ensure enough vertical space */
 }
 
-.title {
-    margin: 0;
-    flex-shrink: 0; /* Prevents title from shrinking */
-}
-
 .home-btn, .info-btn {
     position: static; /* Remove absolute positioning */
     width: 50px;
@@ -538,8 +533,8 @@ body {
   margin-bottom: 0;
   text-shadow: 5px 5px 0 #000;
   letter-spacing: 8px;
-  white-space: nowrap;
-  font-display: swap;
+  flex-shrink: 0;
+  margin: 0;
 }
 
 .start-btn, .next-round-btn, .share-btn {
