@@ -534,12 +534,12 @@ body {
 .title {
   font-family: 'DM Serif Display', serif;
   font-size: 64px;
-  font-weight: 700;
   color: white;
   margin-bottom: 0;
   text-shadow: 5px 5px 0 #000;
   letter-spacing: 8px;
   white-space: nowrap;
+  font-display: swap;
 }
 
 .start-btn, .next-round-btn, .share-btn {
