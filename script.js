@@ -1,4 +1,4 @@
-const CURRENT_VERSION = '0.0.2'; 
+const CURRENT_VERSION = '0.0.3'; 
 
 function checkVersion() {
     const savedVersion = localStorage.getItem('pantsVersion');
@@ -842,6 +842,9 @@ function selectCategory(category) {
     } else {
         document.getElementById('criteria').textContent = criteria;
     }
+
+    // Reset input color when switching categories
+input.style.color = 'black';
     
     // Save current category selection
     saveGameState();
@@ -1205,12 +1208,15 @@ function endGame() {
 
 function addLetter(letter) {
     // Prevent typing when on score screen
-     if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
+    if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
     
     const input = document.getElementById('wordInput');
     input.value += letter.toLowerCase();
     input.focus();
     pulseInputCircle();
+    
+    // Add real-time validation
+    validateInputRealTime();
 }
 
 function deleteLetter() {
@@ -1221,6 +1227,9 @@ function deleteLetter() {
     input.value = input.value.slice(0, -1);
     input.focus();
     pulseInputCircle();
+    
+    // Add real-time validation
+    validateInputRealTime();
 }
 
 function showResults() {
@@ -1467,6 +1476,7 @@ function setupEventListeners() {
     document.getElementById('homeBtn').onclick = goHome;
     document.getElementById('infoBtn').onclick = toggleInfo;
     document.getElementById('rerollBtn').onclick = rerollCriteria;
+    wordInput.addEventListener('input', validateInputRealTime);
 
     document.getElementById('howToPlayBtn').onclick = () => {
     document.getElementById('howToPlayModal').style.display = 'flex';
@@ -1938,4 +1948,236 @@ function updatePassMessage() {
     
     document.getElementById('currentCategoryText').textContent = categoryNames[currentCategory] || 'word';
     document.getElementById('currentLetterText').textContent = currentLetter;
+}
+
+const colorGradients = {
+    blue: 'linear-gradient(0deg, #0a1a3a 0%, #11244d 20%, #1a2f60 40%, #243d75 60%, #3a4f8c 80%, #4d69a8 100%)',
+    black: 'linear-gradient(0deg, #121212 0%, #1a1a1a 20%, #222222 40%, #2a2a2a 60%, #333333 80%, #3d3d3d 100%)',
+    green: 'linear-gradient(0deg, #0d2818 0%, #143c25 20%, #1b5333 40%, #226a41 60%, #29824f 80%, #30995e 100%)',
+    red: 'linear-gradient(0deg, #330e0e 0%, #4d1515 20%, #661d1d 40%, #802525 60%, #992d2d 80%, #b33535 100%)',
+    pink: 'linear-gradient(0deg, #2d0d2d 0%, #451545 20%, #5d1d5d 40%, #752575 60%, #8d2d8d 80%, #a535a5 100%)',
+    purple: 'linear-gradient(0deg, #1a0d33 0%, #28154d 20%, #361d66 40%, #442580 60%, #522d99 80%, #6035b3 100%)',
+    yellow: 'linear-gradient(0deg, #332b0d 0%, #4d4015 20%, #66561d 40%, #806c25 60%, #99822d 80%, #b39835 100%)'
+};
+
+// Initialize color picker
+const colorPickerButton = document.getElementById('colorPickerButton');
+const colorPickerContainer = document.getElementById('colorPickerContainer');
+let colorOptionsCreated = false;
+let expanded = false;
+let currentColor = 'blue';
+let availableColors = ['black', 'green', 'red', 'pink', 'purple', 'yellow'];
+
+function setInitialColor() {
+  // Load from localStorage if available
+  const savedColor = localStorage.getItem('pantsBackgroundColor');
+  if (savedColor) {
+    currentColor = savedColor;
+  } else {
+    currentColor = 'blue'; // Default color
+  }
+  
+  // Remove current color from available options
+  availableColors = ['blue', 'black', 'green', 'red', 'pink', 'purple', 'yellow']
+    .filter(color => color !== currentColor);
+    
+  updateBackground(currentColor);
+  colorPickerButton.style.background = colorGradients[currentColor];
+}
+
+// Create color options (only non-current colors)
+function createColorOptions() {
+    if (colorOptionsCreated) return;
+    
+    availableColors.forEach((color, index) => {
+        const option = document.createElement('div');
+        option.className = `color-option`;
+        option.style.background = colorGradients[color];
+        option.dataset.color = color;
+        option.style.opacity = '0';
+        option.style.transform = 'translateX(0) scale(0.8)'; // Start at center, slightly smaller
+        colorPickerContainer.appendChild(option);
+    });
+    
+    colorOptionsCreated = true;
+}
+
+// Expand color picker with horizontal sliding animation
+function expandColorPicker() {
+    if (expanded) return;
+    expanded = true;
+    createColorOptions();
+    
+    const options = document.querySelectorAll('.color-option');
+    const spacing = 50;
+    const leftPositions = [-3, -2, -1].map(pos => pos * spacing);
+    const rightPositions = [1, 2, 3].map(pos => pos * spacing);
+    const allPositions = [...leftPositions, ...rightPositions];
+    
+    // Force a reflow to ensure starting styles are applied
+    requestAnimationFrame(() => {
+        options.forEach((option, index) => {
+            const xPosition = allPositions[index];
+            option.style.setProperty('--option-x', `${xPosition}px`); // Store x position
+            option.style.opacity = '1';
+            option.style.transform = `translateX(${xPosition}px) scale(1)`;
+        });
+    });
+}
+
+// Collapse color picker with reverse animation
+function collapseColorPicker() {
+    if (!expanded) return; // Prevent multiple collapse calls
+    expanded = false; // Set to false immediately
+    
+    const options = document.querySelectorAll('.color-option');
+    
+    options.forEach((option, index) => {
+        option.style.opacity = '0';
+        option.style.transform = 'translateX(0) scale(0.8)';
+    });
+    
+    setTimeout(() => {
+        // Only remove if still collapsed (prevents issues with quick clicks)
+        if (!expanded && colorPickerContainer.querySelectorAll('.color-option').length > 0) {
+            options.forEach(option => option.remove());
+        }
+        colorOptionsCreated = false;
+    }, 1000);
+}
+
+// Update background
+function updateBackground(color) {
+    document.documentElement.style.setProperty('--main-gradient', colorGradients[color]);
+}
+
+function handleColorSelection(color) {
+  // Add previous color back to available options
+  availableColors.push(currentColor);
+  // Remove selected color from available options
+  availableColors = availableColors.filter(c => c !== color);
+  
+  // Update current color
+  currentColor = color;
+  
+  updateBackground(currentColor);
+  // Save to localStorage
+  localStorage.setItem('pantsBackgroundColor', currentColor);
+  colorPickerButton.style.background = colorGradients[currentColor];
+  
+  // Collapse picker
+  collapseColorPicker();
+}
+
+// Event listeners
+colorPickerButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    expanded ? collapseColorPicker() : expandColorPicker();
+});
+
+document.addEventListener('click', (e) => {
+    if (!colorPickerContainer.contains(e.target)) {
+        collapseColorPicker();
+    }
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    setInitialColor();
+    
+    // Add color option event listeners
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('color-option')) {
+            const color = e.target.dataset.color;
+            handleColorSelection(color);
+        }
+    });
+});
+
+function validateInputRealTime() {
+    const input = document.getElementById('wordInput');
+    const word = input.value.trim().toLowerCase();
+    
+    // Reset to default color if empty
+    if (!word) {
+        input.style.color = 'black';
+        return;
+    }
+    
+    // Don't validate if on score category
+    if (gameState.currentCategory === 'score') {
+        input.style.color = 'black';
+        return;
+    }
+    
+    const currentLetter = gameState.letters[gameState.currentRound - 1].toLowerCase();
+    const criteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    const category = gameState.currentCategory;
+    
+    // Must start with correct letter
+    if (!word.startsWith(currentLetter)) {
+        input.style.color = 'black';
+        return;
+    }
+    
+    // Check if word is in category
+    let wordFoundInCategory = false;
+    const categoryData = window.dictionary[category];
+    
+    // Same category validation logic as in submitAnswer
+    if (category === 'name' && criteria === vowelEndingCriteria.name) {
+        for (const crit of allowedNameCriteria) {
+            const words = getCriteriaWords(category, crit);
+            if (words.includes(word) || (word.endsWith('s') && words.includes(word.slice(0, -1)))) {
+                wordFoundInCategory = true;
+                break;
+            }
+        }
+    } else if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        if (categoryData) {
+            for (const criteriaKey in categoryData) {
+                if (criteriaKey === vowelEndingCriteria[category]) continue;
+                const words = getCriteriaWords(category, criteriaKey);
+                if (words.includes(word) || (word.endsWith('s') && words.includes(word.slice(0, -1)))) {
+                    wordFoundInCategory = true;
+                    break;
+                }
+            }
+        }
+    } else {
+        if (categoryData) {
+            for (const criteriaKey in categoryData) {
+                const words = getCriteriaWords(category, criteriaKey);
+                if (words.includes(word) || (word.endsWith('s') && words.includes(word.slice(0, -1)))) {
+                    wordFoundInCategory = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    // If not in category, keep black
+    if (!wordFoundInCategory) {
+        input.style.color = 'black';
+        return;
+    }
+    
+    // Check if matches criteria (green) or just in category (yellow)
+    let matchesCriteria = false;
+    
+    if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
+        const lastChar = word.charAt(word.length - 1).toLowerCase();
+        matchesCriteria = ['a','e','i','o','u'].includes(lastChar);
+    } else if (criteria === 'Letter Pattern') {
+        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        matchesCriteria = checkWordAgainstPattern(word, pattern);
+    } else {
+        const criteriaWords = getCriteriaWords(category, criteria);
+        if (criteriaWords.includes(word) || (word.endsWith('s') && criteriaWords.includes(word.slice(0, -1)))) {
+            matchesCriteria = true;
+        }
+    }
+    
+    // Set color based on validation
+    input.style.color = matchesCriteria ? '#005A23' : '#CC9A06';
 }
