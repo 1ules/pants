@@ -424,7 +424,8 @@ html, body,
 }
 
 .submit-btn:hover {
-    transform: scale(1.1);
+    box-shadow: 1px 1px 0px #000;
+    transform: translate(2px, 2px);
 }
 
 .start-btn:hover, .next-round-btn:hover, .share-btn:hover,
@@ -493,7 +494,7 @@ html, body,
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Inter", sans-serif;
+    font-family: "Abril Fatface", serif;
     font-optical-sizing: auto;
     font-weight: 800;
     font-style: normal;
@@ -568,7 +569,9 @@ html, body,
 }
 
 .category.selected {
-    box-shadow: 1px 1px 0px #000;
+    box-shadow: 
+        1px 1px 0px #000,
+        0 0 7px rgba(255, 255, 255, 0.4);
     transform: translate(2px, 2px);
 }
 
@@ -613,7 +616,7 @@ html, body,
     left: 3.5px;
     right: 3.5px;
     bottom: 3.5px;
-    border: 1.8px dashed #f4d03f; /* Yellow dashed border */
+    border: 1.8px dashed #c9a23f; /* Yellow dashed border */
     border-radius: 6px; /* Slightly smaller radius */
     pointer-events: none; /* Prevents interference with clicks */
 }
@@ -629,15 +632,15 @@ html, body,
     width: 100%;
     max-width: 100%;
     height: clamp(50px, 12vw, 60px);
-    background: rgba(0, 0, 0, 0.2); 
-    border: 5px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05); 
+    border: 3px solid rgba(255, 255, 255, 0.2);
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 1vh;
     font-size: clamp(0.9rem, 3.5vw, 1.4rem);
-    color: #333;
+    color: #e9e9e9;
     box-shadow: 
         6px 6px 0 #000;
     font-weight: bold;
@@ -647,7 +650,6 @@ html, body,
     place-items: center; /* Centers both horizontally and vertically */
  }
 
-
 .text-input input {
     background: none;
     border: none;
@@ -655,7 +657,7 @@ html, body,
     text-align: center;
     font-size: clamp(1.5rem, 4vw, 2rem);
     font-weight: bold;
-    color: #333;
+    color: #e9e9e9;
     width: 100%;
     pointer-events: none; 
     user-select: none;
@@ -664,6 +666,7 @@ html, body,
 
 .text-input input::placeholder {
     font-size: clamp(1rem, 4vw, 1.5rem);
+    color: #e9e9e9;
 }
 
 /* For the actual messages shown after submission */
@@ -673,15 +676,15 @@ html, body,
 }
 
 .text-input input.valid-green {
-    color: #005A23; /* Green color */
+    color: #5dd27a; /* Green color */
 }
 
 .text-input input.valid-yellow {
-    color: #CC9A06; /* Yellow color */
+    color: #f4d03f; /* Yellow color */
 }
 
 .text-input input {
-    color: #000; /* Default black */
+    color: #e9e9e9; /* Default black */
 }
 
 /* Keyboard */
@@ -714,6 +717,8 @@ html, body,
     padding: 0;
     min-width: 0;
     grid-column: span 2;    
+        box-shadow: 
+        2px 2px 0 #000;
 }
 
 .key::before {
@@ -936,20 +941,17 @@ html, body,
 
 .text-input.score-green input,
 .text-input.score-green input::placeholder {
-    color: #005A23 !important;
-    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    color: #5dd27a !important;
 }
 
 .text-input.score-yellow input,
 .text-input.score-yellow input::placeholder {
-    color: #CC9A06 !important;
-    text-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
+    color: #f4d03f !important;
 }
 
 .text-input.score-red input,
 .text-input.score-red input::placeholder {
-    color: #f44336 !important;
-    text-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+    color: #e74c3c !important;
 }
 
 .results-area {
