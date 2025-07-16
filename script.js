@@ -192,24 +192,26 @@ const categories = {
         'Geographical Features',
         'Found in a City',
         'Hospital Rooms and Departments',
+        'Planets and Moons',
+        'Around the House',
         'Letter Pattern'
         ],
 
     animal: [
         'Animals Ending with Vowels', 
-        'Has 4 Legs', 
         'Mammal', 
         'Aquatic', 
         'Flies or Glides', 
         'Cold Blooded', 
         'Warm Blooded', 
-        'Omnivore',
         'Carnivore', 
         'Herbivore', 
         'Fictional and Mythological Creatures',
         'Reptiles',
         'Insects',
         'Prehistoric Animals',
+        'Chinese Zodiac',
+        'Brands with Animal Logos/Mascots',
         'Letter Pattern'
         ],
 
@@ -237,13 +239,17 @@ const categories = {
         'Letter Pattern',
         //shared criterias
         'Car Manufacturers',
-        'Designer and Popular Brands',
+        'Popular Brands',
+        'Designer/Luxury Brands',
+        'Electronic Brands',
+        'Sports Brands',
         'Periodic Table Elements',
         'Fruits',
         'Plants and Flowers',
         'Fiat Currencies',
         'Pasta and Bread',
-        'Herbs and Spices'
+        'Herbs and Spices',
+        'Alcoholic Drinks'
         ],    
 
     thing: [
@@ -268,13 +274,18 @@ const categories = {
         'Letter Pattern',
         //shared criterias
         'Car Manufacturers', 
-        'Designer and Popular Brands',
+        'Popular Brands',
+        'Designer/Luxury Brands',
+        'Electronic Brands',
+        'Sports Brands',
         'Fruits',       
         'Plants and Flowers',
         'Periodic Table Elements',
         'Fiat Currencies',
         'Pasta and Bread',
-        'Herbs and Spices'
+        'Herbs and Spices',
+        'Alcoholic Drinks',
+        'Brands with Animal Logos/Mascots'
         ],
 
 };
@@ -647,6 +658,10 @@ function startGame() {
     document.getElementById('homeBtn').style.display = 'block';
     document.getElementById('infoBtn').style.display = 'block';
     createKeyboard();
+
+    // Initialize score color
+    const inputContainer = document.querySelector('.text-input');
+    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
     
     updateGameDisplay();
 }
@@ -742,6 +757,7 @@ function updateGameDisplay() {
     
     // Clear input
     document.getElementById('wordInput').value = '';
+    document.getElementById('wordInput').classList.remove('valid-green', 'valid-yellow');
     document.getElementById('passPrompt').style.display = 'none';
     gameState.showingPass = false;
 
@@ -784,24 +800,48 @@ function updateCategoryName() {
 
 function selectCategory(category) {
     const input = document.getElementById('wordInput');
+    input.classList.remove('valid-green', 'valid-yellow');
+    const inputContainer = document.querySelector('.text-input');
+
+    // Clear input text whenever any category is clicked
+    input.value = '';
+    input.placeholder = 'Type your answer...';
+    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
+    pulseInputCircle(); 
     
     if (category === 'score') {
-        // Show current score in the input field
         const score = calculateTotalScore();
-        input.placeholder = `${score}/24`;
         input.value = '';
-        input.disabled = true; // Disable input when on score
+        input.placeholder = `${score}/24`;
+        input.disabled = true;
         document.getElementById('criteria').textContent = 'Current Score';
-        document.getElementById('submitBtn').style.display = 'none'; // Hide submit button
-        document.getElementById('rerollBtn').classList.add('hidden'); // Hide reroll button
+        document.getElementById('submitBtn').style.display = 'none';
+        
+        // Remove all color classes first
+        inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
+        
+        // Add appropriate color class based on score
+        if (score >= 20) {
+            inputContainer.classList.add('score-green');
+        } else if (score >= 10) {
+            inputContainer.classList.add('score-yellow');
+        } else {
+            inputContainer.classList.add('score-red');
+        }
         
         // Select the score category
         document.querySelectorAll('.category').forEach(cat => cat.classList.remove('selected'));
         document.querySelector(`[data-category="${category}"]`).classList.add('selected');
         
         updateCategoryName();
-        return; // Important: return early for score category
+        return;
     }
+    
+    // For other categories, remove score coloring
+    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
+    input.placeholder = 'Type your answer...';
+    input.disabled = false;
+    document.getElementById('submitBtn').style.display = 'inline-block';
     
     // Check if category is already completed for current round
     const categoryElement = document.querySelector(`[data-category="${category}"]`);
@@ -842,9 +882,6 @@ function selectCategory(category) {
     } else {
         document.getElementById('criteria').textContent = criteria;
     }
-
-    // Reset input color when switching categories
-input.style.color = 'black';
     
     // Save current category selection
     saveGameState();
@@ -1207,7 +1244,6 @@ function endGame() {
 }
 
 function addLetter(letter) {
-    // Prevent typing when on score screen
     if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
     
     const input = document.getElementById('wordInput');
@@ -1220,7 +1256,6 @@ function addLetter(letter) {
 }
 
 function deleteLetter() {
-    // Prevent deleting when on score screen
     if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
 
     const input = document.getElementById('wordInput');
@@ -1277,6 +1312,13 @@ function setupRoundBreakdown() {
     });
 }
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
 function showRoundDetails(round) {
     const roundContent = document.getElementById('roundContent');
     const letter = gameState.letters[round - 1];
@@ -1291,25 +1333,54 @@ function showRoundDetails(round) {
             : 'Passed';
         
         // Get the result for this category
-        const result = gameState.results[round][category] || 'red'; // Default to red if missing
+        const result = gameState.results[round][category] || 'red';
         
         // Get possible answers
-        let possibleAnswers = [];
+        let allValidWords = [];
         const words = getCriteriaWords(category, criteria);
         
         if (criteria === 'Letter Pattern') {
             const pattern = getPatternForRound(round, category);
-            possibleAnswers = words
-                .filter(word => {
-                    return word.startsWith(letter.toLowerCase()) && 
-                           word.length === 5 && // Only show 5-letter words
-                           word[pattern.position] === pattern.consonant;
-                })
-                .slice(0, 5);
+            allValidWords = words.filter(word => 
+                word.startsWith(letter.toLowerCase()) && 
+                word.length === 5 && 
+                word[pattern.position] === pattern.consonant
+            );
         } else if (words.length > 0) {
-            possibleAnswers = words
-                .filter(word => word.startsWith(letter.toLowerCase()))
-                .slice(0, 5);
+            allValidWords = words.filter(word => word.startsWith(letter.toLowerCase()));
+        }
+        
+        // Convert user answer to lowercase for comparison
+        const userAnswerLower = userAnswer.toLowerCase();
+        // Compute base form (remove trailing 's' if present)
+        const userBase = userAnswerLower.endsWith('s') ? userAnswerLower.slice(0, -1) : userAnswerLower;
+        
+        let possibleAnswersText = '';
+        if (userAnswer === 'Passed') {
+            // If passed, show up to 5 random words
+            shuffleArray(allValidWords);
+            const displayWords = allValidWords.slice(0, 5);
+            possibleAnswersText = displayWords.length > 0 
+                ? `Possible answers: ${displayWords.join(', ')}` 
+                : 'No examples available';
+        } else {
+            // Check if user got the only possible answer
+            if (allValidWords.length === 1 && userBase === allValidWords[0]) {
+                possibleAnswersText = 'Congratulations! You got the only answer for this criteria!';
+            } else {
+                // Remove user's answer (base form) from the list
+                const remainingWords = allValidWords.filter(word => word !== userBase);
+                
+                // Shuffle and take up to 5 random words
+                shuffleArray(remainingWords);
+                const displayWords = remainingWords.slice(0, 5);
+                
+                if (displayWords.length > 0) {
+                    possibleAnswersText = `Other answers: ${displayWords.join(', ')}`;
+                } else {
+                    possibleAnswersText = 'No examples available';
+                }
+            }
         }
         
         const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
@@ -1320,9 +1391,7 @@ function showRoundDetails(round) {
                     getPatternForRound(round, category).pattern : criteria}</div>
                 <div class="user-answer ${result}">Your answer: ${userAnswer}</div>
                 <div class="possible-answers">
-                    ${possibleAnswers.length > 0 
-                        ? `Possible answers: ${possibleAnswers.join(', ')}` 
-                        : 'No examples available'}
+                    ${possibleAnswersText}
                 </div>
             </div>
         `;
@@ -1330,6 +1399,59 @@ function showRoundDetails(round) {
     
     roundContent.innerHTML = html;
 }
+
+function showModal(message) {
+    // Create modal overlay
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay';
+    
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.className = 'modal-close-btn';
+    
+    // Create message text
+    const messageText = document.createElement('p');
+    messageText.textContent = message;
+    messageText.className = 'modal-message';
+    
+    // Assemble modal
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(messageText);
+    modalOverlay.appendChild(modalContent);
+    
+    // Function to close modal
+    function closeModal() {
+        if (modalOverlay.parentNode) {
+            modalOverlay.parentNode.removeChild(modalOverlay);
+        }
+    }
+    
+    // Close on X button click
+    closeButton.addEventListener('click', closeModal);
+    
+    // Close on overlay click (outside the modal)
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    // Add to page
+    document.body.appendChild(modalOverlay);
+}
+
 
 function shareResults() {
     const categories = ['place', 'animal', 'name', 'thing'];
@@ -1348,8 +1470,12 @@ function shareResults() {
     const totalScore = calculateTotalScore();
     shareText += `Score: ${totalScore}/24`;
     
-    // Check if Web Share API is available 
-    if (navigator.share) {
+    // Check if user is on mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+    
+    // Only use Web Share API on mobile
+    if (isMobile && navigator.share) {
         navigator.share({
             text: shareText
         }).catch(err => {
@@ -1358,10 +1484,10 @@ function shareResults() {
             fallbackCopyToClipboard(shareText);
         });
     } else {
-        // Desktop/unsupported browsers - copy to clipboard
+        // Desktop/PC - copy to clipboard
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(shareText).then(() => {
-                alert('Results copied to clipboard!');
+                showModal('Results copied to clipboard!');
             }).catch(() => {
                 fallbackCopyToClipboard(shareText);
             });
@@ -1402,6 +1528,7 @@ function createKeyboard() {
         const key = document.createElement('button');
         key.className = 'key';
         key.textContent = letter;
+        key.setAttribute('data-letter', letter);
         key.onclick = () => addLetter(letter);
         keyboard.appendChild(key);
     });
@@ -1411,14 +1538,16 @@ function createKeyboard() {
         const key = document.createElement('button');
         key.className = 'key';
         key.textContent = letter;
+        key.setAttribute('data-letter', letter);
         key.onclick = () => addLetter(letter);
         keyboard.appendChild(key);
     });
     
-    // Third row - PASS ZXCVBNM ⌫ (PASS + 7 letters + backspace)
+    // Third row - PASS ZXCVBNM ⌫
     const passKey = document.createElement('button');
     passKey.className = 'key';
     passKey.textContent = 'PASS';
+    passKey.setAttribute('data-letter', 'PASS');
     passKey.onclick = passWord;
     keyboard.appendChild(passKey);
     
@@ -1426,6 +1555,7 @@ function createKeyboard() {
         const key = document.createElement('button');
         key.className = 'key';
         key.textContent = letter;
+        key.setAttribute('data-letter', letter);
         key.onclick = () => addLetter(letter);
         keyboard.appendChild(key);
     });
@@ -1433,6 +1563,7 @@ function createKeyboard() {
     const backspaceKey = document.createElement('button');
     backspaceKey.className = 'key';
     backspaceKey.textContent = '⌫';
+    backspaceKey.setAttribute('data-letter', '⌫');
     backspaceKey.onclick = deleteLetter;
     keyboard.appendChild(backspaceKey);
 }
@@ -1476,7 +1607,6 @@ function setupEventListeners() {
     document.getElementById('homeBtn').onclick = goHome;
     document.getElementById('infoBtn').onclick = toggleInfo;
     document.getElementById('rerollBtn').onclick = rerollCriteria;
-    wordInput.addEventListener('input', validateInputRealTime);
 
     document.getElementById('howToPlayBtn').onclick = () => {
     document.getElementById('howToPlayModal').style.display = 'flex';
@@ -1538,9 +1668,11 @@ document.getElementById('howToPlayModal').onclick = (e) => {
         if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
             e.preventDefault();
             addLetter(e.key);
+            validateInputRealTime();
         } else if (e.key === 'Backspace') {
             e.preventDefault();
             deleteLetter();
+            validateInputRealTime();
         } else if (e.key === 'Enter') {
             e.preventDefault();
             submitAnswer();
@@ -1951,13 +2083,13 @@ function updatePassMessage() {
 }
 
 const colorGradients = {
-    blue: 'linear-gradient(0deg, #0a1a3a 0%, #11244d 20%, #1a2f60 40%, #243d75 60%, #3a4f8c 80%, #4d69a8 100%)',
-    black: 'linear-gradient(0deg, #121212 0%, #1a1a1a 20%, #222222 40%, #2a2a2a 60%, #333333 80%, #3d3d3d 100%)',
-    green: 'linear-gradient(0deg, #0d2818 0%, #143c25 20%, #1b5333 40%, #226a41 60%, #29824f 80%, #30995e 100%)',
-    red: 'linear-gradient(0deg, #330e0e 0%, #4d1515 20%, #661d1d 40%, #802525 60%, #992d2d 80%, #b33535 100%)',
-    pink: 'linear-gradient(0deg, #2d0d2d 0%, #451545 20%, #5d1d5d 40%, #752575 60%, #8d2d8d 80%, #a535a5 100%)',
-    purple: 'linear-gradient(0deg, #1a0d33 0%, #28154d 20%, #361d66 40%, #442580 60%, #522d99 80%, #6035b3 100%)',
-    yellow: 'linear-gradient(0deg, #332b0d 0%, #4d4015 20%, #66561d 40%, #806c25 60%, #99822d 80%, #b39835 100%)'
+    blue: '#26405F',
+    black: '#1a1a1a', 
+    green: '#1b5333',
+    red: '#661d1d',
+    pink: '#5d1d5d',
+    purple: '#361d66',
+    yellow: '#66561d'
 };
 
 // Initialize color picker
@@ -2098,15 +2230,11 @@ function validateInputRealTime() {
     const input = document.getElementById('wordInput');
     const word = input.value.trim().toLowerCase();
     
-    // Reset to default color if empty
-    if (!word) {
-        input.style.color = 'black';
-        return;
-    }
+    // Reset to default color
+    input.classList.remove('valid-green', 'valid-yellow');
     
-    // Don't validate if on score category
-    if (gameState.currentCategory === 'score') {
-        input.style.color = 'black';
+    // Don't validate if empty or on score category
+    if (!word || gameState.currentCategory === 'score') {
         return;
     }
     
@@ -2116,15 +2244,13 @@ function validateInputRealTime() {
     
     // Must start with correct letter
     if (!word.startsWith(currentLetter)) {
-        input.style.color = 'black';
-        return;
+        return; // Stay black
     }
     
     // Check if word is in category
     let wordFoundInCategory = false;
     const categoryData = window.dictionary[category];
     
-    // Same category validation logic as in submitAnswer
     if (category === 'name' && criteria === vowelEndingCriteria.name) {
         for (const crit of allowedNameCriteria) {
             const words = getCriteriaWords(category, crit);
@@ -2156,13 +2282,11 @@ function validateInputRealTime() {
         }
     }
     
-    // If not in category, keep black
     if (!wordFoundInCategory) {
-        input.style.color = 'black';
-        return;
+        return; // Stay black if not in category
     }
     
-    // Check if matches criteria (green) or just in category (yellow)
+    // Check if matches criteria (for green vs yellow)
     let matchesCriteria = false;
     
     if (vowelEndingCriteria[category] && criteria === vowelEndingCriteria[category]) {
@@ -2178,6 +2302,10 @@ function validateInputRealTime() {
         }
     }
     
-    // Set color based on validation
-    input.style.color = matchesCriteria ? '#005A23' : '#CC9A06';
+    // Apply color
+    if (matchesCriteria) {
+        input.classList.add('valid-green');
+    } else {
+        input.classList.add('valid-yellow');
+    }
 }
