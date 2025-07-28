@@ -1,4 +1,5 @@
-const CURRENT_VERSION = '0.0.3'; 
+const CURRENT_VERSION = '0.0.8'; 
+const DAILY_PUZZLE_VERSION = 1;
 
 function checkVersion() {
     const savedVersion = localStorage.getItem('pantsVersion');
@@ -7,13 +8,77 @@ function checkVersion() {
         // Preserve stats while clearing game state
         const stats = localStorage.getItem('pantsGameStats');
         
+        // If updating from version with 3 rounds, migrate the stats
+        if (stats) {
+            try {
+                const parsedStats = JSON.parse(stats);
+                
+                // Check if we have individual game scores to migrate properly
+                if (parsedStats.gamesPlayed && Object.keys(parsedStats.gamesPlayed).length > 0) {
+                    // Reset distribution and recalculate from individual scores
+                    const newDistribution = {
+                        '9-10': 0,
+                        '6-8': 0,
+                        '5-7': 0,
+                        '0-4': 0
+                    };
+                    
+                    // Convert each game score from old system (0-24) to new system (0-10)
+                    Object.values(parsedStats.gamesPlayed).forEach(oldScore => {
+                        // Convert 24-point scale to 10-point scale
+                        const newScore = Math.round((oldScore / 24) * 10);
+                        
+                        // Categorize into new ranges
+                        if (newScore >= 9) {
+                            newDistribution['9-10']++;
+                        } else if (newScore >= 6) {
+                            newDistribution['6-8']++;
+                        } else if (newScore >= 5) {
+                            newDistribution['5-7']++;
+                        } else {
+                            newDistribution['0-4']++;
+                        }
+                        
+                        // Update the individual game score to new scale
+                        const gameDate = Object.keys(parsedStats.gamesPlayed).find(
+                            date => parsedStats.gamesPlayed[date] === oldScore
+                        );
+                        if (gameDate) {
+                            parsedStats.gamesPlayed[gameDate] = newScore;
+                        }
+                    });
+                    
+                    parsedStats.scoreDistribution = newDistribution;
+                } else {
+                    // Fallback for users without individual game data
+                    // Move scores from 10-19 range to new ranges
+                    if (parsedStats.scoreDistribution && parsedStats.scoreDistribution['10-19']) {
+                        const oldMidRange = parsedStats.scoreDistribution['10-19'];
+                        // Split the old 10-19 range between new yellow (6-8) and orange (5-7)
+                        parsedStats.scoreDistribution['6-8'] = (parsedStats.scoreDistribution['6-8'] || 0) + Math.ceil(oldMidRange * 0.7);
+                        parsedStats.scoreDistribution['5-7'] = (parsedStats.scoreDistribution['5-7'] || 0) + Math.floor(oldMidRange * 0.3);
+                        delete parsedStats.scoreDistribution['10-19'];
+                    }
+                    // Rename 20-24 to 9-10
+                    if (parsedStats.scoreDistribution && parsedStats.scoreDistribution['20-24']) {
+                        parsedStats.scoreDistribution['9-10'] = parsedStats.scoreDistribution['20-24'];
+                        delete parsedStats.scoreDistribution['20-24'];
+                    }
+                    // Add missing ranges
+                    if (!parsedStats.scoreDistribution['0-4']) {
+                        parsedStats.scoreDistribution['0-4'] = parsedStats.scoreDistribution['0-9'] || 0;
+                        delete parsedStats.scoreDistribution['0-9'];
+                    }
+                }
+                
+                localStorage.setItem('pantsGameStats', JSON.stringify(parsedStats));
+            } catch (e) {
+                console.log('Error migrating stats:', e);
+            }
+        }
+        
         // Clear all game-related data except stats
         localStorage.removeItem('pantsGameState');
-        
-        // Save stats back if they existed
-        if (stats) {
-            localStorage.setItem('pantsGameStats', stats);
-        }
         
         // Update to current version
         localStorage.setItem('pantsVersion', CURRENT_VERSION);
@@ -44,6 +109,21 @@ const allowedNameCriteria = [
     'Indian Names', 'Japanese Names', 'Male Names', 'Female Names'
 ];
 
+const allowedAnimalCriteria = [
+    'Mammal', 
+    'Aquatic', 
+    'Flies or Glides', 
+    'Cold Blooded', 
+    'Warm Blooded', 
+    'Carnivore', 
+    'Herbivore',
+    'Reptiles',
+    'Insects'
+];
+
+const allowedPlaceCriteria = []; // Empty array means use all criteria
+const allowedThingCriteria = []; // Empty array means use all criteria
+
 // Game state
 let gameState = {
     currentRound: 1,
@@ -54,18 +134,14 @@ let gameState = {
     results: {},
     hasPlayed: false,
     showingPass: false,
-    rerollsUsed: {} 
+    rerollsUsed: 0,
+    totalScore: 0
 };
 
-// Add reroll function
+// Add reroll function with point cost
 function rerollCriteria() {
     const currentRound = gameState.currentRound;
     const currentCategory = gameState.currentCategory;
-    
-    // Check if already used reroll for this round
-    if (gameState.rerollsUsed[currentRound]) {
-        return;
-    }
     
     // Don't allow reroll on score category or completed categories
     if (currentCategory === 'score') return;
@@ -93,11 +169,11 @@ function rerollCriteria() {
 
     if (validCriteria.length === 0) return; // No valid alternatives
 
-    // Mark reroll as used for this round
-    gameState.rerollsUsed[currentRound] = true;
-
-    // Hide reroll button
-    document.getElementById('rerollBtn').classList.add('hidden');
+    // Deduct 1 point for reroll
+    gameState.rerollsUsed++;
+    
+    // Show -1 animation
+    showScoreAnimation(document.getElementById('rerollBtn'), -1, 'reroll');
 
     // Start slot machine animation
     const criteriaElement = document.getElementById('criteria');
@@ -211,7 +287,6 @@ const categories = {
         'Insects',
         'Prehistoric Animals',
         'Chinese Zodiac',
-        'Brands with Animal Logos/Mascots',
         'Letter Pattern'
         ],
 
@@ -249,7 +324,8 @@ const categories = {
         'Fiat Currencies',
         'Pasta and Bread',
         'Herbs and Spices',
-        'Alcoholic Drinks'
+        'Alcoholic Drinks',
+        'Brands with Animal Logos/Mascots',
         ],    
 
     thing: [
@@ -294,6 +370,7 @@ const categories = {
 async function initGame() {
     checkVersion();
     startLoadingScreen();
+    setupWhatsNewScrollEffects();
     
     try {
         const response = await fetch('dictionary.json');
@@ -394,9 +471,9 @@ document.getElementById('infoBtn').style.display = 'none';
 
 }
 
-function showScoreAnimation(categoryElement, points) {
-    const scoreText = points === 2 ? '+2' : points === 1 ? '+1' : '+0';
-    const colorClass = points === 2 ? 'green' : points === 1 ? 'yellow' : 'red';
+function showScoreAnimation(categoryElement, points, type = 'normal') {
+    const scoreText = type === 'reroll' ? '-1' : (points === 2 ? '+2' : points === 1 ? '+1' : '+0');
+    const colorClass = type === 'reroll' ? 'red' : (points === 2 ? 'green' : points === 1 ? 'yellow' : 'red');
     
     // Create the popup element
     const popup = document.createElement('div');
@@ -423,7 +500,6 @@ function showScoreAnimation(categoryElement, points) {
     }, 2500);
 }
 
-
 function initializeGameLogic() {
     checkVersion();
     clearOldGameState();
@@ -440,14 +516,15 @@ function initializeGameLogic() {
     if (savedGame) {
         // Load saved game state
         gameState = {
-            currentRound: savedGame.currentRound,
+            currentRound: 1, // Always round 1 now
             currentCategory: savedGame.currentCategory,
             letters: savedGame.letters,
             criteria: savedGame.criteria,
             answers: savedGame.answers || {},
             results: savedGame.results || {},
             hasPlayed: savedGame.hasPlayed,
-            rerollsUsed: savedGame.rerollsUsed || {},
+            rerollsUsed: savedGame.rerollsUsed || 0,
+            totalScore: savedGame.totalScore || 0,
             showingPass: false
         };
         
@@ -459,19 +536,11 @@ function initializeGameLogic() {
             displayStats();
         } else {
             // Check if game should actually be complete
-            const categories = ['place', 'animal', 'name', 'thing'];
-            let allRoundsComplete = true;
+            const categoriesList = ['place', 'animal', 'name', 'thing'];
+            const roundResults = gameState.results[1] || {};
+            const roundComplete = categoriesList.every(cat => roundResults[cat]);
             
-            for (let round = 1; round <= 3; round++) {
-                const roundResults = gameState.results[round] || {};
-                const roundComplete = categories.every(cat => roundResults[cat]);
-                if (!roundComplete) {
-                    allRoundsComplete = false;
-                    break;
-                }
-            }
-            
-            if (allRoundsComplete) {
+            if (roundComplete) {
                 // Game is actually complete, show results
                 markGameComplete();
                 document.getElementById('startArea').style.display = 'none';
@@ -485,8 +554,20 @@ function initializeGameLogic() {
             }
         }
     } else {
-        // New game
-        gameState.rerollsUsed = {};
+        // New game - Initialize gameState properly first
+        gameState = {
+            currentRound: 1,
+            currentCategory: 'place',
+            letters: [],
+            criteria: {},
+            answers: {},
+            results: {},
+            hasPlayed: false,
+            showingPass: false,
+            rerollsUsed: 0,
+            totalScore: 0
+        };
+        
         generateDailyPuzzle();
         document.getElementById('startBtn').style.display = 'inline-block';
         document.getElementById('countdown').style.display = 'none';
@@ -495,53 +576,32 @@ function initializeGameLogic() {
 }
 
 function generateDailyPuzzle() {
-    // Use today's date as seed for consistent daily puzzle
     const today = new Date();
-    const dateString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
     
-    // Simple seeded random function
-    function seededRandom(seed) {
-        const x = Math.sin(seed) * 10000;
+    // Combine date with puzzle version for consistent seeding
+    let seed = (year * 10000 + month * 100 + day) * DAILY_PUZZLE_VERSION;
+    
+    function seededRandom(s) {
+        const x = Math.sin(s) * 10000;
         return x - Math.floor(x);
     }
-    
-    let seed = 0;
-    for (let i = 0; i < dateString.length; i++) {
-        seed += dateString.charCodeAt(i);
-    }
 
-    // Track used criteria to avoid duplicates across rounds
-    const usedCriteria = {
-        place: new Set(),
-        animal: new Set(),
-        name: new Set(),
-        thing: new Set()
-    };
+    // Generate criteria for the single round
+    gameState.criteria[1] = {};
     
-    // Generate criteria for each round ensuring no duplicates
-    for (let i = 1; i <= 3; i++) {
-        gameState.criteria[i] = {};
+    // For each category, pick a criteria
+    Object.keys(categories).forEach(category => {
+        const availableCriteria = categories[category];
         
-        // For each category, pick a criteria that hasn't been used
-        Object.keys(categories).forEach(category => {
-            const availableCriteria = categories[category].filter(criteria => 
-                !usedCriteria[category].has(criteria)
-            );
-            
-            if (availableCriteria.length === 0) {
-                // Fallback: if all criteria used, reset and pick any
-                usedCriteria[category].clear();
-                availableCriteria.push(...categories[category]);
-            }
-            
-            const selectedCriteria = availableCriteria[
-                Math.floor(seededRandom(seed + i * 100 + category.length) * availableCriteria.length)
-            ];
-            
-            gameState.criteria[i][category] = selectedCriteria;
-            usedCriteria[category].add(selectedCriteria);
-        });
-    }
+        const selectedCriteria = availableCriteria[
+            Math.floor(seededRandom(seed + 100 + category.length) * availableCriteria.length)
+        ];
+        
+        gameState.criteria[1][category] = selectedCriteria;
+    });
     
     
 // Check if dictionary is available for smart letter selection
@@ -550,64 +610,48 @@ function generateDailyPuzzle() {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         gameState.letters = [];
         
-        for (let round = 1; round <= 3; round++) {
-            const roundCriteria = gameState.criteria[round];
-            const validLetters = [];
+        const roundCriteria = gameState.criteria[1];
+        const validLetters = [];
+        
+        // Check each letter to see if it has valid words for all categories in this round
+        for (let letter of alphabet) {
+            const lowerLetter = letter.toLowerCase();
             
-            // Check each letter to see if it has valid words for all categories in this round
-            for (let letter of alphabet) {
-                const lowerLetter = letter.toLowerCase();
-                
-                // Check place category - USE getCriteriaWords
-                const placeWords = getCriteriaWords('place', roundCriteria.place);
-                const hasPlace = placeWords.some(word => word.startsWith(lowerLetter));
-                
-                // Check animal category - USE getCriteriaWords
-                const animalWords = getCriteriaWords('animal', roundCriteria.animal);
-                const hasAnimal = animalWords.some(word => word.startsWith(lowerLetter));
-                
-                // Check thing category - USE getCriteriaWords
-                const thingWords = getCriteriaWords('thing', roundCriteria.thing);
-                const hasThing = thingWords.some(word => word.startsWith(lowerLetter));
-                
-                // For name category, check if there are names starting with this letter
-                const nameWords = getCriteriaWords('name', roundCriteria.name);
-                const hasName = nameWords.some(word => word.startsWith(lowerLetter));
-                
-                if (hasPlace && hasAnimal && hasThing && hasName) {
-                    validLetters.push(letter);
-                }
+            // Check place category - USE getCriteriaWords
+            const placeWords = getCriteriaWords('place', roundCriteria.place);
+            const hasPlace = placeWords.some(word => word.startsWith(lowerLetter));
+            
+            // Check animal category - USE getCriteriaWords
+            const animalWords = getCriteriaWords('animal', roundCriteria.animal);
+            const hasAnimal = animalWords.some(word => word.startsWith(lowerLetter));
+            
+            // Check thing category - USE getCriteriaWords
+            const thingWords = getCriteriaWords('thing', roundCriteria.thing);
+            const hasThing = thingWords.some(word => word.startsWith(lowerLetter));
+            
+            // For name category, check if there are names starting with this letter
+            const nameWords = getCriteriaWords('name', roundCriteria.name);
+            const hasName = nameWords.some(word => word.startsWith(lowerLetter));
+            
+            if (hasPlace && hasAnimal && hasThing && hasName) {
+                validLetters.push(letter);
             }
-            
-            // If no valid letters found, fall back to all letters
-            const lettersToChooseFrom = validLetters.length > 0 ? validLetters : alphabet.split('');
-            
-            // Select a letter that hasn't been used yet
-            let selectedLetter;
-            let attempts = 0;
-            do {
-                const letterIndex = Math.floor(seededRandom(seed + round * 1000 + attempts) * lettersToChooseFrom.length);
-                selectedLetter = lettersToChooseFrom[letterIndex];
-                attempts++;
-            } while (gameState.letters.includes(selectedLetter) && attempts < 100);
-            
-            gameState.letters.push(selectedLetter);
         }
         
-        // Fix name criteria for each round
+        // If no valid letters found, fall back to all letters
+        const lettersToChooseFrom = validLetters.length > 0 ? validLetters : alphabet.split('');
+        
+        // Select a letter
+        const letterIndex = Math.floor(seededRandom(seed + 1000) * lettersToChooseFrom.length);
+        const selectedLetter = lettersToChooseFrom[letterIndex];
+        
+        gameState.letters.push(selectedLetter);
+
     } else {
         // Fallback to original random letter selection if dictionary not available
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        gameState.letters = [];
-        
-        let randomIndex = 0;
-            while (gameState.letters.length < 3) {
-                const letter = alphabet[Math.floor(seededRandom(seed + randomIndex) * 26)];
-                if (!gameState.letters.includes(letter)) {
-                    gameState.letters.push(letter);
-                }
-                randomIndex++;
-            }
+        const letter = alphabet[Math.floor(seededRandom(seed) * 26)];
+        gameState.letters = [letter];
     }
 }
 
@@ -667,28 +711,23 @@ function startGame() {
 }
 
 function updateGameDisplay() {
-    // Update round info
+    // Update round info - always show "Round 1/1" or just "Round"
     const roundInfo = document.getElementById('roundInfo');
-    if (gameState.currentRound === 3) {
-        roundInfo.textContent = 'Final Round';
-    } else {
-        roundInfo.textContent = `Round ${gameState.currentRound}/3`;
-    }
+    roundInfo.textContent = 'Round 1/1';
     
     // Update letter square
-    document.getElementById('letterSquare').textContent = gameState.letters[gameState.currentRound - 1];
+    document.getElementById('letterSquare').textContent = gameState.letters[0];
     
     // Update criteria - special handling for Letter Pattern
-    const currentCriteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    const currentCriteria = gameState.criteria[1][gameState.currentCategory];
     if (currentCriteria === 'Letter Pattern') {
-        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        const pattern = getPatternForRound(1, gameState.currentCategory);
         document.getElementById('criteria').textContent = pattern.pattern;
     } else {
         document.getElementById('criteria').textContent = currentCriteria;
     }
     
-    // Rest of the function remains the same...
-    // Reset category selection - don't reset completed categories from current round
+    // Reset category selection - don't reset completed categories
     document.querySelectorAll('.category').forEach(cat => {
         cat.classList.remove('selected');
         
@@ -698,20 +737,20 @@ function updateGameDisplay() {
             return;
         }
         
-        // Check if this category is completed in current round
-        const isCompleted = gameState.results[gameState.currentRound] && 
-                          gameState.results[gameState.currentRound][cat.dataset.category];
+        // Check if this category is completed
+        const isCompleted = gameState.results[1] && 
+                          gameState.results[1][cat.dataset.category];
         
         if (isCompleted) {
             // Keep it completed and unclickable
             if (!cat.classList.contains('completed')) {
                 cat.classList.add('completed');
-                cat.classList.add(gameState.results[gameState.currentRound][cat.dataset.category]);
+                cat.classList.add(gameState.results[1][cat.dataset.category]);
             }
             cat.style.opacity = '0.8';
             cat.style.cursor = 'not-allowed';
         } else {
-            // Make it available for this round
+            // Make it available
             cat.classList.remove('completed', 'green', 'yellow', 'red');
             cat.style.opacity = '1';
             cat.style.cursor = 'pointer';
@@ -735,15 +774,15 @@ function updateGameDisplay() {
         const availableCategories = ['place', 'animal', 'name', 'thing'];
         for (let category of availableCategories) {
             const categoryElement = document.querySelector(`[data-category="${category}"]`);
-            const isCompleted = gameState.results[gameState.currentRound] && 
-                              gameState.results[gameState.currentRound][category];
+            const isCompleted = gameState.results[1] && 
+                              gameState.results[1][category];
             if (!isCompleted) {
                 gameState.currentCategory = category;
                 categoryElement.classList.add('selected');
                 // Update criteria display for the new category
-                const newCriteria = gameState.criteria[gameState.currentRound][category];
+                const newCriteria = gameState.criteria[1][category];
                 if (newCriteria === 'Letter Pattern') {
-                    const pattern = getPatternForRound(gameState.currentRound, category);
+                    const pattern = getPatternForRound(1, category);
                     document.getElementById('criteria').textContent = pattern.pattern;
                 } else {
                     document.getElementById('criteria').textContent = newCriteria;
@@ -765,14 +804,13 @@ function updateGameDisplay() {
     document.getElementById('wordInput').disabled = false;
     document.getElementById('submitBtn').style.display = 'inline-block';
 
-    // Show/hide reroll button based on round and category
+    // Always show reroll button (no longer limited per round)
     const rerollBtn = document.getElementById('rerollBtn');
-    const hasUsedReroll = gameState.rerollsUsed[gameState.currentRound];
     const isScoreCategory = gameState.currentCategory === 'score';
-    const isCompletedCategory = gameState.results[gameState.currentRound] && 
-                               gameState.results[gameState.currentRound][gameState.currentCategory];
+    const isCompletedCategory = gameState.results[1] && 
+                               gameState.results[1][gameState.currentCategory];
     
-    if (hasUsedReroll || isScoreCategory || isCompletedCategory) {
+    if (isScoreCategory || isCompletedCategory) {
         rerollBtn.classList.add('hidden');
     } else {
         rerollBtn.classList.remove('hidden');
@@ -806,25 +844,27 @@ function selectCategory(category) {
     // Clear input text whenever any category is clicked
     input.value = '';
     input.placeholder = 'Type your answer...';
-    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
+    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red', 'score-orange');
     pulseInputCircle(); 
     
     if (category === 'score') {
         const score = calculateTotalScore();
         input.value = '';
-        input.placeholder = `${score}/24`;
+        input.placeholder = `${score}/10`;
         input.disabled = true;
         document.getElementById('criteria').textContent = 'Current Score';
         document.getElementById('submitBtn').style.display = 'none';
         
         // Remove all color classes first
-        inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
+        inputContainer.classList.remove('score-green', 'score-yellow', 'score-red', 'score-orange');
         
-        // Add appropriate color class based on score
-        if (score >= 20) {
+        // Add appropriate color class based on new score ranges
+        if (score >= 9) {
             inputContainer.classList.add('score-green');
-        } else if (score >= 10) {
+        } else if (score >= 6) {
             inputContainer.classList.add('score-yellow');
+        } else if (score >= 5) {
+            inputContainer.classList.add('score-orange');
         } else {
             inputContainer.classList.add('score-red');
         }
@@ -838,15 +878,15 @@ function selectCategory(category) {
     }
     
     // For other categories, remove score coloring
-    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red');
+    inputContainer.classList.remove('score-green', 'score-yellow', 'score-red', 'score-orange');
     input.placeholder = 'Type your answer...';
     input.disabled = false;
     document.getElementById('submitBtn').style.display = 'inline-block';
     
-    // Check if category is already completed for current round
+    // Check if category is already completed
     const categoryElement = document.querySelector(`[data-category="${category}"]`);
-    const isCompleted = gameState.results[gameState.currentRound] && 
-                       gameState.results[gameState.currentRound][category];
+    const isCompleted = gameState.results[1] && 
+                       gameState.results[1][category];
     
     if (isCompleted || categoryElement.classList.contains('completed')) {
         return; // Don't allow selection of completed categories
@@ -857,12 +897,11 @@ function selectCategory(category) {
     input.disabled = false;
     document.getElementById('submitBtn').style.display = 'inline-block';
     
-    // Show/hide reroll button based on conditions
-    const hasUsedReroll = gameState.rerollsUsed[gameState.currentRound];
-    const isCompletedCategory = gameState.results[gameState.currentRound] && 
-                               gameState.results[gameState.currentRound][category];
+    // Always show reroll button for non-completed categories (no longer limited)
+    const isCompletedCategory = gameState.results[1] && 
+                               gameState.results[1][category];
     
-    if (hasUsedReroll || isCompletedCategory) {
+    if (isCompletedCategory) {
         document.getElementById('rerollBtn').classList.add('hidden');
     } else {
         document.getElementById('rerollBtn').classList.remove('hidden');
@@ -875,9 +914,9 @@ function selectCategory(category) {
     updateCategoryName();
     
     // Update criteria display - special handling for Letter Pattern
-    const criteria = gameState.criteria[gameState.currentRound][category];
+    const criteria = gameState.criteria[1][category];
     if (criteria === 'Letter Pattern') {
-        const pattern = getPatternForRound(gameState.currentRound, category);
+        const pattern = getPatternForRound(1, category);
         document.getElementById('criteria').textContent = pattern.pattern;
     } else {
         document.getElementById('criteria').textContent = criteria;
@@ -891,8 +930,8 @@ function selectCategory(category) {
 function submitAnswer() {
     const input = document.getElementById('wordInput');
     const word = input.value.trim().toLowerCase();
-    const currentLetter = gameState.letters[gameState.currentRound - 1].toLowerCase();
-    const criteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    const currentLetter = gameState.letters[0].toLowerCase(); // Always first letter now
+    const criteria = gameState.criteria[1][gameState.currentCategory];
     const category = gameState.currentCategory;
     
     if (gameState.showingPass) {
@@ -911,7 +950,7 @@ function submitAnswer() {
     
     // 1. Check if word starts with correct letter (applies to all criteria)
     if (!word.startsWith(currentLetter)) {
-        showInputError(`Word must start with ${gameState.letters[gameState.currentRound - 1]}`);
+        showInputError(`Word must start with ${gameState.letters[0]}`);
         return;
     }
     
@@ -978,7 +1017,7 @@ function submitAnswer() {
     // Letter pattern criteria validation
     else if (criteria === 'Letter Pattern') {
         // Get the pattern for this round/category
-        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        const pattern = getPatternForRound(1, gameState.currentCategory);
         matchesCriteria = checkWordAgainstPattern(word, pattern);
     }
     else {
@@ -998,10 +1037,10 @@ function submitAnswer() {
     }
     
     // Store result
-    gameState.results[gameState.currentRound] = gameState.results[gameState.currentRound] || {};
-    gameState.results[gameState.currentRound][category] = result;
-    gameState.answers[gameState.currentRound] = gameState.answers[gameState.currentRound] || {};
-    gameState.answers[gameState.currentRound][category] = word;
+    gameState.results[1] = gameState.results[1] || {};
+    gameState.results[1][category] = result;
+    gameState.answers[1] = gameState.answers[1] || {};
+    gameState.answers[1][category] = word;
 
     // Save game state
     saveGameState();
@@ -1029,62 +1068,76 @@ function getPatternForRound(round, category) {
 
 // Helper function to generate a pattern for a round/category
 function generatePattern(round, category) {
-    const currentLetter = gameState.letters[round - 1].toLowerCase();
-    const words = getCriteriaWords(category, 'Letter Pattern');
-    
-    // Filter words that start with the current letter and are exactly 5 letters
-    const validWords = words.filter(word => 
-        word.startsWith(currentLetter) && word.length === 5
-    );
-    
-    if (validWords.length === 0) {
-        // Fallback pattern if no 5-letter words found - use a default consonant
-        return {
-            pattern: `${currentLetter.toUpperCase()} _ _ _ _`,
-            consonant: 'l',
-            position: 2
-        };
-    }
-    
-    // Pick a random word from valid 5-letter words
-    const randomWord = validWords[Math.floor(Math.random() * validWords.length)];
-    
-    // Find consonants in the word (excluding first letter)
-    const consonants = [];
-    for (let i = 1; i < randomWord.length; i++) {
-        const char = randomWord[i];
-        if (!['a','e','i','o','u'].includes(char)) {
-            consonants.push({ char, position: i });
-        }
-    }
-    
-    // If no consonants found, use a default
-    if (consonants.length === 0) {
-        return {
-            pattern: `${currentLetter.toUpperCase()} _ l _ _`,
-            consonant: 'l',
-            position: 2
-        };
-    }
-    
-    // Pick a random consonant from the word
-    const selectedConsonant = consonants[Math.floor(Math.random() * consonants.length)];
-    
-    // Generate the 5-letter pattern string
-    let patternStr = currentLetter.toUpperCase();
-    for (let i = 1; i < 5; i++) {
-        if (i === selectedConsonant.position) {
-            patternStr += ' ' + selectedConsonant.char.toUpperCase();
-        } else {
-            patternStr += ' _';
-        }
-    }
-    
-    return {
-        pattern: patternStr,
-        consonant: selectedConsonant.char,
-        position: selectedConsonant.position
-    };
+   const currentLetter = gameState.letters[round - 1].toLowerCase();
+   const words = getCriteriaWords(category, 'Letter Pattern');
+   
+   // Filter words that start with the current letter and are exactly 5 letters
+   const validWords = words.filter(word => 
+       word.startsWith(currentLetter) && word.length === 5
+   );
+   
+   if (validWords.length === 0) {
+       // Fallback pattern if no 5-letter words found - use a default consonant
+       return {
+           pattern: `${currentLetter.toUpperCase()} _ _ _ _`,
+           consonant: 'l',
+           position: 2
+       };
+   }
+   
+   // Create a seed based on round, category, and the daily puzzle version for consistency
+   const today = new Date();
+   const year = today.getFullYear();
+   const month = today.getMonth() + 1;
+   const day = today.getDate();
+   const seed = (year * 10000 + month * 100 + day) * DAILY_PUZZLE_VERSION + round * 100 + category.length;
+   
+   function seededRandom(s) {
+       const x = Math.sin(s) * 10000;
+       return x - Math.floor(x);
+   }
+   
+   // Pick a seeded random word from valid 5-letter words
+   const randomIndex = Math.floor(seededRandom(seed) * validWords.length);
+   const randomWord = validWords[randomIndex];
+   
+   // Find consonants in the word (excluding first letter)
+   const consonants = [];
+   for (let i = 1; i < randomWord.length; i++) {
+       const char = randomWord[i];
+       if (!['a','e','i','o','u'].includes(char)) {
+           consonants.push({ char, position: i });
+       }
+   }
+   
+   // If no consonants found, use a default
+   if (consonants.length === 0) {
+       return {
+           pattern: `${currentLetter.toUpperCase()} _ l _ _`,
+           consonant: 'l',
+           position: 2
+       };
+   }
+   
+   // Pick a seeded random consonant from the word
+   const consonantIndex = Math.floor(seededRandom(seed + 1) * consonants.length);
+   const selectedConsonant = consonants[consonantIndex];
+   
+   // Generate the 5-letter pattern string
+   let patternStr = currentLetter.toUpperCase();
+   for (let i = 1; i < 5; i++) {
+       if (i === selectedConsonant.position) {
+           patternStr += ' ' + selectedConsonant.char.toUpperCase();
+       } else {
+           patternStr += ' _';
+       }
+   }
+   
+   return {
+       pattern: patternStr,
+       consonant: selectedConsonant.char,
+       position: selectedConsonant.position
+   };
 }
 
 // Helper function to check if a word matches a pattern
@@ -1103,26 +1156,68 @@ function checkWordAgainstPattern(word, pattern) {
     return word[pattern.position] === pattern.consonant;
 }
 
+// Helper function to get allowed criteria for a category
+function getAllowedCriteriaForCategory(category) {
+    switch (category) {
+        case 'name':
+            return allowedNameCriteria;
+        case 'animal':
+            return allowedAnimalCriteria;
+        case 'place':
+            return allowedPlaceCriteria.length > 0 ? allowedPlaceCriteria : null; // null means use all
+        case 'thing':
+            return allowedThingCriteria.length > 0 ? allowedThingCriteria : null; // null means use all
+        default:
+            return null;
+    }
+}
+
 function getCriteriaWords(category, criteria) {
     const categoryData = window.dictionary[category];
     if (!categoryData) return [];
     
-    // Handle letter pattern criteria
+    // Handle letter pattern criteria with specific allowed criteria
     if (criteria === 'Letter Pattern') {
-        // For letter pattern, we need to return all words in the category
+        const allowedCriteria = getAllowedCriteriaForCategory(category);
         const allWords = [];
-        for (const crit in categoryData) {
-            // Skip shared criteria references and vowel criteria
-            if (crit === vowelEndingCriteria[category] || 
-                (typeof categoryData[crit] === 'string' && categoryData[crit].startsWith('@sharedCriteria.'))) {
-                continue;
+        
+        if (allowedCriteria) {
+            // Use only the allowed criteria for this category
+            allowedCriteria.forEach(crit => {
+                // Skip vowel criteria and shared criteria references
+                if (crit === vowelEndingCriteria[category] || 
+                    (typeof categoryData[crit] === 'string' && categoryData[crit].startsWith('@sharedCriteria.'))) {
+                    return;
+                }
+                
+                const words = getCriteriaWordsHelper(category, crit);
+                allWords.push(...words);
+            });
+        } else {
+            // Use all criteria for this category (existing behavior for place/thing)
+            for (const crit in categoryData) {
+                // Skip shared criteria references and vowel criteria
+                if (crit === vowelEndingCriteria[category] || 
+                    (typeof categoryData[crit] === 'string' && categoryData[crit].startsWith('@sharedCriteria.'))) {
+                    continue;
+                }
+                
+                const words = getCriteriaWordsHelper(category, crit);
+                allWords.push(...words);
             }
-            
-            const words = Array.isArray(categoryData[crit]) ? categoryData[crit] : [];
-            allWords.push(...words);
         }
+        
         return [...new Set(allWords)]; // Remove duplicates
     }
+    
+    // Handle other criteria normally
+    return getCriteriaWordsHelper(category, criteria);
+}
+
+// Helper function to get words for a specific criteria (extracted from original getCriteriaWords)
+function getCriteriaWordsHelper(category, criteria) {
+    const categoryData = window.dictionary[category];
+    if (!categoryData) return [];
     
     const criteriaData = categoryData[criteria];
     
@@ -1138,7 +1233,7 @@ function getCriteriaWords(category, criteria) {
         if (category === 'name') {
             const allNames = [];
             allowedNameCriteria.forEach(crit => {
-                const words = getCriteriaWords(category, crit);
+                const words = getCriteriaWordsHelper(category, crit);
                 allNames.push(...words);
             });
             return [...new Set(allNames)].filter(name => 
@@ -1151,7 +1246,7 @@ function getCriteriaWords(category, criteria) {
                 // Skip vowel criteria itself
                 if (crit === vowelEndingCriteria[category]) continue;
                 
-                const words = getCriteriaWords(category, crit);
+                const words = getCriteriaWordsHelper(category, crit);
                 allWords.push(...words);
             }
             return [...new Set(allWords)].filter(word => 
@@ -1166,34 +1261,30 @@ function getCriteriaWords(category, criteria) {
 function nextCategory() {
     const categories = ['place', 'animal', 'name', 'thing'];
     
-    // Update category square color
-const categorySquare = document.querySelector(`[data-category="${gameState.currentCategory}"]`);
-const result = gameState.results[gameState.currentRound][gameState.currentCategory];
-categorySquare.classList.add('completed', result);
+    // Update category square color with flip animation
+    const categorySquare = document.querySelector(`[data-category="${gameState.currentCategory}"]`);
+    const result = gameState.results[1][gameState.currentCategory];
 
-// Show score animation
-const points = result === 'green' ? 2 : result === 'yellow' ? 1 : 0;
-showScoreAnimation(categorySquare, points);
-    
-    // Check if all categories are completed in current round
-    const currentRoundResults = gameState.results[gameState.currentRound] || {};
+    // Add flip animation
+    categorySquare.classList.add('flipping');
+
+    // After the flip animation completes, add the final colors
+    setTimeout(() => {
+        categorySquare.classList.add('completed', result);
+        categorySquare.classList.remove('flipping');
+        
+        // Show score animation after flip completes
+        const points = result === 'green' ? 2 : result === 'yellow' ? 1 : 0;
+        showScoreAnimation(categorySquare, points);
+    }, 600); // Match the animation duration
+        
+    // Check if all categories are completed
+    const currentRoundResults = gameState.results[1] || {};
     const allCategoriesCompleted = categories.every(cat => currentRoundResults[cat]);
     
     if (allCategoriesCompleted) {
-        // Round complete
-        document.getElementById('wordInput').disabled = true;
-        if (gameState.currentRound < 3) {
-            document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('nextRoundBtn').style.display = 'inline-block';
-
-            // Add spotlight effect
-            document.getElementById('spotlightOverlay').classList.add('active');
-            document.getElementById('nextRoundBtn').classList.add('spotlight');
-            
-        } else {
-            // Game complete
-            endGame();
-        }
+        // Game complete
+        endGame();
     } else {
         // Move to next incomplete category
         const nextCategory = categories.find(cat => !currentRoundResults[cat]);
@@ -1203,32 +1294,6 @@ showScoreAnimation(categorySquare, points);
             updateGameDisplay();
         }
     }
-
-}
-
-function nextRound() {
-    // Remove spotlight effect
-    document.getElementById('spotlightOverlay').classList.remove('active');
-    document.getElementById('nextRoundBtn').classList.remove('spotlight');
-    gameState.currentRound++;
-    gameState.currentCategory = 'place';
-    document.getElementById('wordInput').disabled = false;
-    document.getElementById('submitBtn').style.display = 'inline-block';
-    document.getElementById('nextRoundBtn').style.display = 'none';
-    
-    // Reset all category colors for new round
-    document.querySelectorAll('.category').forEach(cat => {
-        if (cat.dataset.category !== 'score') {
-            cat.classList.remove('completed', 'green', 'yellow', 'red');
-        }
-    });
-
-    // Reset reroll button visibility for new round
-    document.getElementById('rerollBtn').classList.remove('hidden');
-    
-    updateGameDisplay();
-
-    saveGameState();
 }
 
 function endGame() {
@@ -1274,73 +1339,79 @@ function showResults() {
     let totalScore = 0;
     const categories = ['place', 'animal', 'name', 'thing'];
     
-    for (let round = 1; round <= 3; round++) {
-        categories.forEach(category => {
-            const square = document.createElement('div');
-            square.className = `result-square ${gameState.results[round][category]}`;
-            
-            const scores = { green: 2, yellow: 1, red: 0 };
-            totalScore += scores[gameState.results[round][category]];
-            
-            resultGrid.appendChild(square);
-        });
+    // Show the 4 category results + 1 score square
+    categories.forEach(category => {
+        const square = document.createElement('div');
+        square.className = `result-square ${gameState.results[1][category]}`;
+        
+        const scores = { green: 2, yellow: 1, red: 0 };
+        totalScore += scores[gameState.results[1][category]];
+        
+        resultGrid.appendChild(square);
+    });
+    
+    // Add the final score square with appropriate color
+    const scoreSquare = document.createElement('div');
+    const finalScore = totalScore - gameState.rerollsUsed; // Subtract reroll costs
+    
+    if (finalScore >= 9) {
+        scoreSquare.className = 'result-square green';
+    } else if (finalScore >= 6) {
+        scoreSquare.className = 'result-square yellow';
+    } else if (finalScore >= 5) {
+        scoreSquare.className = 'result-square orange';
+    } else {
+        scoreSquare.className = 'result-square red';
     }
+    resultGrid.appendChild(scoreSquare);
     
-    document.getElementById('finalScore').textContent = `Score: ${totalScore}/24`;
+    document.getElementById('finalScore').textContent = `Score: ${finalScore}/10`;
     
-// Enable scrolling for results screen
-document.documentElement.classList.add('results-view'); // Add to html element
-document.body.classList.add('results-view');
-document.querySelector('.container').classList.add('results-view');
+    // Enable scrolling for results screen
+    document.documentElement.classList.add('results-view');
+    document.body.classList.add('results-view');
+    document.querySelector('.container').classList.add('results-view');
     
-    // Show round details section
+    // Show score breakdown section instead of round details
     document.getElementById('roundDetailsArea').style.display = 'block';
     
-    // Initialize round breakdown
-    setupRoundBreakdown();
-    showRoundDetails(1);
+    // Initialize score breakdown
+    setupScoreBreakdown();
 }
 
-function setupRoundBreakdown() {
-    document.querySelectorAll('.round-btn').forEach(btn => {
-        btn.onclick = () => {
-            const round = parseInt(btn.dataset.round);
-            document.querySelectorAll('.round-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            showRoundDetails(round);
-        };
-    });
+function setupScoreBreakdown() {
+    // Hide round selector buttons since we only have one round
+    document.querySelector('.round-selector').style.display = 'none';
+    
+    // Change the header
+    document.querySelector('#roundDetailsArea .stats-header').textContent = 'Score Breakdown';
+    
+    // Show score details
+    showScoreDetails();
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-function showRoundDetails(round) {
+function showScoreDetails() {
     const roundContent = document.getElementById('roundContent');
-    const letter = gameState.letters[round - 1];
+    const letter = gameState.letters[0];
     const categories = ['place', 'animal', 'name', 'thing'];
     
     let html = `<div class="round-letter">Letter: ${letter}</div>`;
     
     categories.forEach(category => {
-        const criteria = gameState.criteria[round][category];
-        const userAnswer = gameState.answers[round] && gameState.answers[round][category] 
-            ? gameState.answers[round][category] 
+        const criteria = gameState.criteria[1][category];
+        const userAnswer = gameState.answers[1] && gameState.answers[1][category] 
+            ? gameState.answers[1][category] 
             : 'Passed';
         
         // Get the result for this category
-        const result = gameState.results[round][category] || 'red';
+        const result = gameState.results[1][category] || 'red';
         
         // Get possible answers
         let allValidWords = [];
         const words = getCriteriaWords(category, criteria);
         
         if (criteria === 'Letter Pattern') {
-            const pattern = getPatternForRound(round, category);
+            const pattern = getPatternForRound(1, category);
             allValidWords = words.filter(word => 
                 word.startsWith(letter.toLowerCase()) && 
                 word.length === 5 && 
@@ -1388,7 +1459,7 @@ function showRoundDetails(round) {
         html += `
             <div class="category-detail">
                 <div class="category-title">${categoryName}: ${criteria === 'Letter Pattern' ? 
-                    getPatternForRound(round, category).pattern : criteria}</div>
+                    getPatternForRound(1, category).pattern : criteria}</div>
                 <div class="user-answer ${result}">Your answer: ${userAnswer}</div>
                 <div class="possible-answers">
                     ${possibleAnswersText}
@@ -1397,7 +1468,26 @@ function showRoundDetails(round) {
         `;
     });
     
+    // Add score and rerolls summary
+    const totalEarned = calculateTotalScore();
+    const finalScore = totalEarned - gameState.rerollsUsed;
+    const rerollBonus = gameState.rerollsUsed === 0 ? 2 : 0;
+    
+    html += `
+        <div class="category-detail">
+            <div class="category-title">Score: ${finalScore}/10</div>
+            <div class="possible-answers">Rerolls used: ${gameState.rerollsUsed} (+${rerollBonus} points)</div>
+        </div>
+    `;
+    
     roundContent.innerHTML = html;
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 function showModal(message) {
@@ -1452,23 +1542,34 @@ function showModal(message) {
     document.body.appendChild(modalOverlay);
 }
 
-
 function shareResults() {
     const categories = ['place', 'animal', 'name', 'thing'];
     let shareText = 'PANTS Puzzle\n';
     shareText += new Date().toLocaleDateString() + '\n';
     
-    for (let round = 1; round <= 3; round++) {
-        categories.forEach(category => {
-            const result = gameState.results[round][category];
-            const emoji = { green: '🟩', yellow: '🟨', red: '🟥' };
-            shareText += emoji[result];
-        });
-        shareText += '\n';
-    }
+    // Show the 4 category results
+    categories.forEach(category => {
+        const result = gameState.results[1][category];
+        const emoji = { green: '🟩', yellow: '🟨', red: '🟥' };
+        shareText += emoji[result];
+    });
     
-    const totalScore = calculateTotalScore();
-    shareText += `Score: ${totalScore}/24`;
+    // Add the final score square
+    const totalScore = calculateTotalScore() - gameState.rerollsUsed;
+    let scoreEmoji;
+    if (totalScore >= 9) {
+        scoreEmoji = '🟩';
+    } else if (totalScore >= 6) {
+        scoreEmoji = '🟨';
+    } else if (totalScore >= 5) {
+        scoreEmoji = '🟧'; // Orange square
+    } else {
+        scoreEmoji = '🟥';
+    }
+    shareText += scoreEmoji;
+    shareText += '\n';
+    
+    shareText += `Score: ${totalScore}/10`;
     
     // Check if user is on mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
@@ -1602,7 +1703,6 @@ function setupEventListeners() {
     
     document.getElementById('startBtn').onclick = startGame;
     document.getElementById('submitBtn').onclick = submitAnswer;
-    document.getElementById('nextRoundBtn').onclick = nextRound;
     document.getElementById('shareBtn').onclick = shareResults;
     document.getElementById('homeBtn').onclick = goHome;
     document.getElementById('infoBtn').onclick = toggleInfo;
@@ -1652,14 +1752,6 @@ document.getElementById('howToPlayModal').onclick = (e) => {
             }
             return; // Exit early
         }
-
-    // Handle next round button
-    const nextRoundBtn = document.getElementById('nextRoundBtn');
-    if (nextRoundBtn.style.display !== 'none' && e.key === 'Enter') {
-        e.preventDefault();
-        nextRoundBtn.click();
-        return;
-    }
         
         // Don't allow typing when on score category OR when input is disabled
         if (gameState.currentCategory === 'score' || document.getElementById('wordInput').disabled) return;
@@ -1685,15 +1777,13 @@ function calculateTotalScore() {
     const scores = { green: 2, yellow: 1, red: 0 };
     const categories = ['place', 'animal', 'name', 'thing'];
     
-    for (let round = 1; round <= 3; round++) {
-        const roundResults = gameState.results[round] || {};
-        categories.forEach(category => {
-            const result = roundResults[category];
-            if (result) {
-                total += scores[result];
-            }
-        });
-    }
+    const roundResults = gameState.results[1] || {};
+    categories.forEach(category => {
+        const result = roundResults[category];
+        if (result) {
+            total += scores[result];
+        }
+    });
     return total;
 }
 
@@ -1705,9 +1795,10 @@ function getStoredStats() {
         bestStreak: 0,
         lastPlayedDate: null,
         scoreDistribution: {
-            '20-24': 0,
-            '10-19': 0,
-            '0-9': 0
+            '9-10': 0,
+            '6-8': 0,
+            '5-7': 0,
+            '0-4': 0
         },
         gamesPlayed: {} // Will store date -> score mapping
     };
@@ -1746,6 +1837,7 @@ function saveGameState() {
         results: gameState.results,
         hasPlayed: gameState.hasPlayed,
         rerollsUsed: gameState.rerollsUsed,
+        totalScore: gameState.totalScore,
         isComplete: false
     };
     
@@ -1785,6 +1877,8 @@ function markGameComplete() {
         answers: gameState.answers,
         results: gameState.results,
         hasPlayed: true,
+        rerollsUsed: gameState.rerollsUsed,
+        totalScore: gameState.totalScore,
         isComplete: true
     };
     
@@ -1815,16 +1909,18 @@ function updateStats(currentScore) {
     // Record today's game
     stats.gamesPlayed[today] = currentScore;
     
-    // Update score distribution
-    if (currentScore >= 20) {
-        stats.scoreDistribution['20-24']++;
-    } else if (currentScore >= 10) {
-        stats.scoreDistribution['10-19']++;
+    // Update score distribution with new ranges
+    if (currentScore >= 9) {
+        stats.scoreDistribution['9-10']++;
+    } else if (currentScore >= 6) {
+        stats.scoreDistribution['6-8']++;
+    } else if (currentScore >= 5) {
+        stats.scoreDistribution['5-7']++;
     } else {
-        stats.scoreDistribution['0-9']++;
+        stats.scoreDistribution['0-4']++;
     }
     
-    // Only count as win if score is 10 or above
+    // Count every completed game as "Pants Solved" regardless of score
     stats.pantsSolved++;
 
     stats.totalGames++;
@@ -1862,7 +1958,7 @@ function hasPlayedToday() {
 }
 
 function displayStats() {
-    const currentScore = calculateTotalScore();
+    const currentScore = calculateTotalScore() - gameState.rerollsUsed;
     let stats;
 
     if (!hasPlayedToday()) {
@@ -1875,28 +1971,52 @@ function displayStats() {
     document.getElementById('currentStreak').textContent = stats.currentStreak;
     document.getElementById('bestStreak').textContent = stats.bestStreak;
 
-    // Get the distribution values
-    const dist20 = stats.scoreDistribution['20-24'];
-    const dist10 = stats.scoreDistribution['10-19'];
-    const dist0 = stats.scoreDistribution['0-9'];
+    // Get the distribution values with new ranges
+    const dist9 = stats.scoreDistribution['9-10'];
+    const dist6 = stats.scoreDistribution['6-8'];
+    const dist5 = stats.scoreDistribution['5-7'];
+    const dist0 = stats.scoreDistribution['0-4'];
     
     // Find the maximum value among the distributions
-    const maxCount = Math.max(dist20, dist10, dist0);
+    const maxCount = Math.max(dist9, dist6, dist5, dist0);
     
-    const dist20to24 = document.getElementById('dist20to24');
-    const dist10to19 = document.getElementById('dist10to19');
-    const dist0to9 = document.getElementById('dist0to9');
+    const dist9to10 = document.getElementById('dist20to24'); // Reusing existing element
+    const dist6to8 = document.getElementById('dist10to19'); // Reusing existing element
+    const dist5to7 = document.getElementById('dist0to9'); // Reusing existing element for 5-7
+    
+    // Update the labels in HTML to match new ranges
+    document.querySelector('.distribution-row:nth-child(2) .distribution-label').textContent = '9-10';
+    document.querySelector('.distribution-row:nth-child(3) .distribution-label').textContent = '6-8';
+    document.querySelector('.distribution-row:nth-child(4) .distribution-label').textContent = '5-7';
+    
+    // Update the existing third row to be orange instead of red
+    dist5to7.className = 'distribution-bar orange';
 
     // Set widths relative to the maxCount
     const maxWidth = 100; // Full width percentage for the highest count
-    dist20to24.style.width = maxCount > 0 ? `${(dist20 / maxCount) * maxWidth}%` : '0%';
-    dist10to19.style.width = maxCount > 0 ? `${(dist10 / maxCount) * maxWidth}%` : '0%';
-    dist0to9.style.width = maxCount > 0 ? `${(dist0 / maxCount) * maxWidth}%` : '0%';
+    dist9to10.style.width = maxCount > 0 ? `${(dist9 / maxCount) * maxWidth}%` : '0%';
+    dist6to8.style.width = maxCount > 0 ? `${(dist6 / maxCount) * maxWidth}%` : '0%';
+    dist5to7.style.width = maxCount > 0 ? `${(dist5 / maxCount) * maxWidth}%` : '0%';
 
     // Update the text content
-    dist20to24.textContent = dist20;
-    dist10to19.textContent = dist10;
-    dist0to9.textContent = dist0;
+    dist9to10.textContent = dist9;
+    dist6to8.textContent = dist6;
+    dist5to7.textContent = dist5;
+
+    // Update the fourth row (which was originally the 0-9 row) to be 0-4
+    const distributionRows = document.querySelectorAll('.distribution-row');
+    if (distributionRows.length >= 4) {
+        const fourthRow = distributionRows[3]; // 0-based index, so 4th row
+        const fourthLabel = fourthRow.querySelector('.distribution-label');
+        const fourthBar = fourthRow.querySelector('.distribution-bar');
+        
+        if (fourthLabel) fourthLabel.textContent = '0-4';
+        if (fourthBar) {
+            fourthBar.className = 'distribution-bar red';
+            fourthBar.style.width = maxCount > 0 ? `${(dist0 / maxCount) * maxWidth}%` : '0%';
+            fourthBar.textContent = dist0;
+        }
+    }
 
     document.getElementById('statsArea').style.display = 'block';
 }
@@ -1912,10 +2032,10 @@ document.getElementById('passYesBtn').onclick = function() {
         this.classList.remove('active');
     
     // User confirmed pass
-    gameState.results[gameState.currentRound] = gameState.results[gameState.currentRound] || {};
-    gameState.results[gameState.currentRound][gameState.currentCategory] = 'red';
-    gameState.answers[gameState.currentRound] = gameState.answers[gameState.currentRound] || {};
-    gameState.answers[gameState.currentRound][gameState.currentCategory] = '';
+    gameState.results[1] = gameState.results[1] || {};
+    gameState.results[1][gameState.currentCategory] = 'red';
+    gameState.answers[1] = gameState.answers[1] || {};
+    gameState.answers[1][gameState.currentCategory] = '';
 
     // Save game state
     saveGameState();
@@ -1957,8 +2077,8 @@ function showInfoOverlays() {
         { selector: '#roundInfo', text: 'Current Round' },
         { selector: '#letterSquare', text: 'Answers must begin with this letter' },
         { selector: '.categories', text: 'Categories' }, 
-        { selector: '.criteria', text: 'Solve to get bonus points' },
-        { selector: '#rerollBtn', text: 'Rerolls current criteria. You have 1 reroll per round' },
+        { selector: '.criteria', text: 'Subcategory' },
+        { selector: '#rerollBtn', text: 'Rerolls subcategory. Costs 1 point each use' },
     ];
     
     overlays.forEach((overlay, index) => {
@@ -2023,7 +2143,10 @@ function showInputSuccess(result, word) {
             'Commendable!', 'Triumphant!', 'Victorious!', 'Top-notch!', 'First-rate!',
             'High-five!', "You're a star!", 'Correct!', 'Right!', 'Yes!',
             'Optimal!', 'Champion!', 'Ace!', 'Ultimate!', 'Supremacy!', 'Insane!',
-            'Pentakill!', 'M-M-M-Monster Kill!'
+            'Pentakill!', 'M-M-M-Monster Kill!','Legendary!', 'You crushed it!',
+            'Sharp as ever!', 'Big brain!', 'Mind-blowing!', 'Flames!',
+            'Power play!', 'Elite!', 'Calculated!', 'Too clean!', 'Correctamundo!',
+            'Cracked!', 'Wizardry!'
         ],
         yellow: [
             'Good word!', 'Nice try!', 'Not bad!', 'Good effort!',
@@ -2033,7 +2156,10 @@ function showInputSuccess(result, word) {
             'Pretty good!', 'Reasonable!', 'Honorable mention!', 'Good enough!', 'Passed!',
             'Through!', 'Validated!', 'Confirmed!', 'Approved!', 'Got through!',
             'Achieved!', 'Secured!', 'Landed it!', 'Good outcome!', 'Acceptable result!',
-            'Passed the mark!', 'Met expectations!', 'Got over the line!', 'Made it!'
+            'Passed the mark!', 'Met expectations!', 'Got over the line!', 'Made it!',
+            'That\'ll do!', 'It works!','Close one!', 'Made the cut!', 'On the board!', 'Counts!',
+            'Squeaked by!','Viable!','We\'ll take it!','Border pass!','All clear!',
+            'Made it work!','Snuck in!','We count that!'
         ],
         red: [
             'Next time!', 'Awww!', 'Oh no!', 'Not this time!', 'Unlucky!',
@@ -2045,7 +2171,9 @@ function showInputSuccess(result, word) {
             'Almost had it!', 'Not this round!', 'Too bad!',
             'Better luck soon!', 'No cigar!', 'Didn\'t land!',
             'Unsuccessful!', 'Declined!', 'Rejected!', 'Did not pass!',
-            'No go!', 'No score!', 'No completion!', 'A champion has been slain.'
+            'No go!', 'No score!', 'No completion!', 'A champion has been slain.',
+            'No good!', 'Negative!', 'That\'s a miss!', '404: Answer not found!',
+            'Eliminated!', 'Null input!', 'Misfire!',
         ]
     };
     
@@ -2076,7 +2204,7 @@ function updatePassMessage() {
     };
     
     const currentCategory = gameState.currentCategory;
-    const currentLetter = gameState.letters[gameState.currentRound - 1];
+    const currentLetter = gameState.letters[0]; // Always first letter now
     
     document.getElementById('currentCategoryText').textContent = categoryNames[currentCategory] || 'word';
     document.getElementById('currentLetterText').textContent = currentLetter;
@@ -2238,8 +2366,8 @@ function validateInputRealTime() {
         return;
     }
     
-    const currentLetter = gameState.letters[gameState.currentRound - 1].toLowerCase();
-    const criteria = gameState.criteria[gameState.currentRound][gameState.currentCategory];
+    const currentLetter = gameState.letters[0].toLowerCase(); // Always first letter now
+    const criteria = gameState.criteria[1][gameState.currentCategory];
     const category = gameState.currentCategory;
     
     // Must start with correct letter
@@ -2293,7 +2421,7 @@ function validateInputRealTime() {
         const lastChar = word.charAt(word.length - 1).toLowerCase();
         matchesCriteria = ['a','e','i','o','u'].includes(lastChar);
     } else if (criteria === 'Letter Pattern') {
-        const pattern = getPatternForRound(gameState.currentRound, gameState.currentCategory);
+        const pattern = getPatternForRound(1, gameState.currentCategory);
         matchesCriteria = checkWordAgainstPattern(word, pattern);
     } else {
         const criteriaWords = getCriteriaWords(category, criteria);
@@ -2309,3 +2437,35 @@ function validateInputRealTime() {
         input.classList.add('valid-yellow');
     }
 }
+
+// What's New scroll fade effects
+function setupWhatsNewScrollEffects() {
+    const content = document.getElementById('whatsNewContent');
+    const fadeTop = document.getElementById('fadeTop');
+    const fadeBottom = document.getElementById('fadeBottom');
+    
+    if (!content || !fadeTop || !fadeBottom) return;
+    
+    function updateFadeEffects() {
+        const scrollTop = content.scrollTop;
+        const scrollHeight = content.scrollHeight;
+        const clientHeight = content.clientHeight;
+        const scrollBottom = scrollHeight - clientHeight - scrollTop;
+        
+        // Fade top based on scroll position
+        fadeTop.style.opacity = scrollTop > 10 ? '1' : '0';
+        
+        // Fade bottom based on remaining scroll
+        fadeBottom.style.opacity = scrollBottom > 10 ? '1' : '0';
+    }
+    
+    content.addEventListener('scroll', updateFadeEffects);
+    
+    // Initial check
+    updateFadeEffects();
+}
+
+// Call this function after the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    setupWhatsNewScrollEffects();
+});
