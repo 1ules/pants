@@ -405,8 +405,9 @@ html, body,
 }
 
 .submit-btn {
+    position: relative;
     background: #EBE8DE;
-    color: #000000;
+    color: transparent;
     border-top: 3px solid white;
     border-left: 3px solid white;
     border-right: 3px solid #ddd;
@@ -417,11 +418,29 @@ html, body,
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin-top: -15px;
-    box-shadow: 
-    6px 6px 0 #000;
+    box-shadow: 6px 6px 0 #000;
+    overflow: hidden;
+    text-transform: uppercase;
+    user-select: none;
 }
+
+.submit-btn::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--main-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-size: inherit;
+    font-weight: inherit;
+    text-transform: inherit;
+    pointer-events: none;
+}
+
 
 .submit-btn:hover {
     box-shadow: 1px 1px 0px #000;
@@ -545,14 +564,14 @@ html, body,
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(1.4rem, 3.5vw, 2.3rem);
+    font-size: clamp(1.8rem, 3.5vw, 2.3rem);
     border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     color: #EBE8DE;
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 600;
+    font-weight: 700;
     font-style: normal;
     box-shadow: 
     5px 5px 0px #000;
@@ -677,11 +696,13 @@ html, body,
 }
 
 .text-input input.valid-green {
-    color: #5dd27a; /* Green color */
+    color: #5dd27a !important;
+    -webkit-text-fill-color: #5dd27a !important;
 }
 
 .text-input input.valid-yellow {
-    color: #f4d03f; /* Yellow color */
+    color: #f4d03f !important;
+    -webkit-text-fill-color: #f4d03f !important;
 }
 
 .text-input input {
@@ -702,8 +723,9 @@ html, body,
 
 .key {
     background: #EBE8DE;
-    color: transparent;
+    opacity: 1;
     border: none;
+    color: transparent;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
@@ -882,7 +904,7 @@ html, body,
     font-size: 1.1rem;
     min-width: clamp(250px, 70vw, 280px);
     color: #000000;
-    background: #ffffff;
+    background: #EBE8DE;
     box-shadow: 
     6px 6px 0px #000;
 }
@@ -895,7 +917,7 @@ html, body,
 }
 
 .pass-btn {
-    background: white;
+    background: #EBE8DE;
     color: #000000;
     border: 2px solid #000000;
     border-radius: 20px;
@@ -911,16 +933,22 @@ html, body,
 }
 
 .pass-btn:hover {
-    transform: scale(1.1);
+    box-shadow: 1px 1px 0px #000;
+    transform: translate(2px, 2px);
 }
 
 .pass-btn.no {
-    background: #ffffff;
+    background: #EBE8DE;
     color: rgb(0, 0, 0);
     border: 2px solid #000000;
     border-radius: 20px;
     box-shadow: 
     4px 4px 0px #ff0000;
+}
+
+.pass-btn.no:hover {
+    box-shadow: 1px 1px 0px #ff0000;
+    transform: translate(2px, 2px);
 }
 
 /* Spotlight effect */
@@ -958,6 +986,12 @@ html, body,
     -webkit-text-fill-color: #e74c3c !important;
 }
 
+.text-input.score-orange input,
+.text-input.score-orange input::placeholder {
+    color: #ff8c00 !important;
+    -webkit-text-fill-color: #ff8c00 !important;
+}
+
 .results-area {
     display: none;
     background: rgba(255,255,255,0.9);
@@ -986,7 +1020,7 @@ html, body,
 
 .result-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
     margin: 15px 0;
     justify-items: center;
@@ -1095,13 +1129,19 @@ html, body,
     background: #FFC107;
 }
 
+.distribution-bar.orange {
+    background: #ff8c00;
+}
+
 .distribution-bar.red {
     background: #f44336;
 }
 
 .result-square.green { background: #4CAF50; }
 .result-square.yellow { background: #FFC107; }
+.result-square.orange { background: #ff8c00; }
 .result-square.red { background: #f44336; }
+
 
 .round-selector {
     display: flex;
@@ -1392,6 +1432,11 @@ html, body,
 .success-glow-red {
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.8) !important;
     border-color: rgba(255, 0, 0, 0.8) !important;
+}
+
+.success-glow-orange {
+    box-shadow: 0 0 20px rgba(255, 140, 0, 0.8) !important;
+    border-color: rgba(255, 140, 0, 0.8) !important;
 }
 
 .criteria-text.criteria-animation {
