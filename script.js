@@ -270,7 +270,9 @@ const categories = {
         'Hospital Rooms and Departments',
         'Planets and Moons',
         'Around the House',
-        'Letter Pattern'
+        'Letter Pattern',
+        'Venues of Entertainment',
+        'Social Media Platform'
         ],
 
     animal: [
@@ -312,6 +314,7 @@ const categories = {
         'One Half of a Popular Duo',
         'Disney Characters',
         'Letter Pattern',
+        'Terms of Endearment',
         //shared criterias
         'Car Manufacturers',
         'Popular Brands',
@@ -326,6 +329,10 @@ const categories = {
         'Herbs and Spices',
         'Alcoholic Drinks',
         'Brands with Animal Logos/Mascots',
+        'Tree Nuts',
+        'Cheese',
+        'Social Media Platform',
+        '_____ Pie'
         ],    
 
     thing: [
@@ -361,7 +368,10 @@ const categories = {
         'Pasta and Bread',
         'Herbs and Spices',
         'Alcoholic Drinks',
-        'Brands with Animal Logos/Mascots'
+        'Brands with Animal Logos/Mascots',
+        'Tree Nuts',
+        'Cheese',
+        '_____ Pie'
         ],
 
 };
@@ -1406,6 +1416,10 @@ function showScoreDetails() {
         // Get the result for this category
         const result = gameState.results[1][category] || 'red';
         
+        // Calculate points earned for this answer
+        const pointsEarned = result === 'green' ? 2 : result === 'yellow' ? 1 : 0;
+        const pointsColor = result === 'green' ? 'green' : result === 'yellow' ? 'yellow' : 'red';
+        
         // Get possible answers
         let allValidWords = [];
         const words = getCriteriaWords(category, criteria);
@@ -1460,7 +1474,7 @@ function showScoreDetails() {
             <div class="category-detail">
                 <div class="category-title">${categoryName}: ${criteria === 'Letter Pattern' ? 
                     getPatternForRound(1, category).pattern : criteria}</div>
-                <div class="user-answer ${result}">Your answer: ${userAnswer}</div>
+                <div class="user-answer">Your answer: <strong class="${result}">${userAnswer}</strong> <strong class="${pointsColor}">+${pointsEarned}</strong></div>
                 <div class="possible-answers">
                     ${possibleAnswersText}
                 </div>
@@ -1476,7 +1490,7 @@ function showScoreDetails() {
     html += `
         <div class="category-detail">
             <div class="category-title">Score: ${finalScore}/10</div>
-            <div class="possible-answers">Rerolls used: ${gameState.rerollsUsed} (+${rerollBonus} points)</div>
+            <div class="possible-answers">Rerolls used: ${gameState.rerollsUsed} <strong class="${gameState.rerollsUsed === 0 ? 'green' : 'red'}">+${rerollBonus} points</strong></div>
         </div>
     `;
     
@@ -1720,6 +1734,51 @@ document.getElementById('closeHowToPlay').onclick = () => {
 document.getElementById('howToPlayModal').onclick = (e) => {
     if (e.target === document.getElementById('howToPlayModal')) {
         document.getElementById('howToPlayModal').style.display = 'none';
+    }
+};
+
+// About Modal
+document.getElementById('aboutBtn').onclick = () => {
+    document.getElementById('aboutModal').style.display = 'flex';
+};
+
+document.getElementById('closeAbout').onclick = () => {
+    document.getElementById('aboutModal').style.display = 'none';
+};
+
+document.getElementById('aboutModal').onclick = (e) => {
+    if (e.target === document.getElementById('aboutModal')) {
+        document.getElementById('aboutModal').style.display = 'none';
+    }
+};
+
+// Business Modal
+document.getElementById('businessBtn').onclick = () => {
+    document.getElementById('businessModal').style.display = 'flex';
+};
+
+document.getElementById('closeBusiness').onclick = () => {
+    document.getElementById('businessModal').style.display = 'none';
+};
+
+document.getElementById('businessModal').onclick = (e) => {
+    if (e.target === document.getElementById('businessModal')) {
+        document.getElementById('businessModal').style.display = 'none';
+    }
+};
+
+// Privacy Modal
+document.getElementById('privacyBtn').onclick = () => {
+    document.getElementById('privacyModal').style.display = 'flex';
+};
+
+document.getElementById('closePrivacy').onclick = () => {
+    document.getElementById('privacyModal').style.display = 'none';
+};
+
+document.getElementById('privacyModal').onclick = (e) => {
+    if (e.target === document.getElementById('privacyModal')) {
+        document.getElementById('privacyModal').style.display = 'none';
     }
 };
     
