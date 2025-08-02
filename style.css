@@ -29,8 +29,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; /* Adjust this value to control spacing between elements */
-    margin-top: 20px; /* Adjust as needed */
+    gap: 15px; 
+    margin-top: 20px; 
 }
 
 #startBtn, #howToPlayBtn, #colorPickerContainer {
@@ -38,7 +38,6 @@ body {
     text-align: center;
 }
 
-/* If you want the buttons to have equal width */
 #startBtn, #howToPlayBtn {
     width: 200px; /* Or whatever width you prefer */
     max-width: 80%;
@@ -823,6 +822,25 @@ html, body,
     display: inline-block;
 }
 
+.how-to-play-content.scrollable-content {
+    position: relative;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.scrollable-inner {
+    max-height: 60vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+.scrollable-inner::-webkit-scrollbar {
+    display: none;
+}
+
 .how-to-play-content h3 {
     text-align: center;
     margin-bottom: 20px;
@@ -1467,6 +1485,13 @@ html, body,
 .user-answer.yellow { color: #FFC107; font-weight: bold; }
 .user-answer.red { color: #f44336; font-weight: bold; }
 
+/* Score breakdown point colors */
+.user-answer .green { color: #4CAF50 !important; }
+.user-answer .yellow { color: #FFC107 !important; }
+.user-answer .red { color: #f44336 !important; }
+.possible-answers .green { color: #4CAF50 !important; }
+.possible-answers .red { color: #f44336 !important; }
+
 #passYesBtn.active, #passNoBtn.active {
     transform: scale(0.95);
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
@@ -1563,7 +1588,42 @@ html, body,
     
 }
 
-/* Color gradients */
+/* Content Links */
+.content-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.content-links-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.content-link-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-family: inherit;
+}
+
+.content-link-btn:hover {
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.content-separator {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    user-select: none;
+}
 .color-blue { background: linear-gradient(0deg, #0a1a3a 0%, #11244d 20%, #1a2f60 40%, #243d75 60%, #3a4f8c 80%, #4d69a8 100%); }
 .color-black { background: linear-gradient(0deg, #121212 0%, #1a1a1a 20%, #222222 40%, #2a2a2a 60%, #333333 80%, #3d3d3d 100%); }
 .color-green { background: linear-gradient(0deg, #0d2818 0%, #143c25 20%, #1b5333 40%, #226a41 60%, #29824f 80%, #30995e 100%); }
